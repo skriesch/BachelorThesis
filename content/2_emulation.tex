@@ -2,10 +2,48 @@
 
 \section{System Emulation}
 
+The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). It makes the VM really slow because so much will be virtualized.
+
 \section{User Mode Emulation}
+
+The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. 
 
 \section{QEMU}
 
+QEMU is an open-source emulator available in most Linux distributions. It is most used for virtualizations with KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. Additionally, you can emulate other architectures on different hardware. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a package as default. QEMU does not emulate the whole hardware. That is only possible for the CPU. Therefore, QEMU is used for emulations in this Bachelor Thesis.
+
 \section{Emulation of different architectures}
+
+It is possible to emulate different architectures on another hardware architecture. The package qemu-use-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. You can register other architectures within that, that you can run multiple other architectures on a host. So hybrid virtualization approach is possible with different virtualization technologies as with QEMU and Docker.
+
+\subsection{Prerequisite for s390x on x86}
+
+Different software is necessary to run qemu or docker for multiple architectures. Therefore, docker and qemu should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
+
+It is possible to use packages as binfmt-support and qemu-user-static by different Linux distributions, but it is recommended to use the latest possible version for s390x. \\
+
+The kernel module binfmt\_misc can be mounted with the following command: \textbf{mount binfmt_misc -t binfmt\_misc \path{/proc/sys/fs/binfmt_misc}} \\
+
+Latest stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.0.0-2 is used for the project and downloaded with \textbf{wget \url{https://github.com/multiarch/qemu-user-static/releases/download/v5.0.0-2/x86_64_qemu-s390x-static.tar.gz}} for the special version of qemu-s390x-static on x86. That is extracted to the directory \/usr\/bin\/ with the command \textbf{sudo tar -xvzf x86_64_qemu-s390x-static.tar.gz -C /usr/bin/} then. \\
+
+s390x binaries have to be registered for s390x. That is done with the following commands: \textbf{sudo -i} and \textbf{echo ':qemu-s390x:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x16:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > \path{/proc/sys/fs/binfmt_misc/register}} \\
+
+Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86 then. That can be added with the following:
+
+\begin{lstlisting}[language=Bash,caption={This is an example of inline listing},captionpos=b]
+{
+"experimental": enabled
+} >> /etc/docker/daemon.json
+\end{lstlisting}
+
+After a restart of the docker daemon there should be listed this flag in the command \textbf{docker version}. An alternative way is to export this flag as an environment variable in the shell with \textbf{export DOCKER\_CLI\_EXPERIMENTAL=enabled} to enable it. Now it is possible to build docker images for s390x on x86 with \textbf{docker build --platform=linux\/s390x -t image-example:s390x .} based on a Dockerfile in the existing directory.
+
+ 
+
+ 
+
+\subsection{Optimized QEMU Command}
+
+
 
 \Blindtext
