@@ -6,7 +6,7 @@ The System Emulation emulates a whole system with hardware, the operating system
 
 \section{User Mode Emulation}
 
-The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. 
+The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. This emulation type is working on a syscall level. An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. 
 
 \section{QEMU}
 
@@ -42,8 +42,14 @@ After a restart of the docker daemon there should be listed this flag in the com
 
  
 
-\subsection{Optimized QEMU Command}
+\subsection{Building a s390x Kernel on x86}
 
+QEMU needs a built kernel to start a system. These packages are necessary: \\
+bison, flex, gcc, gcc-s390x-linux-gnu, libssl-dev \\
+One kernel has to be downloaded from kernel.org with the following command then: \textbf{wget https://git.kernel.org/torvalds/t/linux-5.7-rc7.tar.gz}\\
+It can be extracted with \textbf{tar -xf  linux-5.7-rc7.tar.gz}. The Makefile is in the directory linux-5.7-rc7. Therefore the command \textbf{make ARCH=s390 defconfig localyesconfig} has to be executed to create the default configuration for s390x and \textbf{make ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- -j6} for the compilation. The kernel has the name bzImage in the directory \path{arch/s390/boot/} then and can be used in the qemu command.
+
+\subsection{Optimized QEMU Command}
 
 
 \Blindtext
