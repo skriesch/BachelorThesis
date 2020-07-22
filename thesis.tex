@@ -59,6 +59,7 @@
 \usepackage{url}
 \usepackage{pdfpages}
 \usepackage{microtype}
+\usepackage{listings}
 
 
 % table setup
@@ -104,6 +105,20 @@
 	breakautoindent=true
 }
 
+% configure Bash style
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\sffamily,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=3pt,
+  frame=tb,
+  columns=fullflexible,
+  backgroundcolor=\color{yellow!20},
+  linewidth=0.9\linewidth,
+  xleftmargin=0.1\linewidth
+}
+
 % page setup
 % \setlength{\topskip}{\ht\strutbox}
 \geometry{paper=a4paper,left=2.5cm,top=3.0cm,bindingoffset=.8cm}
@@ -122,7 +137,9 @@
 \newcommand{\eg}{\mbox{e.\,g.\ }}
 \newcommand{\ie}{\mbox{i.\,e.\ }}
 \newcommand{\wrt}{\mbox{w.\,r.\,t.\ }}
-\newcommand{\etal}{\mbox{\emph{et.\,al.\ }}}
+\newcommand{\etal}{\mbox{\emph{et.\,al.\ 
+\newcommand*{\Package}[1]{\texttt{#1}}%
+}}}
 
 
 % TODO remove if not needed...
@@ -147,11 +164,12 @@
 
 \mainmatter
 \include{content/1_intro}
-\include{content/2_data}
-\include{content/3_method}
-\include{content/4_experiments}
-\include{content/5_outlook}
-\include{content/6_summary}
+\include{content/2_emulation}
+\include{content/3_ci_cd}
+\include{content/4_cassandra}
+\include{content/5_kubernetes}
+\include{content/6_outlook}
+\include{content/7_summary}
 
 % remove if not needed
 \appendix
