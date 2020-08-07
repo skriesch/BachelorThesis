@@ -60,6 +60,7 @@
 \usepackage{pdfpages}
 \usepackage{microtype}
 \usepackage{listings}
+\usepackage{verbatim}
 
 
 % table setup
@@ -102,6 +103,8 @@
 	showstringspaces=true,
 	numbers=left,
 	numberstyle=\small,
+	breaklines=true,             % Zeilenumbruch
+	breakatwhitespace=true, %Umbruch an Leerzeichen
 	breakautoindent=true
 }
 
@@ -114,7 +117,7 @@
   numbersep=3pt,
   frame=tb,
   columns=fullflexible,
-  backgroundcolor=\color{yellow!20},
+  backgroundcolor=\color{white},
   linewidth=0.9\linewidth,
   xleftmargin=0.1\linewidth
 }
