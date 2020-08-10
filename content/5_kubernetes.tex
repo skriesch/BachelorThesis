@@ -1,3 +1,93 @@
+\usepackage{verbatim}
+
 \chapter{Kubernetes}\label{ch:kubernetes}
+
+\section{Overview}
+
+Kubernetes is a container platform for high availability clusters.
+There exist plugins for integration tests for Kubernetes with the name kubetest\footnote{\url{https://kubetest.readthedocs.io/en/latest/}}. They contain conformance tests, as e2e tests (end-to-end), too.
+That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes and building tests with go is necessary. The problem is, that 2 big Github repositories have to be cloned and integrated into the docker image. That is using a lot of space. The solution is using a multi staging Dockerfile. 
+So 2 different Dockerfiles are used in one Dockerfile and one is used for building. The other one is used for the installation and testing with built tests. At the end the size of the docker image has got only the size of the test image unimportant of the repository size in the mother Dockerfile.
+
+\section{Installation}
+
+Kubernetes needs a lot of packages for running and for tests. That will be all installed with the RUN command.
+\url{apt.kubernetes.io} has got later packages as the Ubuntu repository. Therefore this repository has to be added to Ubuntu. kub-build is the name of the mother Dockerfile to be able to copy needed files and directories from there.
+
+\begin{verbatim}[frame=single]
+FROM s390x/ubuntu:18.04 AS kub-build
+ 
+# The author
+MAINTAINER Sarah Julia Kriesch <sarah.kriesch@ibm.com>
+
+#Installation
+RUN echo "Installing necessary packages" && \
+apt-get update && apt-get install -y \
+apt-transport-https \
+apt-utils \
+systemd \
+curl \
+git \
+ca-certificates \
+gnupg-agent \
+software-properties-common \
+&& curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+&& echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" 
+> /etc/apt/sources.list.d/kubernetes.list \
+&& apt-get update && apt-get install -y \
+docker.io \
+kubelet \
+kubeadm \
+&& apt-mark hold kubelet kubeadm kubectl \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+&& systemctl enable docker 
+\end{verbatim}
+
+\section{Building latest Go}
+
+There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command \shellcmd{curl \url{https://golang.org/VERSION?m=text}}. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. \\
+
+The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on the top of the Dockerfile for successful builds later. PWD is added because Github repositories have to be cloned to this directory.
+
+\begin{verbatim}[frame=single]
+ENV GOROOT=/root/go
+ENV GOPATH=/root/go
+ENV PATH=$GOPATH/bin:$PATH
+ENV PATH=$PATH:$GOROOT/bin
+ENV PWD=/root/go/src/
+
+#Installation of latest GO
+&& echo "Installation of latest GO" && \
+curl "https://dl.google.com/go/$(curl https://golang.org/VERSION?m=text).linux-s390x.tar.gz" \
+| tar -C /root/ -xz \
+&& mkdir -p /root/go/{bin,pkg,src} \
+\end{verbatim}
+
+\section{Building tests}
+After a successful installation of go, it is possible to build and install the Kubernetes test environment.
+At first the directory k8s.io has to be created because kubernetes-tests are looking for this directory as a mother directory. The repository test-infra by the Kubernetes project has to be cloned to there. Inside of this test-infra directory kubetest can be installed with \textbf{go install}. That is downloading all available Kubernetes-Tests. So you can use them to test the own Kubernetes cluster and the used software. \\
+
+The most important tests for the Kubernetes community have got the name conformance tests. These tests certifies the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{https://github.com/cncf/k8s-conformance}. 
+These conformance tests are executed with e2e.test. This test file can be built with make inside of the kubernetes repository. Therefore this repository has to be cloned to k8s.io, too.
+
+
+\begin{verbatim}[frame=single]
+&& cd $PWD \
+#Clone test-infra
+&& mkdir -p $GOPATH/src/k8s.io \
+&& cd $GOPATH/src/k8s.io \
+&& git clone https://github.com/kubernetes/test-infra.git 
+/root/go/src/k8s.io/test-infra \
+&& cd /root/go/src/k8s.io/test-infra/ \
+#Install kubetest
+&& GO111MODULE=on go install ./kubetest \
+#Build test binary
+&& git clone https://github.com/kubernetes/kubernetes.git 
+/root/go/src/k8s.io/kubernetes \
+&& cd /root/go/src/k8s.io/kubernetes/
+ 
+CMD make WHAT="test/e2e/e2e.test vendor/github.com/onsi/ginkgo/ginkgo cmd/kubectl"
+\end{verbatim}
 
 \Blindtext

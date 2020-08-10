@@ -29,7 +29,7 @@
 \newcommand{\unternehmen}{IBM Deutschland R \& D GmbH}
 \newcommand{\logo}{figures/TH-Nuernberg-RGB.png}
 \newcommand{\keywords}{Hardware Emulation, Apache Cassandra, Kubernetes, Open Source, Linux on Z, IBM Z, Mainframes}
- 
+\newcommand{\shellcmd}[1]{\\\indent\indent\texttt{\footnotesize\# #1}\\}
 
 % custom head and foot
 \usepackage[automark]{scrlayer-scrpage}
@@ -60,6 +60,7 @@
 \usepackage{pdfpages}
 \usepackage{microtype}
 \usepackage{listings}
+\usepackage{verbatim}
 
 
 % table setup
@@ -102,6 +103,8 @@
 	showstringspaces=true,
 	numbers=left,
 	numberstyle=\small,
+	breaklines=true,             % Zeilenumbruch
+	breakatwhitespace=true, %Umbruch an Leerzeichen
 	breakautoindent=true
 }
 
@@ -114,13 +117,13 @@
   numbersep=3pt,
   frame=tb,
   columns=fullflexible,
-  backgroundcolor=\color{yellow!20},
+  backgroundcolor=\color{white},
   linewidth=0.9\linewidth,
   xleftmargin=0.1\linewidth
 }
 
 % page setup
-% \setlength{\topskip}{\ht\strutbox}
+\setlength{\topskip}{\ht\strutbox}
 \geometry{paper=a4paper,left=2.5cm,top=3.0cm,bindingoffset=.8cm}
 \onehalfspacing
 \frenchspacing
@@ -137,9 +140,9 @@
 \newcommand{\eg}{\mbox{e.\,g.\ }}
 \newcommand{\ie}{\mbox{i.\,e.\ }}
 \newcommand{\wrt}{\mbox{w.\,r.\,t.\ }}
-\newcommand{\etal}{\mbox{\emph{et.\,al.\ 
+\newcommand{\etal}{\mbox{\emph{et.\,al.\ }}}
 \newcommand*{\Package}[1]{\texttt{#1}}%
-}}}
+
 
 
 % TODO remove if not needed...
@@ -152,13 +155,13 @@
 \setcounter{tocdepth}{2}  % ...but don't include them in toc
 
 \frontmatter
-\include{cover}\cleardoublepage
+\include{cover}
 
 % download the following form and complete it (hit save in your editor)
 % https://intern.ohmportal.de/fileadmin/Gelenkte_Doks/Abt/SZS/SB/SB_0050_FO_Pruefungsrechtliche_Erklaerung_und_Erklaerung_zur_Veroeffentlichung_der_Abschlussarbeit_public.pdf
 \includepdf{SB_0050_FO_Pruefungsrechtliche_Erklaerung_und_Erklaerung_zur_Veroeffentlichung_der_Abschlussarbeit_public.pdf}\cleardoublepage
 
-\include{content/0_abstract}\cleardoublepage
+\include{content/0_abstract}
 
 \tableofcontents
 
