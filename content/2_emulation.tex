@@ -27,6 +27,7 @@ The kernel module binfmt\_misc can be mounted with the following command:
 \begin{lstlisting}[style=BashInputStyle]
   # mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 \end{lstlisting}
+
 Latest stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.0.0-2 is used for the project and downloaded with \shellcmd{wget \url{https://github.com/multiarch/qemu-user-static/releases/download/v5.0.0-2/x86_64_qemu-s390x-static.tar.gz}} for the special version of qemu-s390x-static on x86. That is extracted to the directory \path{/usr/bin/} with the command \shellcmd{sudo tar -xvzf x86\_64\_qemu-s390x-static.tar.gz -C /usr/bin/} then. \\
 
 s390x binaries have to be registered for s390x. That is done with the following commands: \shellcmd{sudo -i} and \begin{verbatim}
