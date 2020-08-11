@@ -79,7 +79,7 @@ That is the ideal option to mount a minimal file system for every application or
 /usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/kub-container.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
 \end{lstlisting}
 
-\subsection{File Systems}
+\section{File Systems}
 
 Docker is using the Union File System which is not compatible with QEMU.
 QEMU can integrate only hard disks formated for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
@@ -93,7 +93,7 @@ docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -
 Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. So it is possible to reformat the default docker file system UnionFS to another one as ext4 as an example. \\
 QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda}\cite[~p.22]{White2020}.
 
-\subsubsection{Union File System}
+\subsection{Union File System}
 
 Docker does not use any default Linux file system. 
 Docker images are based on the Union File System (UnionFS)\cite[~p.21]{Ashraf2015}. 
@@ -108,7 +108,7 @@ Every separate docker command is using his own disk space. So a docker image can
 It is reasonable to compress so much as possible of different routines into one docker command. 
 All sizes of different docker layers will exist continuously inside of the new file system.
 
-\subsubsection{ext4}
+\subsection{ext4}
 
 Ext4 is a journaling file system (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
