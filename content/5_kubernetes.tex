@@ -11,7 +11,10 @@ So 2 different Dockerfiles are used in one Dockerfile and one is used for buildi
 
 \section{Multi Staging}
 
-A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with \ldq AS \rdq.
+A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with \ldq AS \rdq behind the \ldq FROM \rdq with the base image name. 
+Default this feature is used for building applications in one stage and executing the copied application in another stage. The same counts for clonining Github repositories and building binary files based on it. On this way a lot of space is saved.
+At the end the docker image has got only the size of the executing system with the application file (without all the code). 
+That is an \rdq experimental feature \rdq at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before using it. 
 
 \section{Installation}
 
