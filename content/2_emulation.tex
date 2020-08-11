@@ -96,5 +96,21 @@ All sizes of different docker layers will exist continuously inside of the new f
 
 \subsubsection{ext4}
 
+Ext4 is a journaling file system (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
+So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
+Such journal file systems in the ext file system familiy are working with blocks\cite[~p.20]{Seufert2015}.
+The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
+The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
+Commit blocks are available to flag logged transactions.
+Revoke blocks are flagging blocks not logged any more. \\
+All meta data from the journal can be relocated in inodes because changes of file system meta data are registered, too. \\
+The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional ckeck sums for journal transactions\cite[p.28]{Seufert2015}.
 
+Ext4 provides a better performance than ext3. 
+This file system can be formated with mkfs.ext4 which is available in every Linux distribution.
+This tool is creating a group despriptor table for further group descriptors what allows an expanding of the file system. The file system can grox a maximum of the multiple 1024 of his existing size because of the saved space\cite[p.21]{Seufert2015}.
+Flex groups are used in ext4 for merging different block groups to one logic block group. All data from inodes are only saved in the first flex group then. 
+So the search for files is more powerful because meta data are allocated at one place. \\
+
+Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption\cite[p.24]{Seufert2015}.
 \Blindtext
