@@ -9,6 +9,10 @@ There exist plugins for integration tests for Kubernetes with the name kubetest\
 That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes and building tests with go is necessary. The problem is, that 2 big Github repositories have to be cloned and integrated into the docker image. That is using a lot of space. The solution is using a multi staging Dockerfile. 
 So 2 different Dockerfiles are used in one Dockerfile and one is used for building. The other one is used for the installation and testing with built tests. At the end the size of the docker image has got only the size of the test image unimportant of the repository size in the mother Dockerfile.
 
+\section{Multi Staging}
+
+A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with \ldq AS \rdq.
+
 \section{Installation}
 
 Kubernetes needs a lot of packages for running and for tests. That will be all installed with the RUN command.
