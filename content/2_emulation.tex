@@ -37,7 +37,7 @@ xff\xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/regis
 
 Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86 then. That can be added with the following:
 
-\begin{lstlisting}[language=Bash,caption={This is an example of inline listing},captionpos=b]
+\begin{lstlisting}[language=Bash,caption={Docker Experimental Flag},captionpos=b]
 {
 "experimental": enabled
 } >> /etc/docker/daemon.json
@@ -89,7 +89,8 @@ So it would be nice to integrate the docker file system into QEMU. After buildin
 docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -
 \end{lstlisting}
 .
-Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. So it is possible to reformat the default docker file system UnionFS to another one as ext4 as an example. 
+Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. So it is possible to reformat the default docker file system UnionFS to another one as ext4 as an example. \\
+QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda}\cite[~p.22]{White2020}.
 
 \subsubsection{Union File System}
 
