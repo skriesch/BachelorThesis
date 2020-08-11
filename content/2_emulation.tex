@@ -2,7 +2,8 @@
 
 \section{System Emulation}
 
-The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). It makes the VM really slow because so much will be virtualized.
+The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). It makes the VM really slow because so much will be virtualized. It is posible to reduce the supported and attached vm hardware with special options. \\
+System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
 
 \section{User Mode Emulation}
 
@@ -16,7 +17,7 @@ QEMU is an open-source emulator available in most Linux distributions. It is mos
 
 It is possible to emulate different architectures on another hardware architecture. The package qemu-use-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. You can register other architectures within that, that you can run multiple other architectures on a host. So hybrid virtualization approach is possible with different virtualization technologies as with QEMU and Docker.
 
-\subsection{Prerequisite for s390x on x86}
+\subsection{Prerequisites for s390x on x86}
 
 Different software is necessary to run qemu or docker for multiple architectures. Therefore, docker and qemu should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
 
@@ -57,12 +58,71 @@ It can be extracted with \shellcmd{tar -xf  linux-5.7-rc7.tar.gz}. The Makefile 
 
 \subsection{Optimized QEMU Command}
 
-Every additional device requires additional performance and time for starting the system. So the systems requirements had to be figured out that system requirements are minimal for every open-source project and for running tests on it. That counts for the number of CPUs, too. \\
+Every additional device requires additional performance and time for starting the system. 
+So the systems requirements had to be figured out that system requirements are minimal for every open-source project and for running tests on it. 
+That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the built s390x kernel. The option -m is available to add the minimal guest memory matching the system requirements of every open-source project. -nodefaults is deactivating default additional devices activated in QEMU. Only the console is necessary for receiving an output and debugging. So that is added as a device. Cassandra as a project does not need any network interface or parallelism. The option nographic is responsible for not adding any graphical interface. So we save system requirements. The option -smp is the minimal number of CPUs for the guest. The file system of containers can be loaded as a hard disk with the option -hda which is explained in every chapter of a special open-source project. That is the ideal option to mount a minimal file system for every application or system. \path{/dev/vda} is the partition name and rdinit is used for using Bash as a default shell. \\
+The kernel option is receiving the path to the built s390x kernel. 
+The option -m is available to add the minimal guest memory matching the system requirements of every open-source project. 
+\textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
+Only the console is necessary for receiving an output and debugging. 
+So that is added as a device. Cassandra as a project does not need any network interface or parallelism. The 
+option \textbf{-nographic} is responsible for not adding any graphical interface. 
+So we save system requirements. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
+The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of a special open-source project. 
+That is the ideal option to mount a minimal file system for every application or system. 
+\path{/dev/vda} is the partition name and rdinit is used for using Bash as a default shell. \\
 
 
 \begin{lstlisting}[style=BashInputStyle]
 /usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/kub-container.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
 \end{lstlisting}
+
+\subsection{File Systems}
+
+Docker is using the Union File System which is not compatible with QEMU.
+QEMU can integrate only hard disks formated for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
+The driver virtio\_blk is used to mount external file systems. So it is possible to integrate and start nonnative systems in QEMU. 
+Docker is advantageous to setup and start systems fast. 
+So it would be nice to integrate the docker file system into QEMU. After building a docker image, it is possible export the file system into a directory with the name \textbf{rootfs} with the command 
+\begin{lstlisting}[style=BashInputStyle]
+docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -
+\end{lstlisting}
+.
+Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. So it is possible to reformat the default docker file system UnionFS to another one as ext4 as an example. 
+
+\subsubsection{Union File System}
+
+Docker does not use any default Linux file system. 
+Docker images are based on the Union File System (UnionFS)\cite[~p.21]{Ashraf2015}. 
+This file system is using different file system layers with grouping directories and files in branches. 
+The first layer is the typical Linux boot flile system with the name bootfs. 
+That is working the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
+So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with QEMU.
+The next layer contains the base image with the operating system given by the \ldq FROM \rdq command.
+Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or buildin binary files.
+That is the reason that every executed docker command is receiving an own id in the disk memory during the build process.
+Every separate docker command is using his own disk space. So a docker image can grow really fast.
+It is reasonable to compress so much as possible of different routines into one docker command. 
+All sizes of different docker layers will exist continuously inside of the new file system.
+
+\subsubsection{ext4}
+
+Ext4 is a journaling file system (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
+So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
+Such journal file systems in the ext file system familiy are working with blocks\cite[~p.20]{Seufert2015}.
+The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
+The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
+Commit blocks are available to flag logged transactions.
+Revoke blocks are flagging blocks not logged any more. \\
+All meta data from the journal can be relocated in inodes because changes of file system meta data are registered, too. \\
+The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional ckeck sums for journal transactions\cite[p.28]{Seufert2015}.
+
+Ext4 provides a better performance than ext3. 
+This file system can be formated with mkfs.ext4 which is available in every Linux distribution.
+This tool is creating a group despriptor table for further group descriptors what allows an expanding of the file system. The file system can grox a maximum of the multiple 1024 of his existing size because of the saved space\cite[p.21]{Seufert2015}.
+Flex groups are used in ext4 for merging different block groups to one logic block group. All data from inodes are only saved in the first flex group then. 
+So the search for files is more powerful because meta data are allocated at one place. \\
+
+Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption\cite[p.24]{Seufert2015}.
 \Blindtext
