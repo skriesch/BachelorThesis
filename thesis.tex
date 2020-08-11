@@ -50,6 +50,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern,relsize,textcomp,csquotes}
+\usepackage[acronym,toc,section,shortcuts]{glossaries}
 \usepackage{amsmath,amsfonts}
 \usepackage[ngerman,english]{babel}  % flip for German thesis
 \usepackage[final]{graphicx}
@@ -174,6 +175,11 @@
 \include{content/5_kubernetes}
 \include{content/6_outlook}
 \include{content/7_summary}
+\makeglossaries
+\printglossary[style=altlist, title=Glossary, nonumberlist]
+\input{content/8_glossary.tex}
+\deftranslation[to=English]{Acronyms}{dds}
+\printglossary[type=\acronymtype,style=long,title=Shortwords]
 
 % remove if not needed
 \appendix
