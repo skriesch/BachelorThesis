@@ -7,11 +7,11 @@ System emulation benefits from the virtualization support as KVM. So most CPU op
 
 \section{User Mode Emulation}
 
-The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. This emulation type is working on a syscall level. An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. 
+The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. This emulation type is working on a syscall level. Therefore, the application has to be runnable as a process executable itself. An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then.
 
 \section{QEMU}
 
-QEMU is an open-source emulator available in most Linux distributions. It is most used for virtualizations with KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. Additionally, you can emulate other architectures on different hardware. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a package as default. QEMU does not emulate the whole hardware. That is only possible for the CPU. Therefore, QEMU is used for emulations in this Bachelor Thesis.
+QEMU is an open-source emulator available in most Linux distributions. It is most used for virtualizations with KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. Additionally, you can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a package as default. QEMU does not emulate the whole hardware. That is only possible for the CPU. Therefore, QEMU is used for emulations in this Bachelor Thesis.
 
 \section{Emulation of different architectures}
 
@@ -83,7 +83,7 @@ That is the ideal option to mount a minimal file system for every application or
 
 Docker is using the Union File System which is not compatible with QEMU.
 QEMU can integrate only hard disks formated for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
-The driver virtio\_blk is used to mount external file systems. So it is possible to integrate and start nonnative systems in QEMU. 
+The driver virtio\_blk is used to mount external file systems and emulates read\/write in the physical block device\cite{Barboza2018}. Following it is possible to integrate and start nonnative systems in QEMU. 
 Docker is advantageous to setup and start systems fast. 
 So it would be nice to integrate the docker file system into QEMU. After building a docker image, it is possible export the file system into a directory with the name \textbf{rootfs} with the command 
 \begin{lstlisting}[style=BashInputStyle]
@@ -127,4 +127,4 @@ Flex groups are used in ext4 for merging different block groups to one logic blo
 So the search for files is more powerful because meta data are allocated at one place. \\
 
 Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption\cite[p.24]{Seufert2015}.
-\Blindtext
+
