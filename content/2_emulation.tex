@@ -2,20 +2,35 @@
 
 \section{System Emulation}
 
-The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). It makes the VM really slow because so much will be virtualized. It is posible to reduce the supported and attached vm hardware with special options. \\
+The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). 
+The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run priviledged instructions\cite{Butt2011}.
+It makes the VM really slow because so much will be virtualized. It is posible to reduce the supported and attached vm hardware with special options. \\
 System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
 
 \section{User Mode Emulation}
 
-The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. This emulation type is working on a syscall level. Therefore, the application has to be runnable as a process executable itself. An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then.
+The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. 
+This emulation type is working on a syscall level. Therefore, the application has to be runnable as a process executable itself. 
+An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
+The user mode emulation can run directly non-priviledged instructions or is using system calls to ask for a special service from the operating system\cite{Butt2011}.
+
 
 \section{QEMU}
 
-QEMU is an open-source emulator available in most Linux distributions. It is most used for virtualizations with KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. Additionally, you can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a package as default. QEMU does not emulate the whole hardware. That is only possible for the CPU. Therefore, QEMU is used for emulations in this Bachelor Thesis.
+QEMU is an open-source emulator available in most Linux distributions. It is embeeded in different virtualization tools as KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. 
+Additionally, you can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. It can also be used for emulation of obsolete hardware\cite[~p.24]{Opsahl2013}. It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
+That is a processor emulator using binary translation\cite{Butt2011}. That will be done with the "Tiny Code Generator" (TCG) inside of QEMU. 
+That is a small compiler replacing GCC because of plenty releases and changes withit. The TCG is converting the blocks of target instructions into a default intermediate form. 
+After that, it has to be compiled for the host or target architecture. 
+If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
+The TCG integrates new code for the new host architecture in the background then. It is also dedicted to improve performance with avoiding repeated translations by buffering already translated code\cite{Cota2017}. 
+The TCG takes care of the emulation of the guest processor running as a thread launched by QEMU. The memory of a quest is allocated during launch and is mapped into the address space of the QEMU process\cite[~p.29]{Opsahl2013}.\\
+It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a package as default. 
+QEMU does not emulate the whole hardware. That is only possible for the CPU. Therefore, QEMU is used for emulations in this Bachelor Thesis.
 
 \section{Emulation of different architectures}
 
-It is possible to emulate different architectures on another hardware architecture. The package qemu-use-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. You can register other architectures within that, that you can run multiple other architectures on a host. So hybrid virtualization approach is possible with different virtualization technologies as with QEMU and Docker.
+It is possible to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. You can register other architectures within that, that you can run multiple other architectures on a host. So hybrid virtualization approach is possible with different virtualization technologies as with QEMU and Docker.
 
 \subsection{Prerequisites for s390x on x86}
 
@@ -91,7 +106,7 @@ docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -
 \end{lstlisting}
 .
 Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. So it is possible to reformat the default docker file system UnionFS to another one as ext4 as an example. \\
-QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda}\cite[~p.22]{White2020}.
+QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} as the first partition\cite[~p.22]{White2020}.
 
 \subsection{Union File System}
 
