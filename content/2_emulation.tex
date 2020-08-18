@@ -3,8 +3,11 @@
 \section{System Emulation}
 
 The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). 
-The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run priviledged instructions\cite{Butt2011}.
-It makes the VM really slow because so much will be virtualized. It is posible to reduce the supported and attached vm hardware with special options. \\
+The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run priviledged instructions\cite{Butt2011}. 
+Additionally, it can be used as an application development platform where specific hardware is not available. 
+System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest guest hardware have to be emulated in software. 
+That has got multiple host instructions because of the translation for a single guest instruction as a result\cite[~p.1]{Tong2014}.
+It is posible to reduce the supported and attached additional devices with special options. \\
 System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
 
 \section{User Mode Emulation}
@@ -19,7 +22,7 @@ The user mode emulation can run directly non-priviledged instructions or is usin
 
 QEMU is an open-source emulator available in most Linux distributions. It is embeeded in different virtualization tools as KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. 
 Additionally, you can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. It can also be used for emulation of obsolete hardware\cite[~p.24]{Opsahl2013}. It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
-That is a processor emulator using binary translation\cite{Butt2011}. That will be done with the "Tiny Code Generator" (TCG) inside of QEMU. 
+That is a processor emulator using binary translation\cite{Butt2011} which is executing and translating emulated code based on blocks. Each block has got one entry and one exit point\cite[~p.5]{Wang2010}. The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
 That is a small compiler replacing GCC because of plenty releases and changes withit. The TCG is converting the blocks of target instructions into a default intermediate form. 
 After that, it has to be compiled for the host or target architecture. 
 If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
