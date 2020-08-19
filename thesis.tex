@@ -64,6 +64,12 @@
 \usepackage{verbatim}
 \usepackage{textcmds}
 
+% add bash inline style
+\usepackage{fancyvrb}
+\usepackage{pythontex}
+\setpygmentspygopt{bash}{style=default} %Set syntax highlighting style
+\setpygmentsfv{xleftmargin=4ex} %Pass fancyvrb options, in this case, left margin
+ 
 
 % table setup
 \usepackage{longtable}
@@ -170,14 +176,15 @@
 \mainmatter
 \include{content/1_intro}
 \include{content/2_emulation}
-\include{content/3_ci_cd}
-\include{content/4_cassandra}
+\include{content/3_prequisites}
+\include{content/4_ci_cd}
 \include{content/5_kubernetes}
-\include{content/6_outlook}
-\include{content/7_summary}
+\include{content/6_cassandra}
+\include{content/7_outlook}
+\include{content/8_summary}
 \makeglossaries
 \printglossary[style=altlist, title=Glossary, nonumberlist]
-\input{content/8_glossary.tex}
+\input{content/9_glossary.tex}
 \deftranslation[to=English]{Acronyms}{dds}
 \printglossary[type=\acronymtype,style=long,title=Shortwords]
 
