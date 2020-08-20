@@ -41,7 +41,14 @@ It is possible to emulate different architectures on another hardware architectu
 
 \subsection{binfmt\_misc}
 
+Binfmt\_misc is a feature in the kernel which allows invoking almost every program by simply typing its name in the shell. That makes it possible to execute user space applications, such as emulators and virtual machines for other harware architectures. It recognises the binary-type by matching some bytes at the beginning of the file with a magic byte sequence. These executable formats have to be registered in the file \path{/proc/sys/fs/binfmt_misc/register}.\\
+The structure of the configuration for the registration is the following: \textbf{:name:type:offset:magic:mask:interpreter:} \\
+The name is the name of the architecture for the binary format. The type can be E or M. E is for executable file formats as .exe as an example. M is used for a format identified by a magic number at an absolute offset in the file and the mask is a bitmask indicating which bits in the number are significant\cite{Slackware2020} (which is used in our case). The offset can be kept empty. The magic is a byte sequence of hexadecimal numbers.\\
+The package \textbf{binfmt-support} has to be installed first for using this kernel feature. 
+
 \subsection{qemu-user-static}
+
+\section{BuildX}
 
 \section{File Systems}
 
@@ -82,11 +89,11 @@ The super block contains all meta data of the journal. Descriptor blocks include
 Commit blocks are available to flag logged transactions.
 Revoke blocks are flagging blocks not logged any more. \\
 All meta data from the journal can be relocated in inodes because changes of file system meta data are registered, too. \\
-The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional ckeck sums for journal transactions\cite[p.28]{Seufert2015}.
+The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional ckeck sums for journal transactions\cite[~p.28]{Seufert2015}.
 
 Ext4 provides a better performance than ext3. 
 This file system can be formated with mkfs.ext4 which is available in every Linux distribution.
-This tool is creating a group despriptor table for further group descriptors what allows an expanding of the file system. The file system can grox a maximum of the multiple 1024 of his existing size because of the saved space\cite[p.21]{Seufert2015}.
+This tool is creating a group despriptor table for further group descriptors what allows an expanding of the file system. The file system can grow a maximum of the multiple 1024 of his existing size because of the saved space\cite[~p.21]{Seufert2015}.
 Flex groups are used in ext4 for merging different block groups to one logic block group. All data from inodes are only saved in the first flex group then. 
 So the search for files is more powerful because meta data are allocated at one place. \\
 
