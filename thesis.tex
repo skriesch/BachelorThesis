@@ -29,7 +29,6 @@
 \newcommand{\unternehmen}{IBM Deutschland R \& D GmbH}
 \newcommand{\logo}{figures/TH-Nuernberg-RGB.png}
 \newcommand{\keywords}{Hardware Emulation, Apache Cassandra, Kubernetes, Open Source, Linux on Z, IBM Z, Mainframes}
-\newcommand{\shellcmd}[1]{\\\indent\indent\texttt{\footnotesize\# #1}\\}
 
 % custom head and foot
 \usepackage[automark]{scrlayer-scrpage}
@@ -60,9 +59,10 @@
 \usepackage{url}
 \usepackage{pdfpages}
 \usepackage{microtype}
-\usepackage{listings}
+\usepackage{listings, xcolor}
 \usepackage{verbatim}
 \usepackage{textcmds}
+\usepackage{caption}
 
 
 
@@ -104,28 +104,34 @@
 	extendedchars=true,
 	frame=single,
 	showstringspaces=true,
-	numbers=left,
-	numberstyle=\small,
+	language=bash,
+    basicstyle=\ttfamily,
+    keywordstyle=\lst@ifdisplaystyle\color{blue}\fi,
+    commentstyle=\color{gray}
 	breaklines=true,             % Zeilenumbruch
 	breakatwhitespace=true, %Umbruch an Leerzeichen
 	breakautoindent=true,
+	framexleftmargin=15pt,
 	literate={\_}{}{0\discretionary{\_}{}{\_}}%Zeilenumbrüche bei Underscrore
 }
-
+\def\inline{\lstinline[basicstyle=\ttfamily,keywordstyle={}]} %define style for lstinline
 
 % configure Bash style
 \lstdefinestyle{BashInputStyle}{
   language=bash,
   basicstyle=\small\sffamily,
-  numbers=left,
-  numberstyle=\tiny,
-  numbersep=3pt,
-  frame=tb,
+  frame=single,
   columns=fullflexible,
   backgroundcolor=\color{white},
   linewidth=0.9\linewidth,
-  xleftmargin=0.1\linewidth
+  xleftmargin=0.1\linewidth,
+  breaklines=true,             % Zeilenumbruch
+  breakatwhitespace=true, %Umbruch an Leerzeichen
+  breakautoindent=true,
+  framexleftmargin=15pt,
+  literate={\_}{}{0\discretionary{\_}{}{\_}}%Zeilenumbrüche bei Underscrore
 }
+
 
 % page setup
 \setlength{\topskip}{\ht\strutbox}
@@ -148,6 +154,15 @@
 \newcommand{\etal}{\mbox{\emph{et.\,al.\ }}}
 \newcommand*{\Package}[1]{\texttt{#1}}%
 
+
+\usepackage{xintbinhex}
+
+\makeatletter
+\newcommand\myHexNumber[1]{\ttfamily\tiny
+                           \romannumeral\expandafter\myHexNumber@pad
+                           \romannumeral0\xintdectohex{#1}.}%convert int to hex
+\def\myHexNumber@pad#1.{\xintreplicate{2-\xintLength{#1}}{0}#1}
+\makeatother
 
 
 % TODO remove if not needed...
