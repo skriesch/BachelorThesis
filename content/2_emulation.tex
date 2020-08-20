@@ -1,3 +1,4 @@
+
 \chapter{Emulation}\label{ch:emulation}
 
 \section{System Emulation}
@@ -21,8 +22,10 @@ The user mode emulation can run directly non-priviledged instructions or is usin
 \section{QEMU}
 
 QEMU is an open-source emulator available in most Linux distributions. It is embeeded in different virtualization tools as KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. 
-Additionally, you can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. It can also be used for emulation of obsolete hardware\cite[~p.24]{Opsahl2013}. It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
-That is a processor emulator using binary translation\cite{Butt2011} which is executing and translating emulated code based on blocks. Each block has got one entry and one exit point\cite[~p.5]{Wang2010}. The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
+Additionally, you can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. It can also be used for emulation of obsolete hardware\cite[~p.24]{Opsahl2013}. 
+It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
+That is a processor emulator using binary translation\cite{Butt2011} which is executing and translating emulated code based on blocks. Each block has got one entry and one exit point\cite[~p.5]{Wang2010}. 
+The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
 That is a small compiler replacing GCC because of plenty releases and changes withit. The TCG is converting the blocks of target instructions into a default intermediate form. 
 After that, it has to be compiled for the host or target architecture. 
 If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
@@ -35,73 +38,16 @@ QEMU does not emulate the whole hardware. That is only possible for the CPU. The
 
 It is possible to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. You can register other architectures within that, that you can run multiple other architectures on a host. So hybrid virtualization approach is possible with different virtualization technologies as with QEMU and Docker.
 
-\subsection{Prerequisites for s390x on x86}
 
-Different software is necessary to run qemu or docker for multiple architectures. Therefore, docker and qemu should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
+\subsection{binfmt\_misc}
 
-It is possible to use packages as binfmt-support and qemu-user-static by different Linux distributions, but it is recommended to use the latest possible version for s390x. \\
-
-The kernel module binfmt\_misc can be mounted with the following command: 
-\begin{lstlisting}[style=BashInputStyle]
-  # mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-\end{lstlisting}
-
-Latest stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.0.0-2 is used for the project and downloaded with \shellcmd{wget \url{https://github.com/multiarch/qemu-user-static/releases/download/v5.0.0-2/x86_64_qemu-s390x-static.tar.gz}} for the special version of qemu-s390x-static on x86. That is extracted to the directory \path{/usr/bin/} with the command \shellcmd{sudo tar -xvzf x86\_64\_qemu-s390x-static.tar.gz -C /usr/bin/} then. \\
-
-s390x binaries have to be registered for s390x. That is done with the following commands: \shellcmd{sudo -i} and \begin{verbatim}
-# echo ':qemu-s390x:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\ 
-x00\x02\x00\x16:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\
-xff\xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
-\end{verbatim}
-
-Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86 then. That can be added with the following:
-
-\begin{lstlisting}[language=Bash,caption={Docker Experimental Flag},captionpos=b]
-{
-"experimental": enabled
-} >> /etc/docker/daemon.json
-\end{lstlisting}
-
-After a restart of the docker daemon there should be listed this flag in the command \shellcmd{docker version}. An alternative way is to export this flag as an environment variable in the shell with \shellcmd{export DOCKER\_CLI\_EXPERIMENTAL=enabled} to enable it. Now it is possible to build docker images for s390x on x86 with \shellcmd{docker build --platform=linux/s390x -t image-example:s390x .} based on a Dockerfile in the existing directory.
-
- 
-
- 
-
-\subsection{Building a s390x Kernel on x86}
-
-QEMU needs a built kernel to start a system. These packages are necessary: \\
-\textbf{bison, flex, gcc, gcc-s390x-linux-gnu, libssl-dev} \\
-One kernel has to be downloaded from kernel.org with the following command then: \shellcmd{wget \url{https://git.kernel.org/torvalds/t/linux-5.7-rc7.tar.gz}}\\
-It can be extracted with \shellcmd{tar -xf  linux-5.7-rc7.tar.gz}. The Makefile is in the directory linux-5.7-rc7. Therefore the command \shellcmd{make ARCH=s390 defconfig localyesconfig} has to be executed to create the default configuration for s390x and \shellcmd{make ARCH=s390 CROSS\_COMPILE=s390x-linux-gnu- -j6} for the compilation. The kernel has the name bzImage in the directory \path{arch/s390/boot/} then and can be used in the qemu command.
-
-\subsection{Optimized QEMU Command}
-
-Every additional device requires additional performance and time for starting the system. 
-So the systems requirements had to be figured out that system requirements are minimal for every open-source project and for running tests on it. 
-That counts for the number of CPUs, too. \\
-
-The kernel option is receiving the path to the built s390x kernel. 
-The option -m is available to add the minimal guest memory matching the system requirements of every open-source project. 
-\textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
-Only the console is necessary for receiving an output and debugging. 
-So that is added as a device. Cassandra as a project does not need any network interface or parallelism. The 
-option \textbf{-nographic} is responsible for not adding any graphical interface. 
-So we save system requirements. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
-The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of a special open-source project. 
-That is the ideal option to mount a minimal file system for every application or system. 
-\path{/dev/vda} is the partition name and rdinit is used for using Bash as a default shell. \\
-
-
-\begin{lstlisting}[style=BashInputStyle]
-/usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/kub-container.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
-\end{lstlisting}
+\subsection{qemu-user-static}
 
 \section{File Systems}
 
 Docker is using the Union File System which is not compatible with QEMU.
 QEMU can integrate only hard disks formated for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
-The driver virtio\_blk is used to mount external file systems and emulates read\/write in the physical block device\cite{Barboza2018}. Following it is possible to integrate and start nonnative systems in QEMU. 
+The driver virtio\_blk is used to mount external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following it is possible to integrate and start nonnative systems in QEMU. 
 Docker is advantageous to setup and start systems fast. 
 So it would be nice to integrate the docker file system into QEMU. After building a docker image, it is possible export the file system into a directory with the name \textbf{rootfs} with the command 
 \begin{lstlisting}[style=BashInputStyle]
@@ -119,14 +65,14 @@ This file system is using different file system layers with grouping directories
 The first layer is the typical Linux boot flile system with the name bootfs. 
 That is working the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
 So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with QEMU.
-The next layer contains the base image with the operating system given by the \ldq FROM \rdq command.
+The next layer contains the base image with the operating system given by the "FROM" command.
 Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or buildin binary files.
 That is the reason that every executed docker command is receiving an own id in the disk memory during the build process.
 Every separate docker command is using his own disk space. So a docker image can grow really fast.
 It is reasonable to compress so much as possible of different routines into one docker command. 
 All sizes of different docker layers will exist continuously inside of the new file system.
 
-\subsection{ext4}
+\subsection{Ext4}
 
 Ext4 is a journaling file system (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.

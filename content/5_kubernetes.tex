@@ -1,5 +1,3 @@
-\usepackage{verbatim}
-
 \chapter{Kubernetes}\label{ch:kubernetes}
 
 \section{Overview}
@@ -11,10 +9,10 @@ So 2 different Dockerfiles are used in one Dockerfile and one is used for buildi
 
 \section{Multi Staging}
 
-A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with \ldq AS \rdq behind the \ldq FROM \rdq with the base image name. 
+A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with "AS" behind the "FROM" with the base image name. 
 Default this feature is used for building applications in one stage and executing the copied application in another stage. The same counts for clonining Github repositories and building binary files based on it. On this way a lot of space is saved.
 At the end the docker image has got only the size of the executing system with the application file (without all the code). 
-That is an \rdq experimental feature \rdq at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before using it. 
+That is an "experimental feature"  at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before using it. 
 
 \section{Installation}
 
@@ -53,7 +51,7 @@ kubeadm \
 
 \section{Building latest Go}
 
-There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command \shellcmd{curl \url{https://golang.org/VERSION?m=text}}. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. \\
+There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command  \lstinline!curl https://golang.org/VERSION?m=text!. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. \\
 
 The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on the top of the Dockerfile for successful builds later. PWD is added because Github repositories have to be cloned to this directory.
 

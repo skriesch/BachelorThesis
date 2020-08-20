@@ -64,12 +64,7 @@
 \usepackage{verbatim}
 \usepackage{textcmds}
 
-% add bash inline style
-\usepackage{fancyvrb}
-\usepackage{pythontex}
-\setpygmentspygopt{bash}{style=default} %Set syntax highlighting style
-\setpygmentsfv{xleftmargin=4ex} %Pass fancyvrb options, in this case, left margin
- 
+
 
 % table setup
 \usepackage{longtable}
@@ -113,8 +108,10 @@
 	numberstyle=\small,
 	breaklines=true,             % Zeilenumbruch
 	breakatwhitespace=true, %Umbruch an Leerzeichen
-	breakautoindent=true
+	breakautoindent=true,
+	literate={\_}{}{0\discretionary{\_}{}{\_}}%Zeilenumbrüche bei Underscrore
 }
+
 
 % configure Bash style
 \lstdefinestyle{BashInputStyle}{
@@ -162,13 +159,13 @@
 \setcounter{secnumdepth}{3}  % numerate subsections
 \setcounter{tocdepth}{2}  % ...but don't include them in toc
 
+ 
 \frontmatter
 \include{cover}
 
 % download the following form and complete it (hit save in your editor)
 % https://intern.ohmportal.de/fileadmin/Gelenkte_Doks/Abt/SZS/SB/SB_0050_FO_Pruefungsrechtliche_Erklaerung_und_Erklaerung_zur_Veroeffentlichung_der_Abschlussarbeit_public.pdf
 \includepdf{SB_0050_FO_Pruefungsrechtliche_Erklaerung_und_Erklaerung_zur_Veroeffentlichung_der_Abschlussarbeit_public.pdf}\cleardoublepage
-
 \include{content/0_abstract}
 
 \tableofcontents
