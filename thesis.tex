@@ -103,34 +103,25 @@
 	tabsize=3,
 	extendedchars=true,
 	frame=single,
-	showstringspaces=true,
+	columns=fullflexible,
+	showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,
 	language=bash,
+	extendedchars=true,
     basicstyle=\ttfamily,
     keywordstyle=\lst@ifdisplaystyle\color{blue}\fi,
-    commentstyle=\color{gray}
+    commentstyle=\color{gray},
 	breaklines=true,             % Zeilenumbruch
 	breakatwhitespace=true, %Umbruch an Leerzeichen
 	breakautoindent=true,
 	framexleftmargin=15pt,
 	literate={\_}{}{0\discretionary{\_}{}{\_}}%Zeilenumbrüche bei Underscrore
+	         {~}{{\char`\ }}1
 }
-\def\inline{\lstinline[basicstyle=\ttfamily,keywordstyle={}]} %define style for lstinline
+\makeatother
 
-% configure Bash style
-\lstdefinestyle{BashInputStyle}{
-  language=bash,
-  basicstyle=\small\sffamily,
-  frame=single,
-  columns=fullflexible,
-  backgroundcolor=\color{white},
-  linewidth=0.9\linewidth,
-  xleftmargin=0.1\linewidth,
-  breaklines=true,             % Zeilenumbruch
-  breakatwhitespace=true, %Umbruch an Leerzeichen
-  breakautoindent=true,
-  framexleftmargin=15pt,
-  literate={\_}{}{0\discretionary{\_}{}{\_}}%Zeilenumbrüche bei Underscrore
-}
+
 
 
 % page setup
