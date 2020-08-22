@@ -26,7 +26,7 @@ They include one or a group of containers with shared storage and network resour
 \textbf{Kubeadm} is the administration tool to setup clusters. It is necessary to upgrade Kubernetes to other versions, too. Clusters can be initialized. The network can be configured and the command \textbf{kubectl} (Kubernetes Control Plane) for adding additional nodes to a cluster can be initialized. \\
 \lstinline!apt-mark hold! is keeping these special versions of kubelet, kubeadm and kubectl. 
 
-\begin{figure}
+\begin{figure}[H]
 \begin{boxedverbatim}
 FROM s390x/ubuntu:18.04 AS kub-build
  
@@ -68,7 +68,7 @@ The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on
 
 The ENV variables will be on the top of the Dockerfile. The part for the "Installation of Go" will be attached to the end of the Kubernetes installation part.
 
-\begin{figure}
+\begin{figure}[H]
 \begin{boxedverbatim}
 ENV GOROOT=/root/go
 ENV GOPATH=/root/go
@@ -98,7 +98,7 @@ The most important tests for the Kubernetes community have got the name conforma
 Therefore this repository has to be cloned to k8s.io, too. These tests certify the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{https://github.com/cncf/k8s-conformance}. 
 
 
-\begin{figure}
+\begin{figure}[H]
 \begin{boxedverbatim}
 && cd $PWD \
 #Clone test-infra
