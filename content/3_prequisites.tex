@@ -43,22 +43,23 @@ It can be extracted with \lstinline!tar -xf  linux-5.7-rc7.tar.gz!. The Makefile
 \section{Optimized QEMU Command}
 
 Every additional device requires additional performance and time for starting the system. 
-So the systems requirements had to be figured out that system requirements are minimal for every open-source project and for running tests on it. 
+So the systems requirements had to be figured out that system requirements are minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the built s390x kernel. 
-The option -m is available to add the minimal guest memory matching the system requirements of every open-source project. 
+The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given "Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\ 
+The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. 
 \textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 
 So that is added as a device. Cassandra as a project does not need any network interface or parallelism. The 
 option \textbf{-nographic} is responsible for not adding any graphical interface. 
 So we save system requirements. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
-The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of a special open-source project. 
+The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of the Bachelor Thesis for a considered open-source project. 
 That is the ideal option to mount a minimal file system for every application or system. 
-\path{/dev/vda} is the partition name and rdinit is used for using Bash as a default shell. \\
+\path{/dev/vda} is the partition name and rdinit is used for using bash as a default shell. \\
+This command can be used for user mode emulation with Apache Cassandra as an example.
 
 
 \begin{lstlisting}[language=bash,caption={Optimized QEMU Command},captionpos=b]
-/usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/kub-container.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
+/usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/cassandra.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
 \end{lstlisting}
 

@@ -3,9 +3,9 @@
 \section{Overview}
 
 Kubernetes is a container platform for high availability clusters.
-There exist plugins for integration tests for Kubernetes with the name kubetest\footnote{\url{https://kubetest.readthedocs.io/en/latest/}}. They contain conformance tests, as e2e tests (end-to-end), too.
-That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes and building tests with go is necessary. The problem is, that 2 big Github repositories have to be cloned and integrated into the docker image. That is using a lot of space. The solution is using a multi staging Dockerfile. 
-So 2 different Dockerfiles are used in one Dockerfile and one is used for building. The other one is used for the installation and testing with built tests. At the end the size of the docker image has got only the size of the test image unimportant of the repository size in the mother Dockerfile.
+There exist plugins for integration tests for Kubernetes with the name kubetest\footnote{\url{https://kubetest.readthedocs.io/en/latest/}}. They contain conformance tests, as well as e2e tests (end-to-end), too.
+That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes and building tests with Go is necessary. The problem is, that 2 big Github repositories have to be cloned and integrated into the docker image. That is using a lot of space. The solution is using a multi staging Dockerfile. 
+So 2 different Dockerfiles are used in one Dockerfile and one is used for building. The other one is used for the installation and testing with built tests. At the end the size of the docker image has got only the size of the test image regardless of the repository size in the mother Dockerfile.
 
 \section{Multi Staging Dockerfile}
 
@@ -17,7 +17,7 @@ That is an "experimental feature"  at the moment. Therefore the \textbf{experime
 \section{Installation}
 
 Kubernetes needs a lot of packages for running and for tests. That will be all installed with the RUN command.
-\url{apt.kubernetes.io} has got later packages as the Ubuntu repository. Therefore this repository has to be added to Ubuntu. kub-build is the name of the mother Dockerfile to be able to copy needed files and directories from there. \\
+\url{apt.kubernetes.io} has got later versions of Kubernetes than the Ubuntu repository. Therefore this repository has to be added to Ubuntu. kub-build is the name of the mother Dockerfile to be able to copy needed files and directories from there. \\
 In the intallation part of the Dockerfile the Kubernetes repository \url{https://apt.kubernetes.io} for Debian packages has to be registered together with with the gpg key used by  \url{https://packages.cloud.google.com/apt/doc/apt-key.gpg}.
  A Dockerfile is installing only necessary packages. Therefore, apt-transport-https, apt-utils, curl, git, ca-certificates, gnupg-agent and software-properties-common have to be installed first for the following installation.
 The system requires the lates update with \lstinline!apt-get update! after the registration of the additional repository besides of the default Ubuntu reositories imported with the base Ubuntu image "s390x/ubuntu:18.04" in the FROM command. After that the packages docker.io, kubelet and kubeadm can be installed from kubernetes.io. \textbf{Docker.io} contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running withit. \\ \textbf{Kubelet} is the primary node agent running on each node. He is responsible that different containers can run together in a pod. Pods are deployable units defined in JSON or a yaml file. They include one or a group of containers with shared storage and network resources. Hosting of distributed systems  with different services in different containers can work together. Consequential one pod is soething as one "logical host". \\
@@ -54,11 +54,13 @@ kubeadm \
 && systemctl enable docker 
 \end{verbatim}
 
-\section{Installation of latest Go}
+\section{Installation of the latest Go}
 
-There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command  \lstinline!curl https://golang.org/VERSION?m=text!. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. \\
+There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command  \lstinline!curl https://golang.org/VERSION?m=text!. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Then the version number has to be called with curl inside of another curl command with the whole path to the special tar archive on \url{dl.google.com}. Every tar archive has got the same structure for every version (\lstinline!$version.$architecture.tar.gz!). On this way the latest version of Go is integrable into the curl command that it can be installed. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. \\
 
-The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on the top of the Dockerfile for successful builds later. PWD is added because Github repositories have to be cloned to this directory.
+The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on the top of the Dockerfile for successful builds later. PWD is added because Github repositories have to be cloned to this directory. \\
+
+The ENV variables will be on the top of the Dockerfile. The part for the "Installation of Go" will be attached to the end of the Kubernetes installation part.
 
 \begin{verbatim}[frame=single]
 ENV GOROOT=/root/go
@@ -78,8 +80,8 @@ curl "https://dl.google.com/go/$(curl https://golang.org/VERSION?m=text).linux-s
 After a successful installation of go, it is possible to build and install the Kubernetes test environment.
 At first the directory k8s.io has to be created because kubernetes-tests are looking for this directory as a mother directory. The repository test-infra by the Kubernetes project has to be cloned to there. Inside of this test-infra directory kubetest can be installed with \textbf{go install}. That is downloading all available Kubernetes-Tests. So you can use them to test the own Kubernetes cluster and the used software. \\
 
-The most important tests for the Kubernetes community have got the name conformance tests. These tests certifies the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{https://github.com/cncf/k8s-conformance}. 
-These conformance tests are executed with e2e.test. This test file can be built with make inside of the kubernetes repository. Therefore this repository has to be cloned to k8s.io, too.
+The most important tests for the Kubernetes community have got the name conformance tests. These conformance tests are executed with e2e.test  which can be built with make inside of the kubernetes repository. Therefore this repository has to be cloned to k8s.io, too. These tests certify the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{https://github.com/cncf/k8s-conformance}. 
+
 
 
 \begin{verbatim}[frame=single]
