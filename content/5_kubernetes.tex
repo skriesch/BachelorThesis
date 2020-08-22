@@ -26,6 +26,7 @@ They include one or a group of containers with shared storage and network resour
 \textbf{Kubeadm} is the administration tool to setup clusters. It is necessary to upgrade Kubernetes to other versions, too. Clusters can be initialized. The network can be configured and the command \textbf{kubectl} (Kubernetes Control Plane) for adding additional nodes to a cluster can be initialized. \\
 \lstinline!apt-mark hold! is keeping these special versions of kubelet, kubeadm and kubectl. 
 
+\begin{figure}
 \begin{boxedverbatim}
 FROM s390x/ubuntu:18.04 AS kub-build
  
@@ -55,15 +56,19 @@ kubeadm \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 && systemctl enable docker 
 \end{boxedverbatim}
+ \caption{Kubernetes Installation}
+    \label{kubernetes-installation}
+\end{figure}
 
 \section{Installation of the latest Go}
 
-There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command  \lstinline!curl https://golang.org/VERSION?m=text!. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Then the version number has to be called with curl inside of another curl command with the whole path to the special tar archive on \url{dl.google.com}. Every tar archive has got the same structure for every version (\lstinline!$version.$architecture.tar.gz!). On this way the latest version of Go is integrable into the curl command that it can be installed. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. \\
+There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command  \lstinline!curl https://golang.org/VERSION?m=text!. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Then the version number has to be called with curl inside of another curl command with the whole path to the special tar archive on \url{dl.google.com}. Every tar archive has got the same structure for every version (\lstinline!$version.$architecture.tar.gz!). On this way the latest version of Go is integrable into the curl command that it can be installed. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. They are not integrated in the tar archive. \\
 
 The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on the top of the Dockerfile for successful builds later. PWD is added because Github repositories have to be cloned to this directory. \\
 
 The ENV variables will be on the top of the Dockerfile. The part for the "Installation of Go" will be attached to the end of the Kubernetes installation part.
 
+\begin{figure}
 \begin{boxedverbatim}
 ENV GOROOT=/root/go
 ENV GOPATH=/root/go
@@ -73,10 +78,14 @@ ENV PWD=/root/go/src/
 
 #Installation of latest GO
 && echo "Installation of latest GO" && \
-curl "https://dl.google.com/go/$(curl https://golang.org/VERSION?m=text).linux-s390x.tar.gz" \
+curl "https://dl.google.com/go/ \
+$(curl https://golang.org/VERSION?m=text).linux-s390x.tar.gz" \
 | tar -C /root/ -xz \
-&& mkdir -p /root/go/{bin,pkg,src} \
+&& mkdir -p /root/go/{bin,pkg,src} 
 \end{boxedverbatim}
+ \caption{Go Installation}
+    \label{go-installation}
+\end{figure}
 
 \section{Building Tests}
 After a successful installation of go, it is possible to build and install the Kubernetes test environment.
@@ -89,7 +98,7 @@ The most important tests for the Kubernetes community have got the name conforma
 Therefore this repository has to be cloned to k8s.io, too. These tests certify the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{https://github.com/cncf/k8s-conformance}. 
 
 
-
+\begin{figure}
 \begin{boxedverbatim}
 && cd $PWD \
 #Clone test-infra
@@ -107,4 +116,6 @@ Therefore this repository has to be cloned to k8s.io, too. These tests certify t
  
 CMD make WHAT="test/e2e/e2e.test vendor/github.com/onsi/ginkgo/ginkgo cmd/kubectl"
 \end{boxedverbatim}
-
+ \caption{Test Building for Kubernestes}
+    \label{test-building}
+\end{figure}
