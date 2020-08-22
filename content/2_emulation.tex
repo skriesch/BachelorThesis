@@ -8,7 +8,7 @@ The system (hardware and operating system) will be translated unmodified. The be
 Additionally, it can be used as an application development platform where specific hardware is not available. 
 System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest guest hardware have to be emulated in software. 
 That has got multiple host instructions because of the translation for a single guest instruction as a result\cite[~p.1]{Tong2014}.
-It is posible to reduce the supported and attached additional devices with special options. \\
+It is possible to reduce the supported and attached additional devices with special options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards less hardware has to be emulated which has got the result of better performance. \\
 System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
 
 \section{User Mode Emulation}
@@ -36,19 +36,27 @@ QEMU does not emulate the whole hardware. That is only possible for the CPU. The
 
 \section{Emulation of different architectures}
 
-It is possible to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. You can register other architectures within that, that you can run multiple other architectures on a host. So hybrid virtualization approach is possible with different virtualization technologies as with QEMU and Docker.
+It is achievable to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. 
+You can register other architectures within that, that you can run multiple other architectures on a host. 
+Not only QEMU can be used for system emulation. Container technologies as Docker have got an integrated  QEMU compatibility as an additional emulation feature for building images for other architectures. 
+That has got the name BuildX. Accordingly a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together.
 
 
 \subsection{binfmt\_misc}
 
 Binfmt\_misc is a feature in the kernel which allows invoking almost every program by simply typing its name in the shell. That makes it possible to execute user space applications, such as emulators and virtual machines for other harware architectures. It recognises the binary-type by matching some bytes at the beginning of the file with a magic byte sequence. These executable formats have to be registered in the file \path{/proc/sys/fs/binfmt_misc/register}.\\
-The structure of the configuration for the registration is the following: \textbf{:name:type:offset:magic:mask:interpreter:} \\
-The name is the name of the architecture for the binary format. The type can be E or M. E is for executable file formats as .exe as an example. M is used for a format identified by a magic number at an absolute offset in the file and the mask is a bitmask indicating which bits in the number are significant\cite{Slackware2020} (which is used in our case). The offset can be kept empty. The magic is a byte sequence of hexadecimal numbers.\\
+The structure of the configuration for the registration is the following: \\ \textbf{:name:type:offset:magic:mask:interpreter:flags} \\
+
+The \textbf{name} is the name of the architecture for the binary format. The \textbf{type} can be \textbf{E} or \textbf{M}. E is for executable file formats as .exe as an example. M is used for a format identified by a \textbf{magic} number at an absolute \textbf{offset} in the file and the \textbf{mask} is a bitmask indicating which bits in the number are significant\cite{Slackware2020} (which is used in our case). 
+The offset can be kept empty. The magic is a byte sequence of hexadecimal numbers. The \textbf{interpreter} is the program that should be invoked with the binary\cite{Guenther2020}. 
+The path has to be specified for that. The field \textbf{flags} is optional. It checks different aspects of the invocation of the interpreter. The \textbf{F} flag is necessary in our case for "fix binary". 
+That supposes that a new binary has to be spawned if the misc file format has been invoked.\\
+On this way it is possible to register another system architecture (s390x on x86) on the host system and it is realizable to emulate the other architecture then. \\
 The package \textbf{binfmt-support} has to be installed first for using this kernel feature. 
 
 \subsection{qemu-user-static}
 
-\section{BuildX}
+\subsection{BuildX}
 
 \section{File Systems}
 

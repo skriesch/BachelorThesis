@@ -112,11 +112,13 @@
     basicstyle=\ttfamily,
     keywordstyle=\lst@ifdisplaystyle\color{blue}\fi,
     commentstyle=\color{gray},
-	breaklines=true,             % Zeilenumbruch
+	breaklines=true,             % Zeilenumbruch	
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},  %roter Pfeil bei Zeilenumbruch
 	breakatwhitespace=true, %Umbruch an Leerzeichen
 	breakautoindent=true,
 	framexleftmargin=15pt,
 	literate={\_}{}{0\discretionary{\_}{}{\_}}%Zeilenumbrüche bei Underscrore
+	         {\:}{}{0\discretionary{:}{}{:}}%Zeilenumbruch bei Doppelpunkt
 	         {~}{{\char`\ }}1
 }
 \makeatother

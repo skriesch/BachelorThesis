@@ -2,15 +2,14 @@
 
 
 Different software is necessary to run qemu or docker for multiple architectures. Therefore, docker and qemu should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
+\textbf{root permissions} are necessary for installation, configuration and running emulated systems.
 
-It is possible to use packages as binfmt-support and qemu-user-static by different Linux distributions, but it is recommended to use the latest possible version for s390x. \\
+It is possible to install packages as binfmt-support and qemu-user-static by different Linux distributions, but it is recommended to use the latest possible version for s390x. \\
+
+\section{Registration of qemu-s390x}
 
 The kernel module binfmt\_misc can be mounted with the following command: \\
-\begin{lstlisting}[language=bash,caption={Mount binfmt\_misc},captionpos=b]
-mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-\end{lstlisting}
-  mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-\end{lstlisting}
+\lstinline!mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc!
 
 Latest stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.0.0-2 is used for the project and downloaded with \lstinline!wget https://github.com/multiarch/qemu-user-static/releases/download/v5.0.0-2/x86_64_qemu-s390x-static.tar.gz! for the special version of qemu-s390x-static on x86. That is extracted to the directory \path{/usr/bin/} with the command \lstinline!sudo tar -xvzf x86_64_qemu-s390x-static.tar.gz -C /usr/bin/! then. \\
 
@@ -34,9 +33,9 @@ After a restart of the docker daemon there should be listed this flag in the com
 
  
 
-\section{Building a s390x Kernel on x86}
+\section{Cross-Compilation of a s390x Linux Kernel on x86}
 
-QEMU needs a built kernel to start a system. These packages are necessary: \\
+QEMU needs a built Linux kernel to start a system. These packages are necessary: \\
 \textbf{bison, flex, gcc, gcc-s390x-linux-gnu, libssl-dev} \\
 One kernel has to be downloaded from kernel.org with the following command then:  \lstinline!wget https://git.kernel.org/torvalds/t/linux-5.7-rc7.tar.gz!\\
 It can be extracted with \lstinline!tar -xf  linux-5.7-rc7.tar.gz!. The Makefile is in the directory linux-5.7-rc7. Therefore the command \lstinline!make ARCH=s390 defconfig localyesconfig! has to be executed to create the default configuration for s390x and  \lstinline!make ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- -j6! for the compilation. The kernel has the name bzImage in the directory \path{arch/s390/boot/} then and can be used in the qemu command.
@@ -63,16 +62,3 @@ That is the ideal option to mount a minimal file system for every application or
 /usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/kub-container.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
 \end{lstlisting}
 
-In this chapter, we're actually using some code!
-
-\begin{lstlisting}[language=Python,caption={This is an example of inline listing},captionpos=b]
-x = 1
-if x == 1:
-    # indented four spaces
-    print("x is 1.")
-
-\end{lstlisting}
-
-You can also include listings from a file directly:
-
-\lstinputlisting[language=Python,caption={This is an example of included listing},captionpos=b]{listings/example.py}
