@@ -6,13 +6,13 @@ Open source does not contain only Linux.
 There are different applications and other software developed by open-source communities. 
 Mainframes have got a different hardware architecture than a home PC. 
 The Z system architecture has got the name s390x and a default system x86. 
-It should be possible to test hardware dependencies for s390x on x86 because Z systems are really expensive. 
-Therefore, different Kubernetes-based open-source projects should be emulated for Z systems in the CI/CD test infrastructure by open-source projects. That will be done on systems by these communities.
+Z systems are really expensive and not every open-souce community can pay such a system. Most open source Contributers have got systems with the architecture x86 at home. Therefore, it should be possible to test hardware dependencies for s390x on x86. \\
+Our focus is on Kubernetes-based open-source projects in this Bachelor Thesis. Some Kubernetes-based projects should be emulated for Z systems in the CI/CD test infrastructure by these open-source projects. That will be done on systems by these communities.
 As the first step, the emulator will be chosen with the focus on functionality for Z systems on x86 architecture. 
 After that, Kubernetes is installed in a Docker container. 
 Tests should be able to be run on this system, too. That will be integrated into the emulation environment for an automated start. The CI/CD system should be able to execute all tests then. \\
 The same will be done with the NoSQL database Cassandra for the Apache community to represent the whole system stack from Kubernetes until the application layer for container platforms. Another point are minimal systems requirements and minimal systems sizes. Here are different methods evaluated to minimize the system for emulation. \\
-The goal of this Bachelor Thesis is to offer emulated Z systems for different open-source projects to test their software for hardware dependencies, so that it is possible to release new versions running on the hardware architecture s390x. Deployments of the latest software version on Github and running tests have to be automated for that.
+The goal of this Bachelor Thesis is to offer emulated Z systems for different open-source projects to test their software for hardware dependencies, so that it is possible to release new versions in the CI/CD pipeline of the respective project for running on the hardware architecture s390x without the available hardware. Deployments of the latest software version on Github and running tests have to be automated for that.
 
 
 \section{Mainframe Computers}
@@ -23,7 +23,7 @@ Mainframe computers are large computers. Some of them are part of the Z series\f
 \section{Hardware Emulation}
 
 Not everybody has access to expensive hardware or hardware with  specific architecture. 
-Software should be able to run on most important hardware architectures. 
+Software should be able to run on the most important hardware architectures. 
 The solution for Software Developers is hardware emulation. 
 You can test based on hypervisors with the hardware emulation whether the software is running correctly. 
 So you can run different operating systems and applications for special hardware in virtualization software. 
@@ -35,7 +35,7 @@ In our case it should be possible to run applications for mainframes with the ta
 
 \subsection{Kubernetes}
 
-Kubernetes\footnote{\url{https://kubernetes.io/}} is an open-source project for container orchestration. That is well known as K8s, too. This project was started by Google. A Kubernetes cluster has at least one Master node and one Worker node for high availability. This container platform is portable for private und public clouds. Kubernetes is available as a managed platform by different cloud providers as same as different Kubernetes distributions exist to download or installations from scratch are possible. It is configurable with different container runtimes, as Docker\footnote{\url{https://www.docker.com/}}, Podman\footnote{\url{https://podman.io/}} or CRI-O\footnote{\url{https://cri-o.io/}} as examples. The Container Runtime Interface (CRI) is necessary for managing container images, the life cycle of container pods, networking and help functions \cite[~p.16]{Scholl2019}. 
+Kubernetes\footnote{\url{https://kubernetes.io/}} is an open-source project for container orchestration. That is well known as k8s, too. This project was started by Google. A Kubernetes cluster has at least one Master node and one Worker node for high availability. This container platform is portable for private und public clouds. Kubernetes is available as a managed platform by different cloud providers as same as different Kubernetes distributions exist to download or installations from scratch are possible. It is configurable with different container runtimes, as Docker\footnote{\url{https://www.docker.com/}}, containerd\footnote{https://containerd.io/} or CRI-O\footnote{\url{https://cri-o.io/}} for example. The Container Runtime Interface (CRI) is necessary for managing container images, the life cycle of container pods, networking and help functions \cite[~p.16]{Scholl2019}. 
 
 
 \subsection{Apache Cassandra}

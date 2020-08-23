@@ -1,24 +1,6 @@
 
 \chapter{Emulation}\label{ch:emulation}
 
-\section{System Emulation}
-
-The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). 
-The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run priviledged instructions\cite{Butt2011}. 
-Additionally, it can be used as an application development platform where specific hardware is not available. 
-System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest guest hardware have to be emulated in software. 
-That has got multiple host instructions because of the translation for a single guest instruction as a result\cite[~p.1]{Tong2014}.
-It is possible to reduce the supported and attached additional devices with special options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards less hardware has to be emulated which has got the result of better performance. \\
-System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
-
-\section{User Mode Emulation}
-
-The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. 
-This emulation type is working on a syscall level. Therefore, the application has to be runnable as a process executable itself. 
-An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
-The user mode emulation can run directly non-priviledged instructions or is using system calls to ask for a special service from the operating system\cite{Butt2011}.
-
-
 \section{QEMU}
 
 QEMU is an open-source emulator available in most Linux distributions. It is embeeded in different virtualization tools as KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. 
@@ -34,20 +16,38 @@ The TCG takes care of the emulation of the guest processor running as a thread l
 It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a package as default. 
 QEMU does not emulate the whole hardware. That is only possible for the CPU. Therefore, QEMU is used for emulations in this Bachelor Thesis.
 
+\section{System Emulation}
+
+The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the user space (with application processes). 
+The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run priviledged instructions\cite{Butt2011}. 
+Additionally, it can be used as an application development platform where specific hardware is not available. 
+System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest hardware have to be emulated in software. 
+That has got multiple host instructions because of the translation for a single guest instruction as a result\cite[~p.1]{Tong2014}.
+It is possible to reduce the supported and attached additional devices with special options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards less hardware has to be emulated which has got the result of better performance. \\
+System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
+
+\section{User Mode Emulation}
+
+The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a special application. 
+This emulation type is working on a syscall level. Therefore, the application has to be runnable as a process executable itself. 
+An external Linux kernel will be built and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
+The user mode emulation can run directly non-priviledged instructions or is using system calls to ask for a special service from the operating system\cite{Butt2011}.
+
+
 \section{Emulation of different architectures}
 
 It is achievable to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. 
-You can register other architectures within that, that you can run multiple other architectures on a host. 
-Not only QEMU can be used for system emulation. Container technologies as Docker have got an integrated  QEMU compatibility as an additional emulation feature for building images for other architectures. 
+You can register other architectures within that, that multiple other architectures can be run on this host. 
+Not only QEMU can be used for system emulation. Container technologies as Docker have got an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
 That has got the name BuildX. Accordingly a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together.
 
 
 \subsection{binfmt\_misc}
 
-Binfmt\_misc is a feature in the kernel which allows invoking almost every program by simply typing its name in the shell. That makes it possible to execute user space applications, such as emulators and virtual machines for other harware architectures. It recognises the binary-type by matching some bytes at the beginning of the file with a magic byte sequence. These executable formats have to be registered in the file \path{/proc/sys/fs/binfmt_misc/register}.\\
+Binfmt\_misc is a feature in the kernel which allows invoking almost every program by simply typing its name in the shell. That makes it possible to execute user space applications such as emulators and virtual machines for other harware architectures. It recognises the binary-type by matching some bytes at the beginning of the file with a magic byte sequence. These executable formats have to be registered in the file \path{/proc/sys/fs/binfmt_misc/register}.\\
 The structure of the configuration for the registration is the following: \\ \textbf{:name:type:offset:magic:mask:interpreter:flags} \\
 
-The \textbf{name} is the name of the architecture for the binary format. The \textbf{type} can be \textbf{E} or \textbf{M}. E is for executable file formats as .exe as an example. M is used for a format identified by a \textbf{magic} number at an absolute \textbf{offset} in the file and the \textbf{mask} is a bitmask indicating which bits in the number are significant\cite{Slackware2020} (which is used in our case). 
+The \textbf{name} is the name of the architecture for the binary format. The \textbf{type} can be \textbf{E} or \textbf{M}. E is for executable file formats as .exe for example. M is used for a format identified by a \textbf{magic} number at an absolute \textbf{offset} in the file and the \textbf{mask} is a bitmask indicating which bits in the number are significant\cite{Slackware2020} (which is used in our case). 
 The offset can be kept empty. The magic is a byte sequence of hexadecimal numbers. The \textbf{interpreter} is the program that should be invoked with the binary\cite{Guenther2020}. 
 The path has to be specified for that. The field \textbf{flags} is optional. It checks different aspects of the invocation of the interpreter. The \textbf{F} flag is necessary in our case for "fix binary". 
 That supposes that a new binary has to be spawned if the misc file format has been invoked.\\
@@ -66,7 +66,7 @@ The driver virtio\_blk is used to mount external file systems and emulates read/
 Docker is advantageous to setup and start systems fast. 
 So it would be nice to integrate the docker file system into QEMU. After building a docker image, it is possible export the file system into a directory with the name \textbf{rootfs} with the command \lstinline!docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -!. \\
 
-Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. So it is possible to reformat the default docker file system UnionFS to another one as ext4 as an example. \\
+Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
 QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} as the first partition\cite[~p.22]{White2020}.
 
 \subsection{Union File System}
@@ -74,7 +74,7 @@ QEMU is accepting the new file system as a block device for the guest system the
 Docker does not use any default Linux file system. 
 Docker images are based on the Union File System (UnionFS)\cite[~p.21]{Ashraf2015}. 
 This file system is using different file system layers with grouping directories and files in branches. 
-The first layer is the typical Linux boot flile system with the name bootfs. 
+The first layer is the typical Linux boot file system with the name bootfs. 
 That is working the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
 So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with QEMU.
 The next layer contains the base image with the operating system given by the "FROM" command.
