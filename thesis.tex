@@ -30,6 +30,7 @@
 \newcommand{\logo}{figures/TH-Nuernberg-RGB.png}
 \newcommand{\keywords}{Hardware Emulation, Apache Cassandra, Kubernetes, Open Source, Linux on Z, IBM Z, Mainframes}
 
+
 % custom head and foot
 \usepackage[automark]{scrlayer-scrpage}
 \pagestyle{scrheadings}
@@ -66,7 +67,10 @@
 \usepackage{caption}
 \usepackage{float}
 
-
+\captionsetup{%
+   figurename=Fig.,
+   tablename=Tab.
+}
 
 % table setup
 \usepackage{longtable}
@@ -196,6 +200,7 @@
 
 \backmatter
 \listoffigures
+
 \cleardoublepage
 
 \listoftables
