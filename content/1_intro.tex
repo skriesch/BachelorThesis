@@ -4,20 +4,23 @@ One business introduced by IBM is the mainframe, now known as a Z system. It is 
 There is a large community behind Linux and open-source projects. 
 Open source does not contain only Linux. 
 There are different applications and other software developed by open-source communities. 
-Mainframes have got a different hardware architecture than a home PC. 
-The Z system architecture has got the name s390x and a default system x86. 
+The mainframe hardware architecture is different to the architecture of a home PC. 
+The Z system architecture is called s390x and a default system x86. 
 Z systems are really expensive and not every open-souce community can pay such a system. Most open source Contributers have got systems with the architecture x86 at home. Therefore, it should be possible to test hardware dependencies for s390x on x86. \\
 Our focus is on Kubernetes-based open-source projects in this Bachelor Thesis. Some Kubernetes-based projects should be emulated for Z systems in the CI/CD test infrastructure by these open-source projects. That will be done on systems by these communities.
 As the first step, the emulator will be chosen with the focus on functionality for Z systems on x86 architecture. 
 After that, Kubernetes is installed in a Docker container. 
 Tests should be able to be run on this system, too. That will be integrated into the emulation environment for an automated start. The CI/CD system should be able to execute all tests then. \\
 The same will be done with the NoSQL database Cassandra for the Apache community to represent the whole system stack from Kubernetes until the application layer for container platforms. Another point are minimal systems requirements and minimal systems sizes. Here are different methods evaluated to minimize the system for emulation. \\
-The goal of this Bachelor Thesis is to offer emulated Z systems for different open-source projects to test their software for hardware dependencies, so that it is possible to release new versions in the CI/CD pipeline of the respective project for running on the hardware architecture s390x without the available hardware. Deployments of the latest software version on Github and running tests have to be automated for that.
+The goal of this Bachelor Thesis is to offer emulated Z systems for different open-source projects to test their software for hardware dependencies, so that it allows to release new versions in the CI/CD pipeline of the respective project for running on the hardware architecture s390x without the available hardware. Deployments of the latest software version on Github and running tests have to be automated for that.
 
 
 \section{Mainframe Computers}
 
-Mainframe computers are large computers. Some of them are part of the Z series\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers or for banking systems. They can handle large numbers of transactions in one second for e-commerce\cite[~p.56]{Tanenbaum2014}. Such Z systems do not use the well known x86 architecture. They are built with s390x. This architecture has been developed by IBM. The current architecture has been introduced in late 2000 and supported by the Linux Kernel since late 1999 \cite[~p.15]{Block2019}. The traditional operating system for mainframes has been z/OS. Linux is used as a base operating system for this Bachelor Thesis.
+Mainframe computers are large computers. Some of them are part of the Z series\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers. They can handle large numbers of transactions in one second\cite[~p.56]{Tanenbaum2014}. Such Z systems do not use the well known x86 architecture. They are built with s390x. This architecture has been developed by IBM. The current architecture has been introduced in late 2000 and is supported by the Linux Kernel since late 1999 \cite[~p.15]{Block2019}. \\
+IBM Z contains IBM Z pervasive encryption for comprehensive protection around the data on the system\cite[~p.4]{Lascu2020}. Such systems are offering a horizontal and upright scaling of processes, which allows the operation of many hundred virtual systems in parallel\cite[~p.13]{Tschoeke2009}. The traditional operating system for mainframes has been z/OS. 
+Z systems have been optimized for open-source software as Linux\cite[~p.8]{Lascu2020}. The goal by IBM has been to offer a combination of a robust and securable hardware platform with the power of a Linux distributions. 
+Linux is used as a base operating system for this Bachelor Thesis.
 
 
 \section{Hardware Emulation}
@@ -35,7 +38,7 @@ In our case it should be possible to run applications for mainframes with the ta
 
 \subsection{Kubernetes}
 
-Kubernetes\footnote{\url{https://kubernetes.io/}} is an open-source project for container orchestration. That is well known as k8s, too. This project was started by Google. A Kubernetes cluster has at least one Master node and one Worker node for high availability. This container platform is portable for private und public clouds. Kubernetes is available as a managed platform by different cloud providers as same as different Kubernetes distributions exist to download or installations from scratch are possible. It is configurable with different container runtimes, as Docker\footnote{\url{https://www.docker.com/}}, containerd\footnote{https://containerd.io/} or CRI-O\footnote{\url{https://cri-o.io/}} for example. The Container Runtime Interface (CRI) is necessary for managing container images, the life cycle of container pods, networking and help functions \cite[~p.16]{Scholl2019}. 
+Kubernetes\footnote{\url{https://kubernetes.io/}} is an open-source project for container orchestration, well known as k8s. This project was started by Google. A Kubernetes cluster has at least one Master node and one Worker node for high availability. This container platform is portable for private und public clouds. Kubernetes is available as a managed platform by different cloud providers as same as different Kubernetes distributions exist to download or installations from scratch are possible. It is configurable with different container runtimes, as Docker\footnote{\url{https://www.docker.com/}}, containerd\footnote{\url{https://containerd.io/}} or CRI-O\footnote{\url{https://cri-o.io/}} for example. The Container Runtime Interface (CRI) is necessary for managing container images, the life cycle of container pods, networking and help functions \cite[~p.16]{Scholl2019}. 
 
 
 \subsection{Apache Cassandra}
