@@ -49,7 +49,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern,relsize,textcomp,csquotes}
-\usepackage[acronym,toc,section,shortcuts]{glossaries}
+\usepackage{glossaries}
 \usepackage{amsmath,amsfonts}
 \usepackage[ngerman,english]{babel}  % flip for German thesis
 \usepackage[final]{graphicx}
@@ -160,10 +160,8 @@
 \def\myHexNumber@pad#1.{\xintreplicate{2-\xintLength{#1}}{0}#1}
 \makeatother
 
-
-% TODO remove if not needed...
-\usepackage{blindtext}
-
+\makeglossaries
+\loadglsentries{glossary}
 
 \begin{document}
 
@@ -190,11 +188,7 @@
 \include{content/6_cassandra}
 \include{content/7_outlook}
 \include{content/8_summary}
-\makeglossaries
-\printglossary[style=altlist, title=Glossary, nonumberlist]
-\input{content/9_glossary.tex}
-\deftranslation[to=English]{Acronyms}{dds}
-\printglossary[type=\acronymtype,style=long,title=Shortwords]
+
 
 % remove if not needed
 \appendix
@@ -210,7 +204,7 @@
 \renewcommand{\lstlistlistingname}{List of Listings}  % change for German thesis
 \lstlistoflistings
 \cleardoublepage
-
+\printglossary
 \bibliographystyle{wmaainf}
 \bibliography{refs}
 
