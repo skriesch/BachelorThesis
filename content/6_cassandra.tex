@@ -19,7 +19,7 @@ Now it is possible to run the system with Cassandra: \\
  /usr/bin/qemu-system-s390x -kernel bzImage -m 40G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/dockerfile-examples/ApacheCassandra/cassandra.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash' 
  \end{lstlisting}
  
-\section{Workaround because of an Issue with JVMs during the Build with BuildX}
+\section{Workaround Because of an Issue with JVMs During the Build with BuildX}
 
 \section{Start of the application and tests}
 

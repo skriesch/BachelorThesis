@@ -60,7 +60,7 @@ kubeadm \
     \label{kubernetes-installation}
 \end{figure}
 
-\section{Installation of the latest Go}
+\section{Installation of the Latest Go}
 
 There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest go version for latest Kubernetes tests. It is possible to receive the version number of the latest go release with the command  \lstinline!curl https://golang.org/VERSION?m=text!. This version number has to be included before linux-s390x.tar.gz for downloading the special s390x archive from the go directory by \url{dl.google.com}. Then the version number has to be called with curl inside of another curl command with the whole path to the special tar archive on \url{dl.google.com}. Every tar archive has got the same structure for every version (\lstinline!$version.$architecture.tar.gz!). On this way the latest version of Go is integrable into the curl command that it can be installed. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. They are not integrated in the tar archive. \\
 
@@ -94,7 +94,7 @@ The repository \textbf{test-infra} contains all tests for Kubernetes provided by
 These can be used of course and are updated continuously. That is the reason to clone this repository inside of the Dockerfile. Inside of this test-infra directory kubetest can be installed with \textbf{go install}. 
 That is downloading all available Kubernetes-Tests. So you can use them to test the own Kubernetes cluster and the used software. \\
 
-The most important tests for the Kubernetes community have got the name conformance tests. These conformance tests are executed with e2e.test  which can be built with make inside of the kubernetes repository. 
+The name of the most important tests for the Kubernetes community is "conformance tests". These conformance tests are executed with e2e.test  which can be built with make inside of the kubernetes repository. 
 Therefore this repository has to be cloned to k8s.io, too. These tests certify the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{https://github.com/cncf/k8s-conformance}. 
 
 

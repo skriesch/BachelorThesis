@@ -3,7 +3,7 @@
 
 \section{QEMU}
 
-QEMU is an open-source emulator available in most Linux distributions. It is embeeded in different virtualization tools as KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. 
+QEMU is an open-source emulator available in most Linux distributions. It is embedded in different virtualization tools as KVM and XEN, too. So QEMU is well tested and has got all necessary features for emulations. 
 Additionally, you can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. It can also be used for emulation of obsolete hardware\cite[~p.24]{Opsahl2013}. 
 It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
 That is a processor emulator using binary translation\cite{Butt2011} which is executing and translating emulated code based on blocks. Each block has got one entry and one exit point\cite[~p.5]{Wang2010}. 
@@ -22,8 +22,8 @@ The System Emulation emulates a whole system with hardware, the operating system
 The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run priviledged instructions\cite{Butt2011}. 
 Additionally, it can be used as an application development platform where specific hardware is not available. 
 System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest hardware have to be emulated in software. 
-That has got multiple host instructions because of the translation for a single guest instruction as a result\cite[~p.1]{Tong2014}.
-It is possible to reduce the supported and attached additional devices with special options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards less hardware has to be emulated which has got the result of better performance. \\
+That implies multiple host instructions because of the translation for a single guest instruction as a result\cite[~p.1]{Tong2014}.
+It is possible to reduce the supported and attached additional devices with special options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards less hardware has to be emulated which has given the result of better performance. \\
 System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
 
 \section{User Mode Emulation}
@@ -38,25 +38,33 @@ The user mode emulation can run directly non-priviledged instructions or is usin
 
 It is achievable to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then and the special architecture has to be registered in binfmt. binfmt\_misc is a kernel module. 
 You can register other architectures within that, that multiple other architectures can be run on this host. 
-Not only QEMU can be used for system emulation. Container technologies as Docker have got an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
-That has got the name BuildX. Accordingly a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together.
+Not only QEMU can be used for system emulation. Container technologies as Docker include an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
+This technology has got the name BuildX. Accordingly a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together.
 
 
-\subsection{binfmt\_misc}
+\subsection{Binfmt\_misc}
 
-Binfmt\_misc is a feature in the kernel which allows invoking almost every program by simply typing its name in the shell. That makes it possible to execute user space applications such as emulators and virtual machines for other harware architectures. It recognises the binary-type by matching some bytes at the beginning of the file with a magic byte sequence. These executable formats have to be registered in the file \path{/proc/sys/fs/binfmt_misc/register}.\\
+Binfmt\_misc is a feature in the kernel which allows invoking almost every program by simply typing its name in the shell. That permits to execute user space applications such as emulators and virtual machines for other harware architectures. It recognises the binary-type by matching some bytes at the beginning of the file with a magic byte sequence. These executable formats have to be registered in the file \path{/proc/sys/fs/binfmt_misc/register}.\\
 The structure of the configuration for the registration is the following: \\ \textbf{:name:type:offset:magic:mask:interpreter:flags} \\
 
 The \textbf{name} is the name of the architecture for the binary format. The \textbf{type} can be \textbf{E} or \textbf{M}. E is for executable file formats as .exe for example. M is used for a format identified by a \textbf{magic} number at an absolute \textbf{offset} in the file and the \textbf{mask} is a bitmask indicating which bits in the number are significant\cite{Slackware2020} (which is used in our case). 
 The offset can be kept empty. The magic is a byte sequence of hexadecimal numbers. The \textbf{interpreter} is the program that should be invoked with the binary\cite{Guenther2020}. 
 The path has to be specified for that. The field \textbf{flags} is optional. It checks different aspects of the invocation of the interpreter. The \textbf{F} flag is necessary in our case for "fix binary". 
 That supposes that a new binary has to be spawned if the misc file format has been invoked.\\
-On this way it is possible to register another system architecture (s390x on x86) on the host system and it is realizable to emulate the other architecture then. \\
+On this way it is possible to register another system architecture (s390x on x86) on the host system and it is realizable to emulate the other architecture afterwards. \\
 The package \textbf{binfmt-support} has to be installed first for using this kernel feature. 
 
-\subsection{qemu-user-static}
+\subsection{Qemu-user-static}
+
+The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package by different Linux distributions includes a set of binfmt configurations for various architectures together with a set of statically compiled QEMU emulators that other architectures can run on another architecture\cite{Yang2019}. When building for another architecture, static binaries are important because of the possibility of an "exec init error" without them. \\
+The installation contains emulators for all available architectures supported by the QEMU project incl. s390x aligned with the specific host architecture. On this way, you can build and emulate for different architectures on the same host (see Optimized Qemu Command \ref{Optimized-Qemu-Command}). That is the base for BuildX by Docker, too.
 
 \subsection{BuildX}
+
+As mentioned above, Docker is using QEMU for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it isn't enabled as default because it is really new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see Registration of Qemu-S390x \ref{Qemu-S390-Registration}). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detaild output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be cloned from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
+In general BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes the possibility of multi-architecture builds and special output configuration. That involves not only the upload possibility to your local docker registry (see output of \textbf{docker images}). That includes the output of "docker build" into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
+The special architecture for multi-architecture builds can be specified with the additional option \textbf{--platform}.
+The option \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
 
 \section{File Systems}
 
@@ -64,18 +72,18 @@ Docker is using the Union File System which is not compatible with QEMU.
 QEMU can integrate only hard disks formated for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
 The driver virtio\_blk is used to mount external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following it is possible to integrate and start nonnative systems in QEMU. 
 Docker is advantageous to setup and start systems fast. 
-So it would be nice to integrate the docker file system into QEMU. After building a docker image, it is possible export the file system into a directory with the name \textbf{rootfs} with the command \lstinline!docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -!. \\
+So it would be nice to integrate the docker file system into QEMU. After building a docker image, it is realizable to export the file system into a directory with the name \textbf{rootfs} with the command \lstinline!docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -!. \\
 
-Linux has got the feature that it is possible to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
+Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
 QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} as the first partition\cite[~p.22]{White2020}.
 
-\subsection{Union File System}
+\subsection{UnionFS}
 
 Docker does not use any default Linux file system. 
 Docker images are based on the Union File System (UnionFS)\cite[~p.21]{Ashraf2015}. 
 This file system is using different file system layers with grouping directories and files in branches. 
 The first layer is the typical Linux boot file system with the name bootfs. 
-That is working the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
+That performs the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
 So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with QEMU.
 The next layer contains the base image with the operating system given by the "FROM" command.
 Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or buildin binary files.
@@ -94,7 +102,7 @@ The super block contains all meta data of the journal. Descriptor blocks include
 Commit blocks are available to flag logged transactions.
 Revoke blocks are flagging blocks not logged any more. \\
 All meta data from the journal can be relocated in inodes because changes of file system meta data are registered, too. \\
-The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional ckeck sums for journal transactions\cite[~p.28]{Seufert2015}.
+The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional check sums for journal transactions\cite[~p.28]{Seufert2015}.
 
 Ext4 provides a better performance than ext3. 
 This file system can be formated with mkfs.ext4 which is available in every Linux distribution.
@@ -104,3 +112,4 @@ So the search for files is more powerful because meta data are allocated at one 
 
 Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption\cite[p.24]{Seufert2015}.
 
+\subsection{Mounting  an External File System}

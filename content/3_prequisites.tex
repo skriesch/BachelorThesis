@@ -6,7 +6,7 @@ Different software is necessary to run qemu or docker for multiple architectures
 
 It is possible to install packages as binfmt-support and qemu-user-static by different Linux distributions, but it is recommended to use the latest possible version for s390x. \\
 
-\section{Registration of qemu-s390x}
+\section{Registration of Qemu-S390x}\label{Qemu-S390-Registration}
 
 The kernel module binfmt\_misc can be mounted with the following command: \\
 \lstinline!mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc!
@@ -33,14 +33,14 @@ After a restart of the docker daemon there should be listed this flag in the com
 
  
 
-\section{Cross-Compilation of a s390x Linux Kernel on x86}
+\section{Cross-Compilation of a S390x Linux Kernel on x86}
 
 QEMU needs a built Linux kernel to start a system. These packages are necessary: \\
 \textbf{bison, flex, gcc, gcc-s390x-linux-gnu, libssl-dev} \\
 One kernel source code for a certain version has to be downloaded from \url{kernel.org} with the following command then:  \lstinline!wget https://git.kernel.org/torvalds/t/linux-5.7-rc7.tar.gz!\\
 It can be extracted with \lstinline!tar -xf  linux-5.7-rc7.tar.gz!. The Makefile is in the directory linux-5.7-rc7. Therefore the command \lstinline!make ARCH=s390 defconfig localyesconfig! has to be executed to create the default configuration for s390x and  \lstinline!make ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- -j6! for the compilation. The kernel has the name bzImage in the directory \path{arch/s390/boot/} then and can be used in the qemu command.
 
-\section{Optimized QEMU Command}
+\section{Optimized QEMU Command}\label{Optimized-Qemu-Command}
 
 Every additional device requires additional performance and time for starting the system. 
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
