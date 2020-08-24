@@ -46,7 +46,7 @@ Every additional device requires additional performance and time for starting th
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given "Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\ 
+The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given \ref{lst:QEMU-Command}"Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\ 
 The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. 
 \textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 
@@ -59,7 +59,7 @@ That is the ideal option to mount a minimal file system for every application or
 This command can be used for user mode emulation with Apache Cassandra as an example.
 
 
-\begin{lstlisting}[language=bash,caption={Optimized QEMU Command},captionpos=b]
+\begin{lstlisting}[language=bash,caption={Optimized QEMU Command},captionpos=b,label={lst:QEMU-Command}]
 /usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/cassandra.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
 \end{lstlisting}
 

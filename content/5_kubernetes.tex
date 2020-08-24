@@ -27,6 +27,7 @@ They include one or a group of containers with shared storage and network resour
 \lstinline!apt-mark hold! is keeping these special versions of kubelet, kubeadm and kubectl. 
 
 \begin{figure}[H]
+\centering
 \begin{boxedverbatim}
 FROM s390x/ubuntu:18.04 AS kub-build
  
@@ -69,6 +70,7 @@ The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on
 The ENV variables will be on the top of the Dockerfile. The part for the "Installation of Go" will be attached to the end of the Kubernetes installation part.
 
 \begin{figure}[H]
+\centering
 \begin{boxedverbatim}
 ENV GOROOT=/root/go
 ENV GOPATH=/root/go
@@ -99,6 +101,7 @@ Therefore this repository has to be cloned to k8s.io, too. These tests certify t
 
 
 \begin{figure}[H]
+\centering
 \begin{boxedverbatim}
 && cd $PWD \
 #Clone test-infra
