@@ -46,7 +46,7 @@ ca-certificates \
 gnupg-agent \
 software-properties-common \
 && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
-&& echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" 
+&& echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" \
 > /etc/apt/sources.list.d/kubernetes.list \
 && apt-get update && apt-get install -y \
 docker.io \
@@ -107,13 +107,13 @@ Therefore this repository has to be cloned to k8s.io, too. These tests certify t
 #Clone test-infra
 && mkdir -p $GOPATH/src/k8s.io \
 && cd $GOPATH/src/k8s.io \
-&& git clone https://github.com/kubernetes/test-infra.git 
+&& git clone https://github.com/kubernetes/test-infra.git \
 /root/go/src/k8s.io/test-infra \
 && cd /root/go/src/k8s.io/test-infra/ \
 #Install kubetest
 && GO111MODULE=on go install ./kubetest \
 #Build test binary
-&& git clone https://github.com/kubernetes/kubernetes.git 
+&& git clone https://github.com/kubernetes/kubernetes.git  \
 /root/go/src/k8s.io/kubernetes \
 && cd /root/go/src/k8s.io/kubernetes/
  
