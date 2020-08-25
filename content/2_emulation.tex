@@ -9,7 +9,7 @@ It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sp
 That is a processor emulator using binary translation\cite{Butt2011} which is executing and translating emulated code based on blocks. Each block has got one entry and one exit point\cite[~p.5]{Wang2010}. 
 The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
 That is a small compiler replacing GCC because of unlimited releases and changes with it. The TCG is converting the blocks of target instructions into a default intermediate form. 
-After that, it has to be compiled for the host or target architecture. 
+Subsequently, it has to be compiled for the host or target architecture. 
 If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
 The TCG integrates new code for the new host architecture in the background then. It is also dedicated to improve performance with avoiding repeated translations by buffering already translated code\cite{Cota2017}. 
 The TCG takes care of the emulation of the guest processor running as a thread launched by QEMU. The memory of a quest is allocated during launch and is mapped into the address space of the QEMU process\cite[~p.29]{Opsahl2013}.\\
@@ -37,7 +37,7 @@ The user-mode emulation can run directly non-privileged instructions or is using
 \section{Emulation of Different Architectures}
 
 It is achievable to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then, and the preferred architecture has to be registered in binfmt. binfmt\_misc is a kernel module. 
-You can register other architectures within that, that multiple other architectures can be run on this host. 
+You can register other architectures within that, so multiple other architectures can be run on this host. 
 Not only QEMU can be used for system emulation. Container technologies as Docker include an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
 This technology has got the name BuildX. Accordingly, a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together.
 
@@ -49,16 +49,16 @@ The structure of the configuration for the registration is the following: \\ \te
 
 The \textbf{name} is the name of the architecture for the binary format. The \textbf{type} can be \textbf{E} or \textbf{M}. E is for executable file formats as .exe for example. M is used for a format identified by a \textbf{magic} number at an absolute \textbf{offset} in the file and the \textbf{mask} is a bitmask indicating which bits in the number are significant\cite{Slackware2020} (which is used in our case). 
 The offset can be kept empty. The magic is a byte sequence of hexadecimal numbers. The \textbf{interpreter} is the program that should be invoked with the binary\cite{Guenther2020}. 
-The path has to be specified for that. The field \textbf{flags} is optional. It checks different aspects of the invocation of the interpreter. The \textbf{F} flag is necessary in our case for "fix binary". 
+The path has to be specified for it. The field \textbf{flags} is optional. It checks different aspects of the invocation of the interpreter. The \textbf{F} flag is necessary in our case for "fix binary". 
 That supposes that a new binary has to be spawned if the misc file format has been invoked.\\
-On this way it is possible to register another system architecture (s390x on x86) on the host system and it is realizable to emulate the other architecture afterwards. \\
+On that way, it is possible to register another system architecture (s390x on x86) on the host system and it is realizable to emulate the other architecture afterwards. \\
 The necessary command for s390x registration can be found under \ref{Qemu-S390-Registration}.
 The package \textbf{binfmt-support} has to be installed first for using this kernel feature. 
 
 \subsection{Qemu-user-static}
 
 The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package by various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled QEMU emulators that other architectures can run on another architecture\cite{Yang2019}. When building for another architecture, static binaries are important because of the possibility of an "exec init error" without them. \\
-The installation contains emulators for all available architectures supported by the QEMU project incl. s390x aligned with the specific host architecture. On this way, you can build and emulate for different architectures on the same host (see \ref{Optimized-Qemu-Command} Optimized Qemu Command). That is the base for BuildX by Docker, too.
+The installation contains emulators for all available architectures supported by the QEMU project incl. s390x aligned with the specific host architecture. In this manner described, you can build and emulate for different architectures on the same host (see \ref{Optimized-Qemu-Command} Optimized Qemu Command). That is the base for BuildX by Docker, too.
 
 \subsection{BuildX}
 
@@ -88,7 +88,7 @@ The first layer is the typical Linux boot file system with the name bootfs.
 That performs the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
 So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with QEMU.
 The next layer contains the base image with the operating system given by the "FROM" command.
-Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or buildin binary files.
+Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or building binary files.
 That is the reason that every executed docker command is receiving an own id in the disk memory during the build process.
 Every separate docker command is using his own disk space. So a docker image can grow really fast.
 It is reasonable to compress so much as possible of different routines into one docker command. 
@@ -98,7 +98,7 @@ All sizes of different docker layers will exist continuously inside of the new f
 
 Ext4 is a journaling file system (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
-Such journal file systems in the ext file system familiy are working with blocks\cite[~p.20]{Seufert2015}.
+Such journal file systems in the ext file system family are working with blocks\cite[~p.20]{Seufert2015}.
 The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
 The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
 Commit blocks are available to flag logged transactions.
