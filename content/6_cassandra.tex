@@ -21,6 +21,63 @@ Now it is possible to run the system with Cassandra: \\
  
 \section{Workaround Because of an Issue with JVMs During the Build with BuildX}
 
+Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists the following JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there:
+
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGILL (0x4) at pc=0x0000004012539240, pid=18, tid=21
+#
+# JRE version: OpenJDK Runtime Environment (11.0.7+10) (build 11.0.7+10)
+# Java VM: OpenJDK 64-Bit Server VM (11.0.7+10, mixed mode, tiered, compressed oops, 
+g1 gc, linux-s390x)
+# Problematic frame:
+# J 1 c1 java.lang.Object.<init>()V java.base@11.0.7 (1 bytes) @ 0x0000004012539240 
+[0x0000004012539200+0x0000000000000040]
+#
+# Core dump will be written. Default location: //core
+#
+# An error report file with more information is saved as:
+# //hs_err_pid18.log
+Compiled method (c1)     943    1       3       java.lang.Object::<init> (1 bytes)
+ total in heap  [0x0000004012539010,0x00000040125393b8] = 936
+ relocation     [0x0000004012539178,0x00000040125391a8] = 48
+ constants      [0x00000040125391c0,0x0000004012539200] = 64
+ main code      [0x0000004012539200,0x0000004012539300] = 256
+ stub code      [0x0000004012539300,0x0000004012539358] = 88
+ metadata       [0x0000004012539358,0x0000004012539370] = 24
+ scopes data    [0x0000004012539370,0x0000004012539380] = 16
+ scopes pcs     [0x0000004012539380,0x00000040125393b0] = 48
+ dependencies   [0x00000040125393b0,0x00000040125393b8] = 8
+Compiled method (c1)     948    1       3       java.lang.Object::<init> (1 bytes)
+ total in heap  [0x0000004012539010,0x00000040125393b8] = 936
+ relocation     [0x0000004012539178,0x00000040125391a8] = 48
+ constants      [0x00000040125391c0,0x0000004012539200] = 64
+ main code      [0x0000004012539200,0x0000004012539300] = 256
+ stub code      [0x0000004012539300,0x0000004012539358] = 88
+ metadata       [0x0000004012539358,0x0000004012539370] = 24
+ scopes data    [0x0000004012539370,0x0000004012539380] = 16
+ scopes pcs     [0x0000004012539380,0x00000040125393b0] = 48
+ dependencies   [0x00000040125393b0,0x00000040125393b8] = 8
+Could not load hsdis-s390x.so; library not loadable; PrintAssembly is disabled
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/AdoptOpenJDK/openjdk-support/issues
+#
+Aborted (core dumped) 
+\end{boxedverbatim}
+ \caption{JVM Build Issue}
+    \label{jvm-issue}
+\end{figure}
+
+That has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions on x86, but during the build process on s390x. That is an emulation bug of qemu which has to be fixed. This issue has been reported to KVM Developers inside of IBM. \\
+
+There is a workaround for the development process for finishing the project. The Docker image is buildable on s390x. Therefore, the Docker image has been built for s390x on s390x with  \lstinline!docker build --squash -t cassandra .!.
+After that this image can be saved as a tar archive with \lstinline!docker save cassandra > cassandra.tar! on the host. It has to be transferred with rsync to the x86 system then. The image inside of the tar archive can be included to all existing images of \lstinline!docker images! with the command \lstinline!docker load --input cassandra.tar!. After this action, the Docker image is usable as it would have been built on this system. 
+
 \section{Start of the application and tests}
 
 A script has been written to start Cassandra and to run tests. Java and Cassandra have to be started here. The Icinga monitoring check has been used for experiments.
