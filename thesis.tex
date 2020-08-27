@@ -166,7 +166,7 @@
 \def\myHexNumber@pad#1.{\xintreplicate{2-\xintLength{#1}}{0}#1}
 \makeatother
 
-\makeglossaries
+\makenoidxglossaries
 \loadglsentries{glossary}
 
 \begin{document}
@@ -211,8 +211,8 @@
 \renewcommand{\lstlistlistingname}{List of Listings}  % change for German thesis
 \lstlistoflistings
 \cleardoublepage
-\printglossary
 \bibliographystyle{wmaainf}
 \bibliography{refs}
+\printnoidxglossaries
 
 \end{document}
