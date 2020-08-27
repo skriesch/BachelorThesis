@@ -94,6 +94,13 @@ Every separate docker command is using his own disk space. So a docker image can
 It is reasonable to compress so much as possible of different routines into one docker command. 
 All sizes of different docker layers will exist continuously inside of the new file system.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{UnionFS}
+ \caption{Union File System}
+    \label{UnionFS}
+\end{figure}
+
 \subsection{Ext4}
 
 Ext4 is a journaling file system (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
@@ -113,6 +120,13 @@ Flex groups are used in ext4 for merging different block groups to one logic blo
 So the search for files is more powerful because meta data are allocated at one place. \\
 
 Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption\cite[p.24]{Seufert2015}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Ext4}
+ \caption{Ext4}
+    \label{Ext4}
+\end{figure}
 
 \subsection{Mounting an External File System}
 
