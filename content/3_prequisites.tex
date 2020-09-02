@@ -13,6 +13,7 @@ The packages \textbf{qemu-user-static} and \textbf{binfmt-support} should be ins
 The Linux kernel module binfmt\_misc can be mounted with the following command: \\
 \lstinline!mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc!
 
+The installed version 3.1 of qemu-user-static on Ubuntu 18.04 contains bugs that Docker images for s390 are not buildable on x86. Therefore, an upgrade to a new release is necessary.
 Ultimate stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.0.0-2 is used for the project and downloaded with \lstinline!wget https://github.com/multiarch/qemu-user-static/releases/download/v5.0.0-2/x86_64_qemu-s390x-static.tar.gz! for the specific version of qemu-s390x-static on x86. That is extracted to the directory \path{/usr/bin/} with the command \lstinline!sudo tar -xvzf x86_64_qemu-s390x-static.tar.gz -C /usr/bin/! then. The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The configuration will be used by the installed qemu-user-static.\\
 
 s390x binaries have to be registered for s390x. That is done with the following commands: \lstinline!sudo -i! and \begin{lstlisting}[language=bash, numberstyle=\myHexNumber, caption={Register s390x binaries},captionpos=b]
@@ -34,7 +35,12 @@ The configuration of the Docker daemon is written in the JSON format. That is sa
 After a restart of the docker daemon, there should be listed this experimental flag in the command  \lstinline!docker version!. An alternative way is to export this flag as an environment variable in the shell with  \lstinline!export DOCKER_CLI_EXPERIMENTAL=enabled! to enable it. Now it is possible to build docker images for s390x on x86 with  \lstinline!docker build --platform=linux/s390x -t image-example:s390x .! based on a Dockerfile in the existing directory.
 
  
-
+Additionally, a new version of BuildX is required. The pre-installed version of Docker has got bugs with the consequence of a broken build process with \textbf{Illegal instructions} at Go applications. That is fixed with the new version on Github. \\
+Therefore, the new version has to be installed with:
+\begin{lstlisting}[language=bash,caption={BuildX Upgrade},captionpos=b]
+git clone git://github.com/docker/buildx && cd buildx
+make install
+\end{lstlisting}
  
 
 \section{Cross-Compilation of a S390x Linux Kernel on x86}
