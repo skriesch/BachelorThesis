@@ -2,6 +2,8 @@
 
 \section{Overview}
 
+Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra can be changed with every version. 
+
 \section{Deployment}\label{Cassandra-Deployment}
 
 IBM is providing a Dockerfile\footnote{\url{https://github.com/linux-on-ibm-z/dockerfile-examples/tree/master/ApacheCassandra}} for Apache Cassandra especially for Z systems with the ultimate version of Cassandra on Github. This file can be cloned to the system and the Docker image will be built with the command  \lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra:s390x .! in the directory with the Cassandra Dockerfile  for the architecture s390x. \\
