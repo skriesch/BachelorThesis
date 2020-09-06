@@ -9,7 +9,8 @@ The goal of this Bachelor Thesis is to offer emulated Z systems for different op
 
 \section{Mainframe Computers}
 
-Mainframe computers are large computers usable for mission critical apps and blockchain. Some of these computers are part of the Z series\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers. They can handle large numbers of transactions in one second \cite[~p.56]{Tanenbaum2014}. 
+Mainframe computers are large computers. Some of these computers are part of the Z series\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers, but also for mission critical apps and blockchain. 
+Mainframes can handle large numbers of transactions in one second \cite[~p.56]{Tanenbaum2014}. 
 Thousands of virtual machines can run on such a system. Z systems do not use the well known x86 architecture. 
 They are built with s390x. IBM has developed this architecture. The current architecture version has been introduced in late 2000 \cite[~p.15]{Block2019}. The mainframe has built in the fastest available processor with 5 GHz with on core and on chip cache, large memory and dedicated I/O processing \cite{OpenMainframeProject}.\\
 IBM Z contains "IBM Z pervasive encryption" for comprehensive protection around the data on the system \cite[~p.4]{Lascu2020}. Such systems are offering a horizontal and upright \gls{scaling} of processes, which allows the operation of many hundred virtual systems in parallel\cite[~p.13]{Tschoeke2009}. The traditional operating system for mainframes has been z/OS. 
@@ -23,7 +24,7 @@ Not everybody has access to expensive hardware or hardware with essential archit
 You can test based on hypervisors with the hardware emulation whether the software is running correctly. 
 So you can run different operating systems and applications for specialized hardware in virtualization software. 
 It is possible to enable other hardware architectures than the host has got. 
-That will be done with the implementation of a \gls{VM} on a host system with a different target architecture\cite[~p.3]{Rosenthal2015}. In our case, it should be possible to run applications for mainframes with the target
+That will be done with the implementation of a \gls{virtual machine} on a host system with a different target architecture\cite[~p.3]{Rosenthal2015}. In our case, it should be possible to run applications for mainframes with the target
 architecture s390x on a host system with the architecture x86.
 
 

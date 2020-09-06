@@ -4,25 +4,25 @@
 \section{QEMU}
 
 QEMU is an open-source emulator introduced by Fabrice Bellard in the year 2003 and available in most Linux distributions now. It is embedded in different virtualization tools as KVM and XEN, too. So QEMU is well tested and has got all the necessary features for emulations. 
-You can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. It can also be used for emulation of obsolete hardware\cite[~p.24]{Opsahl2013}. 
+You can emulate other architectures on different hardware. QEMU is a generic emulator and can emulate different system architectures. It can also be used for emulation of obsolete hardware \cite[~p.24]{Opsahl2013}. 
 It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
-That is a processor emulator using binary translation\cite{Butt2011} which is executing and translating emulated code based on blocks. Each block has got one entry and one exit point\cite[~p.5]{Wang2010}. 
+That is a processor emulator using binary translation \cite{Butt2011} which is executing and translating emulated code based on blocks. Each block has got one entry and one exit point \cite[~p.5]{Wang2010}. 
 The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
 That is a small compiler replacing GCC because of unlimited releases and changes with it. The TCG is converting the blocks of target instructions into a default intermediate form. 
 Subsequently, it has to be compiled for the host or target architecture. 
 If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
-The TCG integrates new code for the new host architecture in the background then. It is also dedicated to improve performance with avoiding repeated translations by buffering already translated code\cite{Cota2017}. 
-The TCG takes care of the emulation of the guest processor running as a thread launched by QEMU. The memory of a quest is allocated during launch and is mapped into the address space of the QEMU process\cite[~p.29]{Opsahl2013}.\\
+The TCG integrates new code for the new host architecture in the background then. It is also dedicated to improve performance with avoiding repeated translations by buffering already translated code \cite{Cota2017}. 
+The TCG takes care of the emulation of the guest processor running as a thread launched by QEMU. The memory of a quest is allocated during launch and is mapped into the address space of the QEMU process \cite[~p.29]{Opsahl2013}.\\
 It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a package as default. 
 QEMU does not emulate the whole hardware. That is only possible for the CPU. Therefore, QEMU is used for emulations in this Bachelor Thesis.
 
 \section{System Emulation}
 
 The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the userspace (with application processes). 
-The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run privileged instructions\cite{Butt2011}. 
+The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run privileged instructions \cite{Butt2011}. 
 Additionally, it can be used as an application development platform where specific hardware is not available. 
 System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest hardware have to be emulated in software. 
-That implies multiple host instructions because of the translation for a single guest instruction as a result\cite[~p.1]{Tong2014}.
+That implies multiple host instructions because of the translation for a single guest instruction as a result \cite[~p.1]{Tong2014}.
 It is possible to reduce the supported and attached additional devices with special options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards, less hardware has to be emulated, which has given the result of better performance.  \\
 System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
 
@@ -31,7 +31,7 @@ System emulation benefits from the virtualization support as KVM. So most CPU op
 The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a specific application. 
 This emulation type is working on a syscall level. Therefore, the application has to be runnable as a process executable itself. 
 An external Linux kernel will be built, and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
-The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system\cite{Butt2011}.
+The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system \cite{Butt2011}.
 
 
 \section{Emulation of Different Architectures}
@@ -57,7 +57,7 @@ The package \textbf{binfmt-support} has to be installed first for using this ker
 
 \subsection{Qemu-user-static}
 
-The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package by various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled QEMU emulators that other architectures can run on another architecture\cite{Yang2019}. When building for another architecture, static binaries are important because of the possibility of an "exec init error" without them. \\
+The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package by various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled QEMU emulators that other architectures can run on another architecture \cite{Yang2019}. When building for another architecture, static binaries are important because of the possibility of an "exec init error" without them. \\
 The installation contains emulators for all available architectures supported by the QEMU project incl. s390x aligned with the specific host architecture. In this manner described, you can build and emulate for different architectures on the same host (see \ref{Optimized-Qemu-Command} Optimized Qemu Command). That is the base for BuildX by Docker, too.
 
 \subsection{BuildX}
@@ -77,12 +77,12 @@ Docker is advantageous to setup and start systems fast.
 So it would be nice to integrate the docker file system into QEMU. After building a docker image, it is realizable to export the file system into a directory with the name \textbf{rootfs} with the command \lstinline!docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -!. \\
 
 Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
-QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} as the first partition\cite[~p.22]{White2020}.
+QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} as the first partition \cite[~p.22]{White2020}.
 
 \subsection{UnionFS}\label{UnionFS}
 
 Docker does not use any default Linux file system. 
-Docker images are based on the Union File System (UnionFS)\cite[~p.21]{Ashraf2015}. 
+Docker images are based on the Union File System (UnionFS) \cite[~p.21]{Ashraf2015}. 
 This file system is using different file system layers with grouping directories and files in branches. 
 The first layer is the typical Linux boot file system with the name bootfs. 
 That performs the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
@@ -105,21 +105,21 @@ All sizes of different docker layers will exist continuously inside of the new f
 
 Ext4 is a journaling file system (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
-Such journal file systems in the ext file system family are working with blocks\cite[~p.20]{Seufert2015}.
+Such journal file systems in the ext file system family are working with blocks \cite[~p.20]{Seufert2015}.
 The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
 The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
 Commit blocks are available to flag logged transactions.
 Revoke blocks are flagging blocks not logged any more. \\
 All meta data from the journal can be relocated in inodes because changes of file system meta data are registered, too. \\
-The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional check sums for journal transactions\cite[~p.28]{Seufert2015}.
+The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional check sums for journal transactions \cite[~p.28]{Seufert2015}.
 
 Ext4 provides a better performance than ext3. 
 This file system can be formated with mkfs.ext4 which is available in every Linux distribution.
-This tool is creating a group despriptor table for further group descriptors what allows an expanding of the file system. The file system can grow a maximum of the multiple 1024 of his existing size because of the saved space\cite[~p.21]{Seufert2015}.
+This tool is creating a group despriptor table for further group descriptors what allows an expanding of the file system. The file system can grow a maximum of the multiple 1024 of his existing size because of the saved space \cite[~p.21]{Seufert2015}.
 Flex groups are used in ext4 for merging different block groups to one logic block group. All data from inodes are only saved in the first flex group then. 
 So the search for files is more powerful because meta data are allocated at one place. \\
 
-Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption\cite[p.24]{Seufert2015}.
+Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption \cite[p.24]{Seufert2015}.
 
 \begin{figure}[H]
 \centering
