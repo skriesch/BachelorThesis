@@ -49,16 +49,12 @@ make install
 \end{lstlisting}
  
 
-\section{Cross-Compilation of a S390x Linux Kernel on x86}
+\section{Fetching Signed Linux Kernel Image}
 
-QEMU needs a built Linux kernel to start a system. These packages are necessary: \\
-\textbf{bison, flex, gcc, gcc-s390x-linux-gnu, libssl-dev} \\
-One kernel source code for a certain version has to be downloaded from \url{kernel.org} with the following command then: \\ \lstinline!wget https://git.kernel.org/torvalds/t/linux-5.7-rc7.tar.gz!\\
-It can be extracted with \\ 
-\lstinline!tar -xf  linux-5.7-rc7.tar.gz!. \\ 
-The Makefile is in the directory linux-5.7-rc7. Therefore the command \lstinline!make ARCH=s390 defconfig localyesconfig! has to be executed to create the default configuration for s390x and \\  
-\lstinline!make ARCH=s390 CROSS_COMPILE=s390x-linux-gnu- -j6! \\
-for the compilation. The kernel has the name bzImage in the directory \path{arch/s390/boot/} then and can be used in the qemu command.
+QEMU needs a built Linux kernel to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
+The build process via CI/CD should be fast. Therefore, the second option will be used. The Docker filesystem in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
+The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the filesystem of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. This command "debootstrap" is validating all downloaded packages additionally. This process is easy to automate and requires only 10 seconds. In conclusion, the generic and signed Linux kernel image can be used in the \path{/boot/} directory for the integration into QEMU.
+ 
 
 \section{Optimized QEMU Command}\label{Optimized-Qemu-Command}
 
