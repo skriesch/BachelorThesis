@@ -16,9 +16,9 @@ The TCG takes care of the emulation of the guest processor running as a thread l
 It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a default package. 
 QEMU does not emulate the whole hardware. That is only possible for the CPU. QEMU is used for emulations in this Bachelor Thesis.
 
-\section{System Emulation}
+\section{Full System Emulation}
 
-The System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the userspace (with application processes). 
+The Full System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the userspace (with application processes). 
 The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run privileged instructions \cite{Butt2011}. 
 Additionally, it can be used as an application development platform where specific hardware is not available. 
 System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest hardware have to be emulated in software. 
@@ -28,8 +28,8 @@ System emulation benefits from the virtualization support as KVM. So most CPU op
 
 \section{User Mode Emulation}
 
-The User Mode Emulation does not emulate the whole system. It is possible to reproduce application processes in QEMU with a minimal system for a specific application. 
-This emulation type is working on a syscall level. Therefore, the application has to be runnable as a process executable itself. 
+The User Mode Emulation does not emulate the whole system. It is faster than the Full System Emulation. Application processes can be reproduced in QEMU with a minimal system for a specific application. 
+This emulation type is working on a system call level. Therefore, the application has to be runnable as a process executable itself. 
 An external Linux kernel will be built, and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
 The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system \cite{Butt2011}.
 
@@ -65,8 +65,65 @@ The installation contains emulators for all available architectures supported by
 As mentioned above, Docker is using QEMU for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} Registration of Qemu-S390x). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be cloned from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
 In general, BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes the possibility of multi-architecture builds and exceptional output configuration. That involves not only the upload possibility to your local docker registry (see the output of \textbf{docker images}). That includes the output of "docker build" (which creates a docker image based on the requirements and installations in the used Dockerfile) into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
 The \textbf{Dockerfile} is using the requirements by the base docker image in the FROM command on top of the Dockerfile together with installations and configurations executed by all RUN commands or attached scripts with the command ADD. The \textbf{-t} flag is adding a special name as a tag under \textbf{docker images}.
-The special architecture for multi-architecture builds can be specified with the additional option \textbf{--platform}.
+The special architecture for multi-architecture\ref{MultiArchitectureImages} builds can be specified with the additional option \textbf{--platform}.
 The option \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
+
+\subsection{Multi-Architecture Images}\label{MultiArchitectureImages}
+
+Default Linux distribution providers have to package their software for different system architectures because of different required drivers included in the Linux kernel and dependecies to these.
+That is the reason that Docker images have to be built equally for different architectures. That can be performed with different base images for the respective architectures or with multi-arch images. 
+It is possible to use one Dockerfile for different architectures then. One example for such a multi-arch Docker image is adoptopenjdk/adoptopenjdk8 based on Ubuntu\footnote{\url{https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/8/jdk/ubuntu/Dockerfile.hotspot.nightly.full}}. In this case hardware dependencies are selected with \lstinline!dpkg --print-architecture! and included as ARCH into the different cases for downloading the relevant tar archive of OpenJDK:
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
+RUN set -eux; \
+    ARCH="$(dpkg --print-architecture)"; \
+    case "${ARCH}" in \
+       aarch64|arm64) \
+         ESUM='2c6540ff8ea3d89362fd02143b24303e2359be249a6be6cb7e6580472686d863'; \
+         BINARY_URL='https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/
+         download/jdk8u-2020-08-05-08-20/OpenJDK8U-jdk_aarch64_linux_hotspot_2020-
+         08-05-08-20.tar.gz'; \
+         ;; \
+       armhf|armv7l) \
+         ESUM='3c57c121415ef721ba9c73dfa809cd2f689d7369ef3d92d055f7c7c81ed2d697'; \
+         BINARY_URL='https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/
+         download/jdk8u-2020-07-31-04-43/OpenJDK8U-jdk_arm_linux_hotspot_2020-07-
+         31-04-43.tar.gz'; \
+         ;; \
+       ppc64el|ppc64le) \
+         ESUM='668972e8d6d0815c03b32dac3f5c663453b4b0842938d13cfb0c1232a26a8087'; \
+         BINARY_URL='https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/
+         download/jdk8u-2020-08-05-08-20/OpenJDK8U-jdk_ppc64le_linux_hotspot_2020-
+         08-05-08-20.tar.gz'; \
+         ;; \
+       s390x) \
+         ESUM='045aa287c48fd84eef19f2828ed1d15d27059a9328f5ca2cc91f6d42489af956'; \
+         BINARY_URL='https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/
+         download/jdk8u-2020-08-05-08-20/OpenJDK8U-jdk_s390x_linux_hotspot_2020-
+         08-05-08-20.tar.gz'; \
+         ;; \
+       amd64|x86_64) \
+         ESUM='c26124b14c6a42d89278d3ce108b43c1210a317aba0163d985c06a79a695a174'; \
+         BINARY_URL='https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/
+         download/jdk8u-2020-08-05-08-20/OpenJDK8U-jdk_x64_linux_hotspot_2020-08-
+         05-08-20.tar.gz'; \
+         ;; \
+       *) \
+         echo "Unsupported arch: ${ARCH}"; \
+         exit 1; \
+         ;; \
+    esac; 
+\end{boxedverbatim}
+ \caption{Multi-Arch Image AdoptOpenJDK 8}
+    \label{AdoptOpenJDK-Multi-Arch}
+\end{figure}
+
+You can see all URLs for arm64, armv7l, ppc64le, s390x and x86 in this case. This RUN command in the Dockerfile is using the architecture given by the option \\
+\lstinline!--build-arg ARCH=s390x! \\
+as an example in the \lstinline!docker build! command or the \lstinline!--platform! option will be used with BuildX.
+\lstinline!Docker build! is stacked against against BuildX, because you can build only one image with one command.
+Buildx provides the possibility to consign different architectures (comma separated) to the platform option. Thereby, one command can build multiple images for different architectures.
 
 \section{File Systems}\label{FileSystems}
 
