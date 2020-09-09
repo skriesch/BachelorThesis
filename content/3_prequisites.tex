@@ -21,10 +21,15 @@ for the specific version of qemu-s390x-static on x86. That is extracted to the d
 then. The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The configuration will be used by the installed qemu-user-static.\\
 
 s390x binaries have to be registered for s390x that they can be executable on x86. That is done with the following commands: \lstinline!sudo -i! and 
-\begin{lstlisting}[language=bash, numberstyle=\myHexNumber, caption={Register s390x binaries},captionpos=b]
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
 echo ':qemu-s390x:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x16:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\
 xff\xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
-\end{lstlisting}
+\end{boxedverbatim}
+ \caption{Register s390x binaries}
+    \label{AdoptOpenJDK-Multi-Arch}
+\end{figure}
 
 \section{Enabling Multi-Architecture Images}\label{Multi-Architecture-Images}
 
