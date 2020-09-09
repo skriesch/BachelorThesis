@@ -24,22 +24,28 @@ s390x binaries have to be registered for s390x that they can be executable on x8
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
-echo ':qemu-s390x:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x16:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\
-xff\xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
+echo ':qemu-s390x:M::\x7fELF\x02\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\
+x02\x00\x16:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\
+xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
 \end{boxedverbatim}
- \caption{Register s390x binaries}
-    \label{AdoptOpenJDK-Multi-Arch}
+ \caption{Register S390x Binaries}
+    \label{RegisterS390xBinaries}
 \end{figure}
 
 \section{Enabling Multi-Architecture Images}\label{Multi-Architecture-Images}
 
 Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86 then. That can be added with the following:
 
-\begin{lstlisting}[language=bash,caption={Docker Experimental Flag},captionpos=b]
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
 {
-"experimental": enabled
+  "experimental": enabled
 } >> /etc/docker/daemon.json
-\end{lstlisting}
+\end{boxedverbatim}
+ \caption{Docker Experimental Flag}
+    \label{DockerExperimentalFlag}
+\end{figure}
 
 The configuration of the Docker daemon is written in the JSON format. That is saved in \path{/etc/docker/daemon.json}.
 After a restart of the docker daemon, there should be listed this experimental flag in the command  \lstinline!docker version!. An alternative way is to export this flag as an environment variable in the shell with  \lstinline!export DOCKER_CLI_EXPERIMENTAL=enabled! to enable it. Now it is possible to build docker images for s390x on x86 with \\ \lstinline!docker build --platform=linux/s390x -t image-example:s390x .! \\
@@ -48,10 +54,15 @@ based on a Dockerfile in the existing directory.
  
 Additionally, a new version of BuildX is required. The pre-installed version of Docker has got bugs with the consequence of a broken build process with \textbf{Illegal instructions} at Go applications. That is fixed with the new version on Github. \\
 Therefore, the new version has to be installed with:
-\begin{lstlisting}[language=bash,caption={BuildX Upgrade},captionpos=b]
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
 git clone git://github.com/docker/buildx && cd buildx
 make install
-\end{lstlisting}
+\end{boxedverbatim}
+ \caption{BuildX Upgrade}
+    \label{BuildXUpgrade}
+\end{figure}
  
 
 \section{Fetching Signed Linux Kernel Image}
@@ -67,7 +78,7 @@ Every additional device requires additional performance and time for starting th
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given \ref{lst:QEMU-Command}"Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\ 
+The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given \ref{QEMU-Command}"Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\ 
 The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. 
 \textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 
@@ -80,7 +91,16 @@ That is the ideal option to mount a minimal file system for every application or
 This command can be used for user mode emulation with Apache Cassandra as an example.
 
 
-\begin{lstlisting}[language=bash,caption={Optimized QEMU Command},captionpos=b,label={lst:QEMU-Command}]
-/usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/cassandra.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash'
-\end{lstlisting}
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
+/usr/bin/qemu-system-s390x -kernel bzImage -m 4G -M s390-ccw-virtio -nodefaults \
+-device sclpconsole,chardev=console -parallel none -net none -chardev stdio,\
+id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 \
+-hda /data/cassandra.img  --append 'root=/dev/vda rw console=ttyS0 \
+rdinit=/bin/bash'
+\end{boxedverbatim}
+ \caption{Optimized QEMU Command}
+    \label{QEMU-Command}
+\end{figure}
 
