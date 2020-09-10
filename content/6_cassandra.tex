@@ -14,7 +14,7 @@ This base image is integrated with \lstinline!FROM adoptopenjdk:8-jdk-hotspot! o
 
 Apache Cassandra will be cloned from the Github repository with \\
 \lstinline!git clone https://github.com/apache/cassandra.git!. \\
-The special version is set with an agument with the ARG variable. On this way, it is possible to checkout other versions with a given argument in the docker command. \\
+The special version is set with an agument with the ARG variable. On this way, it is possible to checkout other versions with a given argument as \lstinline!--build-arg CASSANDRA_VERSION=3.12.4! in the docker build command. \\
 Apache Cassandra is using JNA (Java Native Library)\footnote{\url{https://github.com/java-native-access/jna}} as an extension of Java. JNA offers provides Java programs easy access to native shared libraries. The ant command is building the application and the JNA subsequently. \\
 The command \lstinline!sed -i ' s/Xss256k/Xss32m/'! is setting the size of the frame stack (JVM stack) used by each thread to store local variables. This frame size is reduced to a minimum and stored in both files build.xml and conf/jvm.options.
 
@@ -48,6 +48,23 @@ snappy-java/1.1.2.6/snappy-java-1.1.2.6.jar \
 
 
 \section{Java Optimization}
+
+Apache Cassandra should be allowed to use all available memory of the minimal system effectively.
+Default the JVM is configured that only a part of that can be used. These configurations are set in the Java Options.
+Afterwards, Apache Cassandra can work with a good performance. \\
+Every major Java release can differ from another one with such options for Java optimization.
+
+Following Java optimizations are available for Java 8: \\
+\begin{itemize}
+\item \textbf{-XX:+UseCGroupMemoryLimitForHeap}  \\
+This option tells the JVM to look into \path{/sys/fs/cgroup/memory/memory.limit} after the available memory and to use the whole memory if necessary \cite{Flood2017}.
+\item \textbf{-Xmx=1g} \\
+The JVM is allowed to allocate 1GB Heap. The default maximum JVM heap size is 64MB \cite{Gesso2017}. 
+It is used for run time data for all Java class instances. The heap is created during the start of the Java Virtual Machine.
+\item \textbf{-XX:ParallelGCThreads=2} \\
+Apache Cassandra is referencing  2 required CPUs as a minimum in their documentation \cite{Cassandra}.
+This JVM option permits 2 GC (Garbage Collection) threads parallel on different (virtual) processors.
+\end{itemize}
 
 \section{Workaround Because of an JVM Issue}
 
@@ -145,7 +162,11 @@ Now it is possible to run the system with Cassandra: \\
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
- /usr/bin/qemu-system-s390x -kernel bzImage -m 40G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/dockerfile-examples/ApacheCassandra/cassandra.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash' 
+ /usr/bin/qemu-system-s390x -kernel bzImage -m 40G -M s390-ccw-virtio -nodefaults \
+ -device sclpconsole,chardev=console -parallel none -net none -chardev stdio, \
+ id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 \
+ -hda /data/dockerfile-examples/ApacheCassandra/cassandra.img \
+ --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash' 
 \end{boxedverbatim}
  \caption{Run Cassandra}
     \label{RunCassandra}
