@@ -119,7 +119,7 @@ After this action, the Docker image is usable as it would have been built on thi
 Nagios is an open-source monitoring system to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/plugins/cassandra_check.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
 This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. 
 
-\section{Running the Docker Image}
+\section{Running the Docker Image}\label{RunningDockerImage}
 
 The Docker image will be built with the command  \\
 \lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra:s390x .! \\
@@ -130,16 +130,25 @@ can be used. This image needs any Linux file system because QEMU does not know t
 \lstinline!docker export $(docker create cassandra:s390x) | tar -C "rootfs" -xvf -!  \\ 
 is exporting the docker image into the directory rootfs. Following transfers the content of rootfs into the image cassandra.img.
 
-\begin{lstlisting}[language=bash,caption={Mount rootfs},captionpos=b]
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
 mkdir /mnt/rootfs
 mount -o loop cassandra.img /mnt/rootfs
 cp -r rootfs/* /mnt/rootfs/.
- \end{lstlisting}
+\end{boxedverbatim}
+ \caption{Mount Rootfs}
+    \label{Mount-Rootfs}
+\end{figure}
 
 Now it is possible to run the system with Cassandra: \\
-\begin{lstlisting}[language=bash,caption={Run Cassandra},captionpos=b,label={RunCassandra}]
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
  /usr/bin/qemu-system-s390x -kernel bzImage -m 40G -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console -parallel none -net none -chardev stdio,id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 -hda /data/dockerfile-examples/ApacheCassandra/cassandra.img --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash' 
- \end{lstlisting}
- 
+\end{boxedverbatim}
+ \caption{Run Cassandra}
+    \label{RunCassandra}
+\end{figure}
 
 \section{Integration into CI/CD}

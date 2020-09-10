@@ -188,7 +188,7 @@ Another feature of ext4 is the possibility of inline files and inline directorie
 \subsection{Mounting an External File System}
 
 In \ref{FileSystems}"File Systems" is described how to export a Docker file system into a directory. That has got the format of the \ref{UnionFS}UnionFS at this moment. QEMU contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. QEMU understands only rounded numbers. Therefore, that has to be rounded up to a full number. Cassandra is using the command \\
-\lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{Cassandra-Deployment}Cassandra Deployment) \\
+\lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{RunningDockerImage}"Running the Docker Image") \\
 for a Docker image size about 1.2G then. Firstly, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4. Writing into cassandra.img is only executible if the image is mounted into a directory under \path{/mnt/} with \\
 \lstinline!mount -o loop cassandra.img /mnt/rootfs!. \\ 
 In the next step the content of the file system directory can be copied into \path{/mnt/rootfs/} with \\ 
