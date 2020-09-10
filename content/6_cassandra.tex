@@ -114,9 +114,9 @@ on the host. It has to be transferred with rsync to the x86 system then. The ima
 After this action, the Docker image is usable as it would have been built on this system. 
 
 
-\section{Icinga Monitoring Check for Tests}
+\section{Nagios Monitoring Check for Tests}
 
-Icinga is an open-source monitoring system. There are many checks for different services available. One monitoring check exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running and whether CQL commands would be possible to execute without any issues. This Perl script is using nodetool for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status and information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
+Nagios is an open-source monitoring system to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/plugins/cassandra_check.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
 This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. 
 
 \section{Running the Docker Image}

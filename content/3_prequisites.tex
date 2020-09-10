@@ -35,7 +35,6 @@ xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
 \section{Enabling Multi-Architecture Images}\label{Multi-Architecture-Images}
 
 Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86 then. That can be added with the following:
-
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -46,7 +45,6 @@ Docker is configured to build only for the own architecture, which is x86 at ope
  \caption{Docker Experimental Flag}
     \label{DockerExperimentalFlag}
 \end{figure}
-
 The configuration of the Docker daemon is written in the JSON format. That is saved in \path{/etc/docker/daemon.json}.
 After a restart of the docker daemon, there should be listed this experimental flag in the command  \lstinline!docker version!. An alternative way is to export this flag as an environment variable in the shell with  \lstinline!export DOCKER_CLI_EXPERIMENTAL=enabled! to enable it. Now it is possible to build docker images for s390x on x86 with \\ \lstinline!docker build --platform=linux/s390x -t image-example:s390x .! \\
 based on a Dockerfile in the existing directory.

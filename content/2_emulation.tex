@@ -29,8 +29,7 @@ System emulation benefits from the virtualization support as KVM. So most CPU op
 \section{User Mode Emulation}
 
 The User Mode Emulation does not emulate the whole system. It is faster than the Full System Emulation. Application processes can be reproduced in QEMU with a minimal system for a specific application. 
-This emulation type is working on a system call level. Therefore, the application has to be runnable as a process executable itself. 
-An external Linux kernel will be built, and the application can be mounted via a loaded Docker image in a hard disk image. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
+This emulation type is working on a system call level. Therefore, the application has to be runnable as a process executable itself. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
 The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system \cite{Butt2011}.
 
 
@@ -39,7 +38,7 @@ The user-mode emulation can run directly non-privileged instructions or is using
 It is achievable to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then, and the preferred architecture has to be registered in binfmt\_misc. binfmt\_misc is a kernel module. 
 You can register other architectures within that, so multiple other architectures can be run on this host. 
 Not only QEMU can be used for system emulation. Container technologies as Docker include an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
-This technology has got the name BuildX. Accordingly, a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together.
+This technology has got the name BuildX. Accordingly, a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together. in this case, an external Linux kernel will be integrated, and the application can be mounted via a loaded Docker image in a hard disk image.
 
 
 \subsection{Binfmt\_misc}

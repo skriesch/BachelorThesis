@@ -3,28 +3,28 @@
 One business introduced by IBM is the mainframe, now known as a Z system. It is possible to run Linux on it. There is a large community behind Linux and open-source projects. Open source does not contain only \gls{Linux}. There are different applications and other software developed by open-source communities. The mainframe hardware architecture is different from the architecture of a home PC. The Z system architecture is called \gls{s390x} and a default system \gls{x86}. Not every open-source community has got access to such a Z system. Most open-source contributors have got systems with the architecture x86. Therefore, it should be possible to test hardware dependencies for s390x on x86. \\
 Our focus is on Kubernetes-based open-source projects in this Bachelor Thesis. Some Kubernetes-based projects should be emulated for Z systems in the \gls{CI/CD} test infrastructure by these open-source projects. That will be done on systems by these communities. As the first step, the emulator will be chosen with the focus on functionality for Z systems on x86 architecture. After that, Kubernetes is installed in a Docker container. Tests should be able to be run on this system, too. That will be integrated into the emulation environment for an automated start. The CI/CD system should be able to execute all tests then. \\
 The same will be done with the NoSQL database Cassandra for the Apache community to represent the whole system stack from Kubernetes until the \gls{application layer} for container platforms. Other points are minimal systems requirements and minimal systems sizes. Here are different methods evaluated to minimize the system for emulation.
-The goal of this Bachelor Thesis is to integrate emulated Z systems for different open-source projects to test their software for hardware dependencies, so that it allows to release new versions in the CI/CD pipeline of the respective project for running on the hardware architecture s390x without the available hardware. Deployments of the latest software version on Github and running tests have to be automated for that.
+The goal of this Bachelor Thesis is to integrate emulated Z systems for different open-source projects to test their software for hardware dependencies so that it allows to release new versions in the CI/CD pipeline of the respective project for running on the architecture s390x without the available hardware. Deployments of the latest software version on Github and running tests have to be automated for that.
 
 
 
 \section{Mainframe Computers}
 
-Mainframe computers are large computers. Some of these computers are part of the Z series\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers, but also for mission critical apps and blockchain. 
+Mainframe computers are large computers. Some of these computers are part of the Z series\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers, but also for mission-critical apps and blockchain. 
 Mainframes can handle large numbers of transactions in one second \cite[~p.56]{Tanenbaum2014}. 
 Thousands of virtual machines can run on such a system. Z systems do not use the well known x86 architecture. 
-They are built with s390x. IBM has developed this architecture. The current architecture version has been introduced in late 2000 \cite[~p.15]{Block2019}. The mainframe has built in the fastest available processor with 5 GHz with on core and on chip cache, large memory and dedicated I/O processing \cite{OpenMainframeProject}.\\
+They are built with s390x. The current architecture version has been introduced in late 2000 by IBM \cite[~p.15]{Block2019}. The mainframe has built in the fastest available processor with 5 GHz with on core and on chip cache, extensive memory and dedicated I/O processing \cite{OpenMainframeProject}.\\
 IBM Z contains "IBM Z pervasive encryption" for comprehensive protection around the data on the system \cite[~p.4]{Lascu2020}. Such systems are offering a horizontal and upright \gls{scaling} of processes, which allows the operation of many hundred virtual systems in parallel\cite[~p.13]{Tschoeke2009}. The traditional operating system for mainframes has been z/OS. 
 Z systems have been optimized for open-source software as Linux \cite[~p.8]{Lascu2020}. The goal by IBM has been to offer a combination of a robust and securable hardware platform with the power of different Linux distributions. 
-Linux is used as a base operating system for this Bachelor Thesis.
+Ubuntu Linux is used as a base operating system for this Bachelor Thesis.
 
 
 \section{Hardware Emulation}
 
-Not everybody has access to expensive hardware or hardware with essential architecture. The software should be able to run on most relevant hardware architectures. The solution for Software Developers is hardware emulation. 
-You can test based on hypervisors with the hardware emulation whether the software is running correctly. 
-So you can run different operating systems and applications for specialized hardware in virtualization software. 
+Not everybody has access to hardware with essential architecture. The software should be able to run on most relevant hardware architectures. The solution for Software Developers is hardware emulation. 
+You can test with the hardware emulation whether the software is running correctly. 
+Accordingly, you can run different operating systems and applications for specialized hardware in emulators or virtualization software. 
 It is possible to enable other hardware architectures than the one of the host. 
-That will be done with the implementation of a \gls{virtual machine} on a host system with a different target architecture\cite[~p.3]{Rosenthal2015}. In our case, it should be possible to run applications for mainframes with the target
+That will be done with the implementation of a guest system on a host with a different target architecture\cite[~p.3]{Rosenthal2015}. In our case, it should be possible to run applications for mainframes with the target
 architecture s390x on a host system with the architecture x86.
 
 
@@ -32,32 +32,34 @@ architecture s390x on a host system with the architecture x86.
 
 \subsection{Docker}
 
-Docker\footnote{\url{https://www.docker.com/}} is one possible container engine used by Kubernetes. This technology has been emerged in 2013 as a base for future container technologies. 
+Docker\footnote{\url{https://www.docker.com/}} is one possible container engine used by Kubernetes. This technology emerged in 2013 as a base for future container technologies. 
 The difference to existing container technologies (LXC as an example) has been the possibility of distributing systems. 
 Docker Inc. has established a public container registry with the name Docker Hub for public usable Docker images. That should facilitate setups and the entrance into work with containers. Another benefit of Docker is that all installation and configuration steps for a system are described in one reusable text file. 
 This file (Dockerfile) is the foundation of Docker images and most public Docker images on Docker Hub are maintained.
-Docker images are built systems you can receive from a container registry with \lstinline!docker pull! or you can build them based on your own Dockerfile for your local registry on the server with \lstinline!docker build -t ${name} .!. \\ \textbf{-t} is the tag and defines the name of the docker image listed in the registry with the command \lstinline!docker images!. Only successful builds of images can be registered in such a container registry. \\
+Docker images are allocatable systems obtained from a container registry with \lstinline!docker pull!, or built based on a self-written Dockerfile for the local registry on the server with \lstinline!docker build -t ${name} .!. \\ \textbf{-t} is the tag and defines the name of the docker image listed in the registry with the command \lstinline!docker images!. Only successful builds of images can be registered in such a container registry. \\
 The \textbf{Dockerfile} contains different instructions for building steps. The line with the "FROM" command defines the base image. Every public or local usable Docker image can be used as a base image with the whole operating system incl. pre-installed packages and relevant configuration. Docker images include only a minimal operating system defined in the Dockerfile of the base image together with all listed packages for installation. These installations are listed in the Dockerfile with the command "RUN" before apt, yum, pip or other installation commands. 
-Should a self-written application be executed inside of the Docker container, the option exists to create a directory with this application besides of the Dockerfile. The command "ADD" can integrate this application into the Docker container during the build process. Such a line has the following structure: \\
+After the build, all commands are registered in a Docker manifest within JSON format together containing all information about the Docker image.
+If a new application should be executed inside of the Docker container, then creating a directory for this application besides the Dockerfile is possible. The command "ADD" can integrate this application into the Docker container during the build process. Such a line has the following structure: \\
 \lstinline!ADD ./dir/app.py /app.py! \\
 This application can be started with the "CMD" command then: \\
 \lstinline!CMD ["python","/app.py"]! \\
-It is recommended to define one service or process for one single container and to connect all containers for the start then. One single container is lauchable with the command \lstinline!docker run ${name}!. 
+It is recommended to define one service or process for one single container and to connect all containers for a start then. One single container is lauchable with the command \lstinline!docker run ${name}!. 
 The command \lstinline!docker-compose! is available to automate the setup with multiple connected containers. That will be defined in a yaml format in the file docker-compose.yml.
 
-The Dockerfile format has been spread as a nice understandable base for most container runtimes. 
-Docker has turned out to be more as a developer tool for many container technologies in the last years. 
-Consequently, as an example Kubernetes is using Docker for their community tests as a base container runtime, too.
-Most new container orchestration are built based on Docker. The difference is the replacement of the docker command and the expansion with additional features for clustering and special configurations.
+The Dockerfile format has been spread as an easily understandable base for most container runtimes. 
+Docker has turned out to be more like a developer tool for many container technologies in the last years. 
+Consequently, as an example, Kubernetes is using Docker for their community tests as a base container runtime, too.
+Most new container orchestration platforms are developed based on Docker. The difference is the replacement of the docker command and the expansion with additional features for clustering and specialized configurations.
 
 \subsection{Kubernetes}
 
-Kubernetes\footnote{\url{https://kubernetes.io/}} is an open-source project for container orchestration, well known as k8s. This project was started by Google. A Kubernetes cluster has at least one Master node and one Worker node for high availability. The Master node is responsible for managing all Worker nodes with applications. All configurations and distributions are performed from there. New Worker nodes are added to the Kubernetes cluster with "join" on the Master node, too. The Worker node is deploying containers with different services. Every Worker node can communicate with other Worker nodes in the cluster. \\
-Kubernetes is scalable for using containers as distributed services in a pod. A pod is representing something as a single server splitted into different connected containers with all services for a running application. Pods can be replicated to multiple nodes for high availability. Kubernetes is configurable with different container runtimes, as Docker, containerd\footnote{\url{https://containerd.io/}} or CRI-O\footnote{\url{https://cri-o.io/}} for example. The Container Runtime Interface (CRI) is necessary for managing container images, the life cycle of container pods, networking and help functions \cite[~p.16]{Scholl2019}. The most used container runtime is Docker in the Kubernetes project. The filesystem of a container is described in the format of a Dockerfile. This format is supported by most container runtimes.
+Kubernetes\footnote{\url{https://kubernetes.io/}} is an open-source project for container orchestration, well known as k8s. Google started this project. A Kubernetes cluster has at least one Master node and one Worker node for high availability. One node is one host. The Master node is responsible for managing all Worker nodes with applications. All configurations and distributions are performed from there. New Worker nodes are added to the Kubernetes cluster with "join" on the Master node, too. The Worker node is deploying containers with different services. Every Worker node can communicate with other Worker nodes in the cluster. \\
+Kubernetes is scalable for using containers as distributed services in a pod. A pod is representing something as a single server split into different connected containers with all services for a running application. Pods can be replicated to multiple nodes for high availability. Kubernetes is configurable with different container runtimes, like Docker, containerd\footnote{\url{https://containerd.io/}} or CRI-O\footnote{\url{https://cri-o.io/}}, for example. The Container Runtime Interface (CRI) is necessary for managing container images, the life cycle of container pods, networking and help functions \cite[~p.16]{Scholl2019}. The most used container runtime is Docker in the Kubernetes project. The filesystem of a container is described in the format of a Dockerfile. Most container runtimes support this format.
 
 
 \subsection{Apache Cassandra}
 
-Apache Cassandra\footnote{\url{https://cassandra.apache.org/}} is a NoSQL database management system developed by the Apache Foundation. The project had been started internally at Facebook and has been released as an open-source-project in 2008. Cassandra provides continuous availability, high performance, and linear scalability besides  offering operational simplicity and effortless replication across data centers and geographies \cite{Datastax}. It is recommended for mission-critical data. The Cassandra Query Language (CQL) is equal to SQL and includes JSON support. CQL includes an abstraction layer that hides implementation details of the structure.  \\
+Apache Cassandra\footnote{\url{https://cassandra.apache.org/}} is a NoSQL database management system developed by the Apache Foundation. The project had been started internally at Facebook and has been released as an open-source project in 2008. Cassandra provides continuous availability, high performance, and linear scalability besides  offering operational simplicity and effortless replication across data centres and geographies \cite{Datastax}. It is recommended for mission-critical data. The Cassandra Query Language (CQL) is similar to SQL and includes JSON support. The similarity simplifies migrations from relational database management systems to Apache Cassandra. \\ 
+CQL includes an abstraction layer that hides implementation details of the structure.  \\
 NoSQL database stores are using other methods than relational database management systems for data access and own a different structure. Cassandra is using hashing to fetch rows from the table as a column-oriented database management system (DBMS). Such a DBMS stores data tables by column rather than by row. \\ 
-NoSQL databases were developed as massively scalable database management systems that are able to write and read data anywhere while distributing availability to billions of users. This field is a part of Big Data.
+NoSQL databases were developed as massively scalable database management systems that can write and read data anywhere while distributing availability to billions of users. This field is a part of Big Data.
