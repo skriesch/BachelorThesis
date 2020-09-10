@@ -7,12 +7,16 @@ There exist plugins for integration tests for Kubernetes with the name kubetest\
 That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes and building tests with Go is necessary. The challenge is, that 2 big Github repositories have to be cloned and integrated into the docker image. That is using a lot of space. The solution is using a multi staging Dockerfile. 
 So 2 different Dockerfiles are used in one Dockerfile and one of them is used for building. The other one is used for the installation and testing with built tests. At the end the size of the docker image has got only the size of the test image regardless of the repository size in the mother Dockerfile.
 
-\section{Multi Staging Dockerfile}
+\section{Multi-Staging Dockerfile}
 
 A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with "AS" behind the "FROM" with the base image name. 
 Default this feature is used for building applications in one stage and executing the copied application in another stage. The same counts for cloning Github repositories and building binary files based on it. On this way, a lot of space is saved.
 Concluding, the docker image has got only the size of the executing system with the application file (without all the code). 
-That is an "experimental feature"  at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before using it (see \ref{Multi-Architecture-Images} Multi-Architecture Images). 
+That is an "experimental feature"  at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before using it (see \ref{Multi-Architecture-Images} Multi-Architecture Images). \\
+Default one image is receiving the name build and the other one a name of what will be done with that. In our case, the second image has got the name work. 
+The second image is copying with "COPY --from=build" all required built data from the first image that it can be used for running the application. 
+On this way, it is possible to reduce the size of a docker image. \\
+Multi-staging Dockerfiles are an approved method for executing binaries based on Github repositories.
 
 \section{Installation}
 
