@@ -6,7 +6,7 @@ Apache Cassandra is a Java based NoSQL database management system. It contains t
 
 \section{Installation}\label{Cassandra-Installation}
 
-It should be created a Dockerfile for a multi-arch image in this project with the reason for using it for different architectures.
+It should be created a Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/Dockerfile}} for a multi-arch image in this project with the reason for using it for different architectures.
 Apache Cassandra is a Java based application. Therefore, the research has contained the search for a multi-arch image with pre-installed Java. The Cassandra version 3.11.6 is supporting Java 8. 
 AdoptOpenJDK is maintaining multi-arch images for different Linux distributions with pre-installed AdoptOpenJDK.
 In the description of \ref{AdoptOpenJDK-Multi-Arch}"Multi-Arch Image AdoptOpenJDK 8" is explained how the recommended Java version will be chosen for the specific architecture in this base image. 
@@ -45,6 +45,9 @@ snappy-java/1.1.2.6/snappy-java-1.1.2.6.jar \
  \caption{Cassandra Installation}
     \label{Cassandra-Installation}
 \end{figure}
+
+
+\section{Java Optimization}
 
 \section{Workaround Because of an JVM Issue}
 
@@ -111,11 +114,9 @@ on the host. It has to be transferred with rsync to the x86 system then. The ima
 After this action, the Docker image is usable as it would have been built on this system. 
 
 
-\section{Java Optimization}
-
 \section{Icinga Monitoring Check for Tests}
 
-Icinga is an open-source monitoring system. There are many checks for different services available. One monitoring check exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running and whether CQL commands would be possible to execute without any issues. \\
+Icinga is an open-source monitoring system. There are many checks for different services available. One monitoring check exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running and whether CQL commands would be possible to execute without any issues. This Perl script is using nodetool for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status and information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
 This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. 
 
 \section{Running the Docker Image}
