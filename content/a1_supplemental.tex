@@ -1,4 +1,42 @@
 \chapter{Supplemental Information}\label{app:supplemental-information}
 
-Zusatzinformation
+\section{Circle CI configuration for Apache Cassandra}
+\begin{boxedverbatim}
+jobs:
+  build-docker-image:
+    working_directory: ~/s390x
+    docker:
+      - image: Dockerfile
+    steps:
+      - attach_workspace:
+          at: .
+      
+      - run: 
+         - name: Build for s390x
+         - command: docker build buildx --platform=linux/s390x --squash -t cassandra:s390x .
+      - docker/check:
+         registry: $DOCKER_REGISTRY 
+  prepare-kernel:
+    steps:
+        - name: Fetching the Linux kernel
+                  command: |
+                      mkdir ~/s390x/kernel-bionic; debootstrap --include=linux-generic \
+                      --arch=s390x --variant=minbase bionic kernel-bionic \
+                      http://ports.ubuntu.com
+        - store_artifacts:
+              path: ~/s390x/kernel-bionic/boot/vmlinuz-4.15.0-20-generic
+        - persist_to_workspace:
+                  root: .
+                  paths:
+                      - .
+  
+workflows:
+    version: 1
+    build-test:
+      jobs:
+        - prepare-kernel
+        - build-docker-image
+          - requires: prepare-kernel
+        
+\end{boxedverbatim}
 

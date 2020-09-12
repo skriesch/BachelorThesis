@@ -139,6 +139,17 @@ After this action, the Docker image is usable as it would have been built on thi
 Nagios is an open-source monitoring system to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/plugins/cassandra_check.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
 This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. 
 
+This monitoring check is integrated into the Dockerfile with following commands at the end:
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
+COPY plugins/cassandra_check.pl /bin/cassandra_check.pl
+ENTRYPOINT ["perl", "cassandra_check.pl"]
+\end{boxedverbatim}
+ \caption{Cassandra Monitoring Check}
+    \label{Cassandra-Monitoring}
+\end{figure}
+
 \section{Running the Docker Image}\label{RunningDockerImage}
 
 The Docker image will be built with the command  \\
@@ -176,3 +187,9 @@ Now it is possible to run the system with Cassandra: \\
 \end{figure}
 
 \section{Integration into CI/CD}
+
+The community of Apache Cassandra is using Circle CI\footnote{\url{https://circleci.com/}} as a Continious Integration system.
+Circle CI is working with a yaml configuration. This one has got the feature to be able to build Docker images. Therefore, the build process for the s390x architecture can be integrated. The same counts for all QEMU process steps. It is posible to define shell commands with "command" in the yml file. Therefore, \ref{LinuxKernel}"Fetching Signed Linux Kernel Image" can be integrated. Additionally, dependencies can be created. On this way, it can be assured that the build process for the Docker image is triggered before the filesystem creation. 
+The same counts for the kernel fetching process and the filesystem creation before the QEMU start. \\
+This configuration file with the whole setup process has got the name \textbf{config.yml}.
+
