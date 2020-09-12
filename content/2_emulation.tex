@@ -38,7 +38,15 @@ The user-mode emulation can run directly non-privileged instructions or is using
 It is achievable to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then, and the preferred architecture has to be registered in binfmt\_misc. binfmt\_misc is a kernel module. 
 You can register other architectures within that, so multiple other architectures can be run on this host. 
 Not only QEMU can be used for system emulation. Container technologies as Docker include an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
-This technology has got the name BuildX. Accordingly, a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together. in this case, an external Linux kernel will be integrated, and the application can be mounted via a loaded Docker image in a hard disk image.
+This technology has got the name BuildX. Accordingly, a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together. in this case, an external Linux kernel will be integrated, and the application can be mounted via a loaded Docker image in a hard disk image. \\
+The initrd should match the Linux kernel and is optional. It is used to start an init process togeher with required test scripts.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Qemu_setup}
+ \caption{Emulation with QEMU}
+    \label{QEMU_Emulation}
+\end{figure}
 
 
 \subsection{Binfmt\_misc}
@@ -164,7 +172,8 @@ Ext4 is a journaling file system (the same as ext3). The journal is registering 
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
 Such journal file systems in the ext file system family are working with blocks \cite[~p.20]{Seufert2015}.
 The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
-The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. Flex groups can combine multiple group blocks - inode bitmaps, inode tables and data blocks - to one logic block group. All data from inodes are only saved in the first flex group then. 
+The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
+Flex groups can combine multiple group blocks - inode bitmaps, inode tables and data blocks - to one logic block group. All data from inodes are only saved in the first flex group then. 
 So the search for files is more powerful because meta data are allocated at one place.\\
 All meta data from the journal can be relocated in inodes because changes of file system meta data are registered, too. \\
 The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional check sums for journal transactions \cite[~p.28]{Seufert2015}.
