@@ -19,26 +19,26 @@ QEMU does not emulate the whole hardware. That is only possible for the CPU. QEM
 \section{Full System Emulation}
 
 The Full System Emulation emulates a whole system with hardware, the operating system (with the kernel) and the userspace (with application processes). 
-The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run privileged instructions \cite{Butt2011}. 
-Additionally, it can be used as an application development platform where specific hardware is not available. 
-System emulation with emulated hardware is slower than a real machine because instructions executed directly in the guest hardware have to be emulated in software. 
+The system (hardware and operating system) will be translated unmodified. The benefit of system emulation (compared to user mode emulation) is that you can run privileged instructions \cite[~p.2]{Butt2011}. This feature enables the translation of unmodified  target code on the operating system.
+Additionally, this emulation can be used as an application development platform where specific hardware is not available. 
+System emulation with emulated hardware is slower than a real machine because instructions should be executed directly in the guest hardware.  But that has to be emulated in software. 
 That implies multiple host instructions because of the translation for a single guest instruction as a result \cite[~p.1]{Tong2014}.
 It is possible to reduce the supported and attached additional devices with special options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards, less hardware has to be emulated, which has given a better performance.  \\
 System emulation benefits from the virtualization support as KVM. So most CPU operations are not required to emulate.
 
 \section{User Mode Emulation}
 
-The User Mode Emulation does not emulate the whole system. It is faster than the Full System Emulation. Application processes can be reproduced in QEMU with a minimal system for a specific application. 
-This emulation type is working on a system call level. Therefore, the application has to be runnable as a process executable itself. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target to an equivalent system call on the host.
-The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system \cite{Butt2011}.
+The User Mode Emulation does not emulate the whole system. It is faster than the Full System Emulation because it does not engage so much hardware ressources. Application processes can be reproduced in QEMU with a minimal system for a specific application. 
+This emulation type is working on a system call level. Therefore, the application has to be runnable as a process executable itself. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{QEMU}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
+The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system \cite[~p.2]{Butt2011}.
 
 
-\section{Emulation of Different Architectures}
+\section{Emulation of Alternative Architectures}
 
-It is achievable to emulate different architectures on another hardware architecture. The package qemu-user-static has to be installed then, and the preferred architecture has to be registered in binfmt\_misc. binfmt\_misc is a kernel module. 
-You can register other architectures within that, so multiple other architectures can be run on this host. 
+It is achievable to emulate alternative architectures on another hardware architecture. The package qemu-user-static has to be installed then, and the preferred architecture has to be registered in binfmt\_misc. binfmt\_misc is a kernel module. 
+You can register other architectures within that, so multiple other architectures can be run on one host. 
 Not only QEMU can be used for system emulation. Container technologies as Docker include an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
-This technology has got the name BuildX. Accordingly, a hybrid virtualization approach is practicable with different virtualization technologies as with QEMU and Docker together. in this case, an external Linux kernel will be integrated, and the application can be mounted via a loaded Docker image in a hard disk image. \\
+This technology has got the name BuildX. Accordingly, a hybrid virtualization approach is practicable with different virtualization and emulation technologies as with QEMU and Docker together. In this case, an external Linux kernel will be integrated into QEMU, and the application can be mounted via a loaded Docker image in a hard disk image. \\
 The initrd should match the Linux kernel and is optional. It is used to start an init process togeher with required test scripts.
 
 \begin{figure}[H]
