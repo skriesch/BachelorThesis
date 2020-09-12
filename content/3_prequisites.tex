@@ -1,10 +1,10 @@
 \chapter{Prequisites}\label{ch:prequisites}
 
 
-Different software is necessary to run qemu or docker for multiple architectures. Therefore, docker and qemu should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
+Different software is necessary to run qemu or docker for multiple architectures. Therefore, \textbf{docker} and \textbf{qemu} should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
 \textbf{Root permissions} are required for installation, configuration and running emulated systems.
 
-It is possible to install packages as binfmt-support and qemu-user-static by different Linux distributions, but it is recommended to use the ultimate version for s390x. \\
+It is possible to install packages as \textbf{binfmt-support} and \textbf{qemu-user-static} by different Linux distributions, but it is recommended to use the latest version for s390x. \\
 
 \section{Registration of Qemu-S390x}\label{Qemu-S390-Registration}
 
@@ -63,7 +63,7 @@ make install
 \end{figure}
  
 
-\section{Fetching Signed Linux Kernel Image}
+\section{Fetching Signed Linux Kernel Image} \label{LinuxKernel}
 
 QEMU needs a built Linux kernel to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
 The build process via CI/CD should be fast. Therefore, the second option will be used. The Docker filesystem in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
