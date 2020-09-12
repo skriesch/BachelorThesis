@@ -2,7 +2,8 @@
 
 \section{Overview}
 
-Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra can be changed with every version. 
+Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra can be changed with every version. That has to be recognized during the integration into the CI/CD pipeline of the project. There are different multi-arch Dockerfiles for all versions of AdoptOpenJDK to use. \\ 
+This Apache project is using Circle CI for Continuous Integration.
 
 \section{Installation}\label{Cassandra-Installation}
 
@@ -150,14 +151,14 @@ ENTRYPOINT ["perl", "cassandra_check.pl"]
     \label{Cassandra-Monitoring}
 \end{figure}
 
-\section{Running the Docker Image}\label{RunningDockerImage}
+\section{Run Docker Image in QEMU}\label{RunningDockerImage}
 
 The Docker image will be built with the command  \\
 \lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra:s390x .! \\
 in the directory with the Cassandra Dockerfile  for the architecture s390x. \\
-\textbf{Squash} is an option to compress a Docker image and combine commands in a Dockerfile automatically. The prequisites for building s390x images on x86 are set duiring the emulation preparation. The command \lstinline!docker images! has to show the registered Dockerimage with the name cassandra:390x then. It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
-\lstinline!qemu-img create -f raw cassandra.img 2G!  \\
-can be used. This image needs any Linux file system because QEMU does not know the Docker file system. The image is formated with the command  \lstinline!mkfs.ext4 -F cassandra.img! then. For receiving the file system of the docker image a directory with the name rootfs has to be crated and the command \\
+\textbf{Squash} is an option to compress a Docker image and combine commands in a Dockerfile automatically. The prequisites for building s390x images on x86 are set duiring the emulation preparation. The command \lstinline!docker images! has to show the registered Docker image with the name cassandra:390x then. It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
+\lstinline!qemu-img create -f raw cassandra-s390x.img 2G!  \\
+can be used. This image needs any Linux file system because QEMU does not know the Docker file system. The image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img! then. For receiving the file system of the docker image a directory with the name rootfs has to be crated and the command \\
 \lstinline!docker export $(docker create cassandra:s390x) | tar -C "rootfs" -xvf -!  \\ 
 is exporting the docker image into the directory rootfs. Following transfers the content of rootfs into the image cassandra.img.
 
@@ -165,7 +166,7 @@ is exporting the docker image into the directory rootfs. Following transfers the
 \centering
 \begin{boxedverbatim}
 mkdir /mnt/rootfs
-mount -o loop cassandra.img /mnt/rootfs
+mount -o loop cassandra-s390x.img /mnt/rootfs
 cp -r rootfs/* /mnt/rootfs/.
 \end{boxedverbatim}
  \caption{Mount Rootfs}
@@ -189,7 +190,14 @@ Now it is possible to run the system with Cassandra: \\
 \section{Integration into CI/CD}
 
 The community of Apache Cassandra is using Circle CI\footnote{\url{https://circleci.com/}} as a Continious Integration system.
-Circle CI is working with a yaml configuration. This one has got the feature to be able to build Docker images. Therefore, the build process for the s390x architecture can be integrated. The same counts for all QEMU process steps. It is posible to define shell commands with "command" in the yml file. Therefore, \ref{LinuxKernel}"Fetching Signed Linux Kernel Image" can be integrated. Additionally, dependencies can be created. On this way, it can be assured that the build process for the Docker image is triggered before the filesystem creation. 
+This CI/CD system is connected with Github. The tests are running after every commit in the master repository.
+These tests can run in a container or in a virtual machine. These options make it possible to build the Docker image for the architecture s390x and to integrate it into QEMU via the CI/CD pipeline without additional scripting or workarounds. \\
+Circle CI is working with a yaml configuration\footnote{\url{https://circleci.com/docs/2.0/sample-config/}}. 
+An enhancement is the opportunity to define shell commands with "command" in the yml file. Therefore, \ref{LinuxKernel}"Fetching Signed Linux Kernel Image" can be integrated. 
+Additionally, dependencies can be created. On this way, it can be assured that the build process for the Docker image is triggered before the filesystem creation. 
 The same counts for the kernel fetching process and the filesystem creation before the QEMU start. \\
-This configuration file with the whole setup process has got the name \textbf{config.yml}.
+This configuration file with the whole test process has got the name \textbf{config.yml}. \\
+\textbf{Workflows} defines the order of different process steps with their dependencies with \textbf{- requires}.
+The different processes are specified separately above then. The workspace can be declared. Running steps can receive names. Shell commands can be executed. Additionally, binaries and other files can be stored as artifacts. \\
+The implementation of the job configuration can be found under \ref{CircleCI}.
 
