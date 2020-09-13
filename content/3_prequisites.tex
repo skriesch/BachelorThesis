@@ -18,9 +18,10 @@ Ultimate stable releases of qemu-user-static can be found under \url{https://git
 \lstinline!wget https://github.com/multiarch/qemu-user-static/releases/download/v5.0.0-2/x86_64_qemu-s390x-static.tar.gz! \\ 
 for the specific version of qemu-s390x-static on x86. That is extracted to the directory \path{/usr/bin/} with the command \\ 
 \lstinline!sudo tar -xvzf x86_64_qemu-s390x-static.tar.gz -C /usr/bin/! \\
-then. The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The configuration will be used by the installed qemu-user-static.\\
+afterwards. 
+The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The configuration will be used by the installed qemu-user-static.\\
 
-s390x binaries have to be registered for s390x that they can be executable on x86. That is done with the following commands: \lstinline!sudo -i! and 
+s390x binaries have to be registered for s390x that they can be executable on x86. That is executed with the following command: \lstinline!sudo -i! and 
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -34,7 +35,7 @@ xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
 
 \section{Enabling Multi-Architecture Images}\label{Multi-Architecture-Images}
 
-Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86 then. That can be added with the following:
+Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86. It can be added with the following configuration to the Docker daemon:
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -50,7 +51,7 @@ After a restart of the docker daemon, there should be listed this experimental f
 based on a Dockerfile in the existing directory.
 
  
-Additionally, a new version of BuildX is required. The pre-installed version of Docker has got bugs with the consequence of a broken build process with \textbf{Illegal instructions} at Go applications. That is fixed with the new version on Github. \\
+Additionally, a new version of BuildX is required. The pre-installed version of Docker has got bugs with the consequence of a broken build process with \textbf{Illegal instructions} at Go applications. This bug is fixed with the new version on Github. \\
 Therefore, the new version has to be installed with:
 \begin{figure}[H]
 \centering
@@ -76,12 +77,12 @@ Every additional device requires additional performance and time for starting th
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given \ref{QEMU-Command}"Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\ 
-The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. 
+The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given \ref{QEMU-Command}"Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\  
+The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. \textbf{-M s390-ccw-virtio} defines the machine type for s390x.
 \textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 
-So that is added as a device. Cassandra as a project does not need any network interface or parallelism. The 
-option \textbf{-nographic} is responsible for not adding any graphical interface. 
+So this one is added as a device with \textbf{-chardev stdio,id=console,signal=off,mux=on -mon chardev=console} and \textbf{-device sclpconsole,chardev=console}. Additionally, the console has to be specified with \textbf{console=ttyS0} in the append part. \\ 
+Cassandra as a project does not need any network interface (-net none) or parallelism (-parallel none). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
 So we save system requirements. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
 The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of the Bachelor Thesis for a considered open-source project. 
 That is the ideal option to mount a minimal file system for every application or system. 

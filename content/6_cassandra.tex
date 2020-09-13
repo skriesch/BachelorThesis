@@ -59,9 +59,6 @@ Following Java optimizations are available for Java 8: \\
 \begin{itemize}
 \item \textbf{-XX:+UseCGroupMemoryLimitForHeap}  \\
 This option tells the JVM to look into \path{/sys/fs/cgroup/memory/memory.limit} after the available memory and to use the whole memory if necessary \cite{Flood2017}.
-\item \textbf{-Xmx=1g} \\
-The JVM is allowed to allocate 1GB Heap. The default maximum JVM heap size is 64MB \cite{Gesso2017}. 
-It is used for run time data for all Java class instances. The heap is created during the start of the Java Virtual Machine.
 \item \textbf{-XX:ParallelGCThreads=2} \\
 Apache Cassandra is referencing  2 required CPUs as a minimum in their documentation \cite{Cassandra}.
 This JVM option permits 2 GC (Garbage Collection) threads parallel on different (virtual) processors.
@@ -70,9 +67,32 @@ This JVM option permits 2 GC (Garbage Collection) threads parallel on different 
 All these Java optimization options can be set as an environment variable with \lstinline!ENV JVM_OPTIONS! in the Dockerfile. Then they will be used for every Java process like Apache Cassandra as an example.
 As a result, Apache Cassandra can use the whole memory and delivered CPU, which is specified in the QEMU options.
 
+\section{Nagios Monitoring Check for Tests}
+
+Nagios is an open-source monitoring system to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/skyscrapers/monitoring-plugins/blob/master/check_cassandra.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running, and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
+This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. \\
+All monitoring plugins in the referenced Github repository are developed additionally for integration into Docker. Following, these scripts do not require any installed nagios system for monitoring.
+Summarily, these monitoring plugins can be used for tests inside of our Dockerfile.
+
+
+That said, \textbf{cassandra\_check.pl} is integrated into the Dockerfile with following commands at the end:
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
+COPY plugins/cassandra_check.pl /bin/cassandra_check.pl
+ENTRYPOINT ["perl", "cassandra_check.pl"]
+\end{boxedverbatim}
+ \caption{Cassandra Monitoring Check}
+    \label{Cassandra-Monitoring}
+\end{figure}
+
 \section{Workaround Because of an JVM Issue}
 
-Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists the following JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there:
+Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
+
+
+This case has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions on x86, but during the build process on s390x. This issue does not exist with the version AdoptOpenJDK 14, but Apache Cassandra does not work with this version. \\
+That is an emulation bug of qemu which has to be fixed. This issue has been reported to KVM Developers inside of IBM. 
 
 \begin{figure}[H]
 \centering
@@ -124,32 +144,18 @@ Aborted (core dumped)
     \label{jvm-issue}
 \end{figure}
 
-This case has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions on x86, but during the build process on s390x. This issue does not exist with the version AdoptOpenJDK 14, but Apache Cassandra does not work with this version. \\
-That is an emulation bug of qemu which has to be fixed. This issue has been reported to KVM Developers inside of IBM. \\
 
-There is a workaround for the development process for finishing the project. The Docker image is buildable on s390x. Therefore, the Docker image has been built for s390x on s390x with  \lstinline!docker build --squash -t cassandra .!.
+There is a workaround for the development process for finishing the project. The Docker image is buildable on s390x. Therefore, the Docker image has been built for s390x on s390x with \\  
+\lstinline!docker build --squash -t cassandra .!. \\
 Afterwards, this image can be saved as a tar archive with \\
 \lstinline!docker save cassandra > cassandra.tar!\\ 
 on the host. It has to be transferred with rsync to the x86 system then. The image inside of the tar archive can be included to all existing images of \lstinline!docker images! with the command 
 \lstinline!docker load --input cassandra.tar!. \\
 After this action, the Docker image is usable as it would have been built on this system. 
+It can be integrated into QEMU and can be stated without any problems afterwards.
 
 
-\section{Nagios Monitoring Check for Tests}
 
-Nagios is an open-source monitoring system to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/plugins/cassandra_check.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
-This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. 
-
-This monitoring check is integrated into the Dockerfile with following commands at the end:
-\begin{figure}[H]
-\centering
-\begin{boxedverbatim}
-COPY plugins/cassandra_check.pl /bin/cassandra_check.pl
-ENTRYPOINT ["perl", "cassandra_check.pl"]
-\end{boxedverbatim}
- \caption{Cassandra Monitoring Check}
-    \label{Cassandra-Monitoring}
-\end{figure}
 
 \section{Run Docker Image in QEMU}\label{RunningDockerImage}
 
@@ -173,6 +179,7 @@ cp -r rootfs/* /mnt/rootfs/.
     \label{Mount-Rootfs}
 \end{figure}
 
+\newpage
 Now it is possible to run the system with Cassandra: \\
 \begin{figure}[H]
 \centering

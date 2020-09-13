@@ -1,7 +1,7 @@
 \chapter{Introduction}\label{ch:intro}
 
 One business introduced by IBM is the mainframe, now known as a Z system. It is possible to run Linux on it. There is a large community behind Linux and open-source projects. Open source does not contain only \gls{Linux}. There are different applications and other software developed by open-source communities. The mainframe hardware architecture is different from the architecture of a home PC. The Z system architecture is called \gls{s390x} and a default system \gls{x86}. Not every open-source community has got access to such a Z system. Most open-source contributors have got systems with the architecture x86. Therefore, it should be possible to test hardware dependencies for s390x on available systems. The goal of this Bachelor Thesis is to integrate emulated Z systems for different open-source projects to test their software for hardware dependencies so that it allows to release new versions in the CI/CD pipeline of the respective project for running on the architecture s390x without the available hardware. Deployments of the latest software version on Github and running tests have to be automated for that.\\
-Our focus is on Kubernetes-based open-source projects. These should be emulated for Z systems in the \gls{CI/CD} test infrastructure by these chosen projects. That will be done on systems by these communities. As the first step, the emulator will be chosen with the focus on functionality for Z systems on x86 architecture. After that, Kubernetes is installed in a Docker container. Tests should be able to be run on this system, too. That will be integrated into the emulation environment for an automated start. The CI/CD system should be able to execute all tests then. \\
+Our focus is on Kubernetes-based open-source projects. These should be emulated for Z systems in the \gls{CI/CD} test infrastructure by these chosen projects. That will be done on systems by these communities. As the first step, the emulator will be chosen with the focus on functionality for Z systems on x86 architecture. Afterwards, Kubernetes is installed in a Docker container. Additionally, tests should be able to be run on this system. That all will be integrated into the emulation environment for an automated start. In conclusion, the CI/CD system should be able to execute all tests. \\
 The same will be done with the NoSQL database Cassandra for the Apache community to represent the whole system stack from Kubernetes until the \gls{application layer} for container platforms. Other points are minimal systems requirements and minimal systems sizes. Here are different methods evaluated to minimize the system for emulation.
 
 
@@ -42,12 +42,12 @@ If a new application should be executed inside of the Docker container, then cre
 This application can be started with the "CMD" command then: \\
 \lstinline!CMD ["python","/app.py"]! \\
 It is recommended to define one service or process for one single container and to connect all containers for a start then. One single container is lauchable with the command \\
-\lstinline!docker run ${name}!. \\
-The command \lstinline!docker-compose! is available to automate the setup with multiple connected containers. That will be defined in a yaml format in the file docker-compose.yml.
+\lstinline!docker run ${name}!. In this case, \lstinline!${name}! can be the name of the image or the image id. \\
+The command \lstinline!docker-compose! is available to automate the setup with multiple connected containers. 
 
 The Dockerfile format has been spread as an easily understandable base for most container runtimes. 
 Docker has turned out to be more like a developer tool for many container technologies in the last years. 
-Consequently, as an example, Kubernetes is using Docker for their community tests as a base container runtime, too.
+Consequently, as an example, Kubernetes is using Docker for their community tests as a base container runtime.
 Most new container orchestration platforms are developed based on Docker. The difference is the replacement of the docker command and the expansion with additional features for clustering and specialized configurations.
 
 \subsection{Kubernetes}
