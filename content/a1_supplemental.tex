@@ -14,7 +14,8 @@ jobs:
       - run: 
             name: Build for s390x
             command: docker build buildx --platform=linux/s390x --squash \
-                    -t cassandra:s390x .
+                     --build-arg CASSANDRA_VERSION=$CASSANDRA_VERSION \
+                     -t cassandra:s390x .
       - docker/check:
          registry: $DOCKER_REGISTRY 
   prepare-kernel:

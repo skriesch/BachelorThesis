@@ -14,8 +14,8 @@ The Linux kernel module binfmt\_misc can be mounted with the following command: 
 \lstinline!mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc!
 
 The installed version 3.1 of qemu-user-static on Ubuntu 18.04 contains bugs that Docker images for s390 are not buildable on x86. Therefore, an upgrade to a new release is necessary.
-Ultimate stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.0.0-2 is used for the project and downloaded with \\
-\lstinline!wget https://github.com/multiarch/qemu-user-static/releases/download/v5.0.0-2/x86_64_qemu-s390x-static.tar.gz! \\ 
+Ultimate stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.1.0-2 is used for the project and downloaded with \\
+\lstinline!wget https://github.com/multiarch/qemu-user-static/releases/download/v5.1.0-2/x86_64_qemu-s390x-static.tar.gz! \\ 
 for the specific version of qemu-s390x-static on x86. That is extracted to the directory \path{/usr/bin/} with the command \\ 
 \lstinline!sudo tar -xvzf x86_64_qemu-s390x-static.tar.gz -C /usr/bin/! \\
 afterwards. 
@@ -68,7 +68,17 @@ make install
 
 QEMU needs a built Linux kernel to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
 The build process via CI/CD should be fast. Therefore, the second option will be used. The Docker filesystem in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
-The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the filesystem of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. This command "debootstrap" is validating all downloaded packages additionally. This process is easy to automate and requires only 10 seconds. In conclusion, the generic and signed Linux kernel image can be used in the \path{/boot/} directory for the integration into QEMU.
+The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the filesystem of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. The whole command is the following then: \\
+\begin{figure}[H]
+\begin{boxedverbatim}
+debootstrap --include=linux-generic --arch=s390x --variant=minbase bionic \
+kernel-bionic http://ports.ubuntu.com! 
+\end{boxedverbatim}
+\caption{Debootstrap}
+    \label{Debootstrap}
+\end{figure}
+
+This command "debootstrap" is validating all downloaded packages additionally. This process is easy to automate and requires only 10 seconds. In conclusion, the generic and signed Linux kernel image can be used in the \path{/boot/} directory for the integration into QEMU.
  
 
 \section{Optimized QEMU Command}\label{Optimized-Qemu-Command}

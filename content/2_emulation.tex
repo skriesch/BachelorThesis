@@ -146,7 +146,7 @@ It would be nice to integrate the docker file system into QEMU. After building a
 \lstinline!docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -!. \\
 
 Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
-QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} as the first partition \cite[~p.22]{White2020}.
+QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} for the first partition \cite[~p.22]{White2020}.
 
 \subsection{UnionFS}\label{UnionFS}
 

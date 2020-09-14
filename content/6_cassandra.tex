@@ -209,6 +209,6 @@ This configuration file with the whole test process has got the name \textbf{con
 The different processes are specified separately above then. 
 The advantage of different steps with dependencies is, that every step can be tested an the build process will be aborted after one failed process and this step will be listed with the error message in the CI/CD system. \\
 The configuration of Cirle CI is clearly structured. The workspace can be declared. Running steps can receive names. Shell commands can be executed. Additionally, binaries and other files can be stored as artifacts. \\
-The implementation of the job configuration can be found under \ref{CircleCI}. \\
-It is configured that the version number of Apache Cassandra can be replaced by a new version with \verb+--build-arg CASSANDRA_VERSION=$CASSANDRA_VERSION+ in the docker build command. With that, the checkout of the special Cassandra branch will be executed instead of the configured last one.
+The implementation of the job configuration can be found under \ref{CircleCI}. It can only work with a bug fix for the \ref{jvm-issue}"JVM Issue".\\
+The system is configured that the version number of Apache Cassandra can be replaced by a new version with \verb+--build-arg CASSANDRA_VERSION=$CASSANDRA_VERSION+ in the docker build command. With that, the checkout of the special Cassandra branch will be executed instead of the configured last one.
 
