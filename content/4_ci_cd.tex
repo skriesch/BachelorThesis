@@ -40,12 +40,25 @@ Many software manufacturers are using live environments by their customers becau
 The acceptance test requires users. The User Experience has to be tested on this test level. Mostly the Product Management and/ or the Customer Support are appointed for this task after the Alpha and Beta release. These release phases are executed before the final release for the possibility to fix critical or major bugs.
 Some software companies are offering such releases for free, if a customer wants to test the software in the customer environment.
 \end{itemize}
-This order of test levels has to be kept. Most test phases can be automated with CI/CD.
-
-
-
+This order of test levels has to be kept. Most test phases can be automated with CI/CD. 
 
 \section{CI/CD Systems}
 
-There is no one CI/CD system. These systems exist as open-source software and commercial software. They can integrate version control systems for automated tests of new software code or for their releases. \\
-CI/CD systems can split their tests in different test cases or \ref{TestLevel}levels. Developers can define which test should run on which branch and in which phase. A branch is a code copy in a version control system as Github, Gitlab or SVN. It supports teams working parallel on the same code and to manage that. The code contribution by a single Developer should be tested and approved before the merge into the master branch. That can be triggered after the Pull Request via CI/CD. The Pull Request is a request to merge the offered code contribution to the master branch. This test before the merge is in the CI/CD stage for component tests. Afterwards, integration tests can be running in the next stage.
+There is no one CI/CD system. These systems exist as open-source software and commercial software. They can integrate version control systems for automated tests of new software code or for their releases. 
+
+CI/CD systems can split their tests in different test cases or \ref{TestLevel}"levels". Developers can define which test should run on which branch and in which phase. A branch is a code copy in a version control system as Github, Gitlab or SVN. It supports teams working parallel on the same code and to manage that. The code contribution by a single Developer should be tested and approved before the merge into the master branch. That can be triggered via CI/CD after the Pull Request. The Pull Request is a request for merging the offered code contribution to the master branch. This test before the merge is in the CI/CD stage for component tests. Afterwards, integration tests can be adjoined in the next stage.
+
+Repeating test cases after software changes is called regression test \cite[~p.98]{Spillner2019}. That is checking whether new code is matching the requirements and does not implicate accidentally side effects. That is the best release method with using the CI/CD system in comparison with manual releases.
+
+CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representaion is "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
+The Release Manager or Product Manager can determine which test cases should be iterated in the CI/CD pipeline. Open-source projects have been appointing maintainers for this role and managing the CI/CD system.
+
+It is recommended to prepare separate environments for testing and production in the background \cite[~p.120]{Scholl2019}. 
+Default that will be done with virtual machines or containers on multiple hosts. The profit is that new base software versions can be tested together with the self developed software in the test environment during the system test before running in production.
+
+Some CI/CD systems are connected interrelated to the version control system that the creation of a release branch is possible from there. All functionality tests have to be passed.  If system tests are integrated, these tests "can" have to be matched. But that is no requirement. The goal of this Bachelor Thesis is to integrate first system tests for IBM Z into the CI/CD pipeline of open-source projects before the release. As a result, the software will be tested for the architecture s390x continuously and IBM Z will be supported by referred projects.
+
+\section{Emulations for System Tests}
+
+Traditionally development environments have been running on virtual machines or locally on development systems as the CI/CD system, as an example \cite[~p.123]{Scholl2019}. Progressively CI/CD systems are providing automated Docker builds and support for running containers besides of virtual machines. 
+Shell scripts and Python code are required decreasingly for system setups in separate scripts. Some systems allow the integration of shell commands into the job configuration.
