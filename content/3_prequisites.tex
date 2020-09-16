@@ -94,8 +94,8 @@ Only the console is necessary for receiving an output and debugging.
 So this one is added as a device with \textbf{-chardev stdio,id=console,signal=off,mux=on -mon chardev=console} and \textbf{-device sclpconsole,chardev=console}. Additionally, the console has to be specified with \textbf{console=ttyS0} in the append part. \\ 
 Cassandra as a project does not need any network interface (-net none) or parallelism (-parallel none). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
 So we save system requirements. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
-The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of the Bachelor Thesis for a considered open-source project. 
-That is the ideal option to mount a minimal file system for every application or system. 
+The filesystem of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of the Bachelor Thesis for a considered open-source project. 
+That is the ideal option to mount a minimal filesystem for every application or system. 
 \path{/dev/vda} is the partition name and rdinit is used for using bash as a default shell. \\
 This command can be used for user mode emulation with Apache Cassandra as an example.
 
