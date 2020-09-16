@@ -44,7 +44,7 @@ This order of test levels has to be kept. Most test phases can be automated with
 
 \section{CI/CD Systems}
 
-There is no one CI/CD system. These systems exist as open-source software and commercial software. They can integrate version control systems for automated tests of new software code or for their releases. 
+There is no one CI/CD system. These systems exist as open-source software and commercial software. They can integrate version control systems for automated tests of new software code or for their releases. Most common used CI/CD systems are Jenkins, CircleCI, Bamboo, TeamCity, GitLab CI and Travis CI\footnote{\url{https://medium.com/devops-dudes/top-7-best-ci-cd-tools-you-should-get-your-hands-on-in-2020-832c29db936a}}.
 
 CI/CD systems can split their tests in different test cases or \ref{TestLevel}"levels". Developers can define which test should run on which branch and in which phase. A branch is a code copy in a version control system as Github, Gitlab or SVN. It supports teams working parallel on the same code and to manage that. The code contribution by a single Developer should be tested and approved before the merge into the master branch. That can be triggered via CI/CD after the Pull Request. The Pull Request is a request for merging the offered code contribution to the master branch. This test before the merge is in the CI/CD stage for component tests. Afterwards, integration tests can be adjoined in the next stage.
 
@@ -66,4 +66,5 @@ Shell scripts and Python code are required decreasingly for system setups in sep
 System tests should integrate tests for system dependencies for multiple hardware architectures. Hosting of such systems should not be required. QEMU and other emulation software are providing features to emulate multiple system architectures.
 That can be integrated into the CI/CD pipeline. Host systems or test systems in the cloud have to be prepared with the listed \ref{ch:prequisites}"Prequisites". That can be automated with any configuration management system.
 
-QEMU in combination with container technologies exhibits a method of fast sytem deployments with all required system configuration with the possibility to emulate most used system architectures. That can keep software providers (and open-source communities) grounded that the developed software is supporting all tested architectures.
+QEMU in combination with container technologies exhibits a method of fast sytem deployments with all required system configuration with the possibility to emulate most used system architectures. That can keep software providers (and open-source communities) grounded that the developed software is supporting all tested architectures. 
+In conclusion, they gain confidence into their software on various platforms.

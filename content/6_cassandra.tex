@@ -138,9 +138,9 @@ It can be integrated into QEMU and can be stated without any problems afterwards
 Nagios is an open-source monitoring system to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/skyscrapers/monitoring-plugins/blob/master/check_cassandra.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running, and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
 This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. \\
 All monitoring plugins in the referenced Github repository are developed additionally for integration into Docker. Following, these scripts do not require any installed nagios system for monitoring.
-Summarily, these monitoring plugins can be used for tests inside of our Dockerfile.
+Summarily, these monitoring plugins can be used for tests inside of containerized environments for test Docker images.
 
-
+\newpage
 For a better maintenance, \textbf{cassandra\_check.pl} is integrated with a separate Dockerfile with the installation Dockerfile as a base image:
 \begin{figure}[H]
 \centering
@@ -163,7 +163,9 @@ RUN apt-get remove -y \
  \caption{Cassandra Monitoring Check}
     \label{Cassandra-Monitoring}
 \end{figure}
-The separation of both Dockerfiles profits by the reutilization of the main Dockerfile. The base Docker image can be published in different container registries for public usage without the monitoring check. Accessorily, the build process for the base image of Cassandra and the test with the monitoring check can be splitted in the CI/CD pipeline. The possibility of bug identification is simplified by this process.
+The separation of both Dockerfiles profits by the reutilization of the main Dockerfile. The base Docker image can be published in different container registries for public usage without the monitoring check. Accessorily, the build process for the base image of Cassandra and the test with the monitoring check can be splitted in the CI/CD pipeline. The possibility of bug identification is simplified by this process. \\
+The test Dockerfile in the monitoring directory\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/monitoring/Dockerfile}} can be reused for every Cassandra container image based on Ubuntu or Debian. The unique requirement is that the FROM line is matching the name of the tested Cassandra image name.
+
 
 \section{Run Docker Image in QEMU}\label{RunningDockerImage}
 
@@ -204,6 +206,7 @@ Now it is possible to run the system with Cassandra: \\
     \label{RunCassandra}
 \end{figure}
 
+\newpage
 \section{Integration into CI/CD}
 
 The community of Apache Cassandra is using Circle CI\footnote{\url{https://circleci.com/}} as a Continious Integration system.
