@@ -172,7 +172,7 @@ All sizes of different docker layers will exist continuously inside of the new f
 
 \subsection{Ext4}
 
-Ext4 is a journaling filesystem (the same as ext3). The journal is registering transactional all changes on the operating system with meta data.
+Ext4 is a journaling filesystem (equivalent to ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
 Such journal filesystems in the ext filesystem family are working with blocks \cite[~p.20]{Seufert2015}.
 The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
