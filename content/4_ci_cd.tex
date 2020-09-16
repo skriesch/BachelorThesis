@@ -62,3 +62,8 @@ Some CI/CD systems are connected interrelated to the version control system that
 
 Traditionally development environments have been running on virtual machines or locally on development systems as the CI/CD system, as an example \cite[~p.123]{Scholl2019}. Progressively CI/CD systems are providing automated Docker builds and support for running containers besides of virtual machines. 
 Shell scripts and Python code are required decreasingly for system setups in separate scripts. Some systems allow the integration of shell commands into the job configuration.
+
+System tests should integrate tests for system dependencies for multiple hardware architectures. Hosting of such systems should not be required. QEMU and other emulation software are providing features to emulate multiple system architectures.
+That can be integrated into the CI/CD pipeline. Host systems or test systems in the cloud have to be prepared with the listed \ref{ch:prequisites}"Prequisites". That can be automated with any configuration management system.
+
+QEMU in combination with container technologies exhibits a method of fast sytem deployments with all required system configuration with the possibility to emulate most used system architectures. That can keep software providers (and open-source communities) grounded that the developed software is supporting all tested architectures.
