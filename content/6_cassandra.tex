@@ -18,7 +18,7 @@ Apache Cassandra will be cloned from the Github repository with \\
 The special version is set with an agument with the ARG variable. On this way, it is possible to checkout other versions with a given argument as \lstinline!--build-arg CASSANDRA_VERSION=3.12.4! in the docker build command. \\
 Apache Cassandra is using JNA (Java Native Library)\footnote{\url{https://github.com/java-native-access/jna}} as an extension of Java. JNA offers provides Java programs easy access to native shared libraries. The ant command is building the application and the JNA subsequently. \\
 The command \lstinline!sed -i ' s/Xss256k/Xss32m/'! is setting the size of the frame stack (JVM stack) used by each thread to store local variables. This frame size is reduced to a minimum and stored in both files build.xml and conf/jvm.options.
-
+A soft link (\textbf{ln -s} will be created to save space in the container. Such a soft link refers to a symbolic path of another file or directory. Following, all files inside of the build directory \path{/root/cassandra} are additionally available under \path{/usr/share/cassandra}. Another benefit is the low time for the creation of a soft ling in comparison to a copy / move command.
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -39,9 +39,9 @@ git clone https://github.com/java-native-access/jna.git \
 && wget -O lib/snappy-java-1.1.2.6.jar https://repo1.maven.org/maven2/org/xerial/snappy/
 snappy-java/1.1.2.6/snappy-java-1.1.2.6.jar \
 && rm lib/jna-4.2.2.jar \
-&& cd $SOURCE_ROOT \
-&& cp $SOURCE_ROOT/jna/build/jna.jar $SOURCE_ROOT/cassandra/lib/jna-4.2.2.jar \
-&& cp -R $SOURCE_ROOT/cassandra /usr/local/ \
+&& ln -s $SOURCE_ROOT/cassandra /usr/share/cassandra \
+&& rm -rf  $SOURCE_ROOT/jna $SOURCE_ROOT/*.tar.gz  \
+&& rm -rf /usr/share/cassandra/test \
 \end{boxedverbatim}
  \caption{Cassandra Installation}
     \label{Cassandra-Installation}
@@ -76,17 +76,29 @@ All monitoring plugins in the referenced Github repository are developed additio
 Summarily, these monitoring plugins can be used for tests inside of our Dockerfile.
 
 
-That said, \textbf{cassandra\_check.pl} is integrated into the Dockerfile with following commands at the end:
+For a better maintenance, \textbf{cassandra\_check.pl} is integrated with a separate Dockerfile with the installation Dockerfile as a base image:
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
-COPY plugins/cassandra_check.pl /bin/cassandra_check.pl
+FROM cassandra-s390
+RUN apt-get update && apt-get install -y \
+    perl \
+    perl-base \
+    libimage-magick-perl     
+WORKDIR /bin
+COPY cassandra_check.pl /bin/cassandra_check.pl
 ENTRYPOINT ["perl", "cassandra_check.pl"]
+RUN apt-get remove -y \
+    perl \
+    libimage-magick-perl\
+    perl-base  \
+&& apt autoremove -y \
+&& apt-get clean && rm -rf /var/lib/apt/lists/*
 \end{boxedverbatim}
  \caption{Cassandra Monitoring Check}
     \label{Cassandra-Monitoring}
 \end{figure}
-
+The separation of both Dockerfiles profits by the reusability and beeter maintenance of the main Dockerfile. It can be published in different container registries for public usage without the monitoring check. Accessorily, the build process for the base image of Cassandra and the test with the monitoring check can be splitted in the CI/CD pipeline. The possibility of bug identification is simplified by this process.
 \section{Workaround Because of an JVM Issue}
 
 Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
@@ -161,12 +173,15 @@ It can be integrated into QEMU and can be stated without any problems afterwards
 \section{Run Docker Image in QEMU}\label{RunningDockerImage}
 
 The Docker image will be built with the command  \\
-\lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra:s390x .! \\
-in the directory with the Cassandra Dockerfile  for the architecture s390x. \\
-\textbf{Squash} is an option to compress a Docker image and combine commands in a Dockerfile automatically. The prequisites for building s390x images on x86 are set duiring the emulation preparation. The command \lstinline!docker images! has to show the registered Docker image with the name cassandra:390x then. It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
+\lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra-s390 .! \\
+in the directory with the Cassandra Dockerfile  for the architecture s390x. That is the base Cassandra image.\\
+\textbf{Squash} is an option to compress a Docker image and combine commands in a Dockerfile automatically. The prequisites for building s390x images on x86 are set duiring the emulation preparation. The command \lstinline!docker images! has to show the registered Docker image with the name cassandra-390 in the local container registry. Afterwards, the monitoring check has to be added. 
+The same procedure will be executed in the monitoring directory. The FROM command is referencing the self built Cassandra image with cassandra-s390. With the following command the monitoring check can be attached to the exiting Cassandra image to test it: \\
+\lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra-check .! \\
+It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
 \lstinline!qemu-img create -f raw cassandra-s390x.img 2G!  \\
-can be used. This image needs any Linux file system because QEMU does not know the Docker file system. The image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img! then. For receiving the file system of the docker image a directory with the name rootfs has to be crated and the command \\
-\lstinline!docker export $(docker create cassandra:s390x) | tar -C "rootfs" -xvf -!  \\ 
+can be used. This image needs any Linux file system because QEMU does not know the Docker filesystem. The image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img! then. For receiving the filesystem of the docker image a directory with the name rootfs has to be created and the command \\
+\lstinline!docker export $(docker create cassandra-check) | tar -C "rootfs" -xvf -!  \\ 
 is exporting the docker image into the directory rootfs. Following transfers the content of rootfs into the image cassandra.img.
 
 \begin{figure}[H]
@@ -180,7 +195,6 @@ cp -r rootfs/* /mnt/rootfs/.
     \label{Mount-Rootfs}
 \end{figure}
 
-\newpage
 Now it is possible to run the system with Cassandra: \\
 \begin{figure}[H]
 \centering
