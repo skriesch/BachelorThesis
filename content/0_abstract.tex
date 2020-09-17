@@ -2,21 +2,21 @@
 \section*{Kurzdarstellung}
 \label{sec:kurzdarstellung}
 %Kurze Zusammenfassung der Arbeit, höchstens halbe Seite.
-Open-Source-Projekte entwickeln Software, die frei verfügbar ist. Diese Communitys lassen automatisierte Tests gegen jede Code-Änderung laufen, um die bester Software-Qualität zu garantieren. 
-Diese Tests sollen auf unterschiedlichen Architekturen laufen können. Es ist schwierig, Software für grundlegende Hardware ohne Zugriff darauf zu testen. Deshalb muss die Architektur s390x für Z Systeme für ausgewählte Open-Source-Projekte emuliert (nachgeahmt) und in die entsprechende CI/CD-Pipeline eingefügt werden. 
+Open-Source-Projekte entwickeln Software, wo der Quellcode frei verfügbar ist. Diese Communitys lassen automatisierte Tests gegen jede Code-Änderung laufen, um die bester Software-Qualität zu garantieren. 
+Diese Tests sollen auf unterschiedlichen Architekturen laufen können. Es ist schwierig, Software für grundlegende Hardware ohne Zugriff darauf zu testen. Deshalb muss die in IBM Z verwendete s390x Architektur für ausgewählte Open-Source-Projekte emuliert (nachgeahmt) und in die entsprechende CI/CD-Pipeline eingefügt werden. 
 Das sollte mit schnellen Deployment-Methoden im Emulator QEMU durchgeführt werden. 
-Kubernetes wird als containerisiertes Beispiel-Projekt aus der Sicht als Grundlage für dafür eingeführte Anwendungen verwendet. Ein weiteres Open-Source-Projekt, Apache Cassandra, wird verwendet um Tests auf der Anwendungsschicht im Kubernetes-Stack zu repräsentieren. \\
-Zusätzlich müssen die minimalen Systemanforderungen für die Einrichtung innerhalb der CI/CD-Infrastruktur beider Projekte wegen der Minimierung an Festplattenplatz, Memory und CPU-Verbrauch analysiert werden. Zum Abschluss wird die automatische Emulation beider Projekte in die Test-Infrastruktur integriert, so dass diese Projekte für die Architektur von Z Systemen aktiviert sind. Allgemein soll diese Methode für weitere Open-Source-Projekte in der Zukunft wiederverwendet werden können.
+Kubernetes wird als containerisiertes Beispiel-Projekt als Grundlage für dafür eingeführte Anwendungen verwendet. Ein weiteres Open-Source-Projekt, Apache Cassandra, wird verwendet um Tests auf der Anwendungsschicht im Kubernetes-Stack zu repräsentieren. \\
+Zusätzlich müssen die minimalen Systemanforderungen für die Einrichtung innerhalb der CI/CD-Infrastruktur beider Projekte wegen der Minimierung an Festplattenplatz, Memory und CPU-Verbrauch analysiert werden. Zum Abschluss wird die automatische Emulation beider Projekte in die Test-Infrastruktur integriert, so dass diese Projekte für die s390x Architektur von Z Systemen aktiviert sind. Allgemein soll diese Methode für weitere Open-Source-Projekte in der Zukunft wiederverwendet werden können.
 
 
 
 \section*{Abstract}
 \label{sec:abstract}
 
-Open-source projects are developing software which is freely available. These communities are running automated tests against every code change in order to guarantee the best software quality. 
-These tests should be able to run on different architectures. It is difficult to test software for essential hardware without access. Therefore, the architecture \gls{s390x} for \gls{Z systems} has to be emulated on x86 for chosen open-source projects and included in their \gls{CI/CD} pipeline. 
+Open-source projects are developing software with free available source code. These communities are running automated tests against every code change in order to guarantee the best software quality. 
+These tests should be able to run on different architectures. It is difficult to test software for essential hardware without access. Therefore, the \gls{s390x} architecture used in IBM \gls{Z systems} has to be emulated on x86 for chosen open-source projects and included in their \gls{CI/CD} pipeline. 
 That should be executed with fast deployment methods in the \gls{emulator} QEMU. 
-Kubernetes is used as a \gls{containerized} example project in the point of view as the foundation for instituting applications. Another open-source project, Apache Cassandra, is applied to represent tests on the \gls{application layer} in the Kubernetes stack. \\
-Additionally, minimal system requirements have to be analyzed for the setup inside of the CI/CD infrastructure of both projects concerning the minimization of space, memory and CPU usage for deployments. Finally, the automated emulation of both projects will be integrated into the test infrastructure, that these projects are enabled for the architecture of Z systems. Overall, this method should be reapplied for further open-source projects in the future.
+Kubernetes is used as a \gls{containerized} example project as the foundation for instituting applications. Another open-source project, Apache Cassandra, is applied to represent tests on the \gls{application layer} in the Kubernetes stack. \\
+Additionally, minimal system requirements have to be analyzed for the setup inside of the CI/CD infrastructure of both projects concerning the minimization of disk space, memory and CPU usage for deployments. Finally, the automated emulation of both projects will be integrated into the test infrastructure, that these projects are enabled for the s390x architecture of IBM Z systems. Overall, this method should be reusable for further open-source projects in the future.
 
 
