@@ -103,7 +103,7 @@ These can be used of course and are updated continuously. That is the reason to 
 That is downloading all available Kubernetes-Tests. So you can use them to test the own Kubernetes cluster and the used software. \\
 
 The name of the most relevant tests for the Kubernetes community is "conformance tests". These conformance tests are executed with e2e.test  which can be built with make inside of the kubernetes repository. 
-Therefore this repository has to be cloned to k8s.io, too. These tests certify the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{https://github.com/cncf/k8s-conformance}. 
+Therefore this repository has to be cloned to k8s.io, too. These tests certify the software to comply regular standards. Only with complying these standards, Kubernetes software is allowed to become Kubernetes certified\footnote{\url{https://github.com/cncf/k8s-conformance}}. 
 
 
 \begin{figure}[H]
@@ -130,6 +130,25 @@ CMD make WHAT="test/e2e/e2e.test vendor/github.com/onsi/ginkgo/ginkgo cmd/kubect
 \end{figure}
 
 \subsection{E2e.test}
+The e2e.test suite is a end-to-end testing framework for Kubernetes. It is testing Kubernetes for all required functionality \cite{Ohly2019}. This framework is written in Go and is using the Ginkgo Testing framework\footnote{\url{https://onsi.github.io/ginkgo/}} for expressive and comprehensive tests with the style of Behavior Driven Development (BDD).
+Expected behaviors are described in specs inside of the Kubernetes directory for e2e-tests\footnote{\url{https://github.com/kubernetes/kubernetes/tree/master/test/e2e}}. These tests exist for every Kubernetes version in specified Github branches. \\
+The test is built with the installed Go based on the file \textbf{e2e\_test.go}. Kubernetes has been importing all multiple providers, in-tree tests, configuration support, and bindata file lookup in the file e2e\_test.go.
+The vendoring code and their dependencies are available under \path{k8s.io/kubernetes/vendor/}. These can be tested limited to necessary dependencies, too. \\
+Conformance tests can be included with: \\
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
+export KUBERNETES_CONFORMANCE_TEST=y
+export KUBECONFIG=”$HOME/.kube/config”
+go run hack/e2e.go -- --provider=skeleton --test \
+--test_args=”--ginkgo.focus=\[Conformance\]” 
+\end{boxedverbatim}
+ \caption{E2e-Test}
+    \label{e2e-test}
+\end{figure}
+
+These conformance tests are a subset of e2e-tests \cite[~p.8]{Omichi2018}. Every vendor is receiving a certification by Kubernetes with passing all required conformance tests. 167 of 999 tests had been such conformance tests in the year 2018 \cite[~p.9]{Omichi2018}.
+A working Kubernetes test setup is required for running tests against it.
 
 \section{Run in the Main Dockerfile}
 
