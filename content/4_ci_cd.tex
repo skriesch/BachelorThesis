@@ -8,7 +8,7 @@ The software is tested automatically by the system before. If all is ok, it can 
 
 These tests during the software development lifecycle are integrated into all sprints for agile software development. That has got the name DevOps after adapting these practices with expanding with automated deployments for operations. It is playing an important role through all phases in the software development because of the quality of code today. The code complexity is growing with the size of the project. Therefore, it is beneficially to have automated tests running directly after the commit. 
 
-In the past, all systems had to be setup manually. Automating the software cycle and Test Driven Development (TDD) have promoted software for configuration managemant, CI/CD and version control. In combination, software can be deployed and tested over the full software development lifecycle. The Developer has the possibility to test his new written software before submitting and is receiving the feedback by the CI/CD system for the integration and system test whether his software is working in cooperation with other modules on multiple systems with their base operating systems.
+In the past, all systems had to be setup manually. Automating the software cycle and Test Driven Development (TDD) have promoted software for configuration managemant, CI/CD and version control. In combination, software can be deployed and tested over the full software development lifecycle. The Developer has the possibility to test his new written software before submitting and is receiving the feedback by the CI/CD system for the integration and system test whether the software is working in cooperation with other modules on multiple systems with their base operating systems.
 
 This process should be automated. "Infrastructure as Code" is a provision for managing the setup of systems, networks and services via written code \cite[~p.110]{Scholl2019}. These servers are deployable on real servers in any data centre or in the public cloud. Using code as a base ensures that all systems have been installed and configured on the same way matching the system requirements. 
 
@@ -40,7 +40,7 @@ Many software manufacturers are using live environments by their customers becau
 The acceptance test requires users. The User Experience has to be tested on this test level. Mostly the Product Management and/ or the Customer Support are appointed for this task after the Alpha and Beta release. These release phases are executed before the final release for the possibility to fix critical or major bugs.
 Some software companies are offering such releases for free, if a customer wants to test the software in the customer environment.
 \end{itemize}
-This order of test levels has to be kept. Most test phases can be automated with CI/CD. 
+This order of test levels has to be kept. 3 of 4 phases can be automated with CI/CD. 
 
 \section{CI/CD Systems}
 
@@ -50,7 +50,8 @@ CI/CD systems can split their tests in different test cases or \ref{TestLevel}"l
 
 Repeating test cases after software changes is called regression test \cite[~p.98]{Spillner2019}. That is checking whether new code is matching the requirements and does not implicate accidentally side effects. That is the best release method with using the CI/CD system in comparison with manual releases.
 
-CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representaion is "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
+Most developed CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representaion is "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
+Some systems can only handle only the Continuous Integration part. Others are developed to manage all in the CI/CD pipeline.
 The Release Manager or Product Manager can determine which test cases should be iterated in the CI/CD pipeline. Open-source projects have been appointing maintainers for this role and managing the CI/CD system.
 
 It is recommended to prepare separate environments for testing and production in the background \cite[~p.120]{Scholl2019}. 
