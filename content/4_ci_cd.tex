@@ -24,7 +24,7 @@ He has to extend the unit test with tests for new features for code coverage. Th
 The preparation with "Test First" is called Test Driven Development and is improving the code quality continuously.
 
 \item \textbf{Integration Test} \\
-The integration test is testing the matching of different modules. That is called software integration \cite[~p.71]{Spillner2019}. Some modules are using APIs (Application Programming Interface) for communication or have to correspond with other services.
+The integration test is testing the matching of different modules. This process is called software integration \cite[~p.71]{Spillner2019}. Some modules are using APIs (Application Programming Interface) for communication or have to correspond with other services.
 Devices, the output and performance have to be checked in this level.
 This test level can be performed with multiple connected containers for different services/ modules. Containers can represent sub systems. Bugs in interfaces and communication issues can be detected on this manner.
 All in all, the system architecture of the complete system can be tested with integration tests.
@@ -48,16 +48,16 @@ There is no one CI/CD system. These systems exist as open-source software and co
 
 CI/CD systems can split their tests in different test cases or \ref{TestLevel}"levels". Developers can define which test should run on which branch and in which phase. A branch is a code copy in a version control system as Github, Gitlab or SVN. It supports teams working parallel on the same code and to manage that. The code contribution by a single Developer should be tested and approved before the merge into the master branch. That can be triggered via CI/CD after the Pull Request. The Pull Request is a request for merging the offered code contribution to the master branch. This test before the merge is in the CI/CD stage for component tests. Afterwards, integration tests can be adjoined in the next stage.
 
-Repeating test cases after software changes is called regression test \cite[~p.98]{Spillner2019}. That is checking whether new code is matching the requirements and does not implicate accidentally side effects. That is the best release method with using the CI/CD system in comparison with manual releases.
+Repeating test cases after software changes is called regression test \cite[~p.98]{Spillner2019}. This practice is checking whether new code is matching the requirements and does not implicate accidentally side effects. That is the best release method with using the CI/CD system in comparison with manual releases.
 
-Most developed CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representaion is "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
+Most developed CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representation is "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
 Some systems can only handle only the Continuous Integration part. Others are developed to manage all in the CI/CD pipeline.
 The Release Manager or Product Manager can determine which test cases should be iterated in the CI/CD pipeline. Open-source projects have been appointing maintainers for this role and managing the CI/CD system.
 
 It is recommended to prepare separate environments for testing and production in the background \cite[~p.120]{Scholl2019}. 
 Default that will be done with virtual machines or containers on multiple hosts. The profit is that new base software versions can be tested together with the self developed software in the test environment during the system test before running in production.
 
-Some CI/CD systems are connected interrelated to the version control system that the creation of a release branch is possible from there. All functionality tests have to be passed.  If system tests are integrated, these tests "can" have to be matched. But that is no requirement. The goal of this Bachelor Thesis is to integrate first system tests for IBM Z into the CI/CD pipeline of open-source projects before the release. As a result, the software will be tested for the architecture s390x continuously and IBM Z will be supported by referred projects.
+Some CI/CD systems are connected interrelated to the version control system that the creation of a release branch is possible from there. All functionality tests have to be passed.  If system tests are integrated, these tests "can" have to be matched. But this proceeding is no requirement. The goal of this Bachelor Thesis is to integrate first system tests for IBM Z into the CI/CD pipeline of open-source projects before the release. As a result, the software will be tested for the architecture s390x continuously and IBM Z will be supported by referred projects.
 
 \section{Emulations for System Tests}
 
