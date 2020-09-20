@@ -71,7 +71,7 @@ All these Java optimization options can be set as an environment variable with \
 As a result, Apache Cassandra can use the whole memory and delivered CPU, which is specified in the QEMU options.
 
 
-\section{Workaround Because of an JVM Issue}
+\section{Workaround Because of a JVM Issue}
 
 Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
 

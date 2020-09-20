@@ -1,4 +1,4 @@
-\chapter{Prequisites}\label{ch:prequisites}
+\chapter{Prerequisites}\label{ch:prequisites}
 
 
 Different software is necessary to run qemu or docker for multiple architectures. Therefore, \textbf{docker} and \textbf{qemu} should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
@@ -8,15 +8,15 @@ It is possible to install packages as \textbf{binfmt-support} and \textbf{qemu-u
 
 \section{Registration of Qemu-S390x}\label{Qemu-S390-Registration}
 
-The packages \textbf{qemu-user-static} and \textbf{binfmt-support} should be installed because of the configuration. \\
+The packages \textbf{qemu-user-static} and \textbf{binfmt-support} should be installed because of all binfmt configuration files for various architectures in the directory \path{/usr/lib/binfmt.d/} \cite{Yang2019}. 
 
 The Linux kernel module binfmt\_misc can be mounted with the following command: \\
 \lstinline!mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc!
 
-The installed version 3.1 of qemu-user-static on Ubuntu 18.04 contains bugs that Docker images for s390 are not buildable on x86. Therefore, an upgrade to a new release is necessary.
+The installed version 3.1 of qemu-user-static on Ubuntu 18.04 contains bugs that Docker images for s390x are not buildable on x86. Therefore, an upgrade to a new release is necessary.
 Ultimate stable releases of qemu-user-static can be found under \url{https://github.com/multiarch/qemu-user-static/releases/}. The release v5.1.0-2 is used for the project and downloaded with \\
 \lstinline!wget https://github.com/multiarch/qemu-user-static/releases/download/v5.1.0-2/x86_64_qemu-s390x-static.tar.gz! \\ 
-for the specific version of qemu-s390x-static on x86. That is extracted to the directory \path{/usr/bin/} with the command \\ 
+for the specific version of qemu-s390x-static on x86. This static binary in the archive is extracted to the directory \path{/usr/bin/} with the command \\ 
 \lstinline!sudo tar -xvzf x86_64_qemu-s390x-static.tar.gz -C /usr/bin/! \\
 afterwards. 
 The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The configuration will be used by the installed qemu-user-static.\\
@@ -35,7 +35,7 @@ xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
 
 \section{Enabling Multi-Architecture Images}\label{Multi-Architecture-Images}
 
-Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86. It can be added with the following configuration to the Docker daemon:
+Docker is configured to build only for the own architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86. It can be added with the following configuration to the Docker daemon after the installation of docker:
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -67,12 +67,12 @@ make install
 \section{Fetching Signed Linux Kernel Image} \label{LinuxKernel}
 
 QEMU needs a built Linux kernel to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
-The build process via CI/CD should be fast. Therefore, the second option will be used. The Docker filesystem in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
+The build process via CI/CD should be fast. Building the Linux kernel would require a lot of time with a minimum of 1 hour. Therefore, the second option will be used. The Docker filesystem in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
 The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the filesystem of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. The whole command is the following then: \\
 \begin{figure}[H]
 \begin{boxedverbatim}
 debootstrap --include=linux-generic --arch=s390x --variant=minbase bionic \
-kernel-bionic http://ports.ubuntu.com! 
+kernel-bionic http://ports.ubuntu.com 
 \end{boxedverbatim}
 \caption{Debootstrap}
     \label{Debootstrap}
@@ -83,11 +83,11 @@ This command "debootstrap" is validating all downloaded packages additionally. T
 
 \section{Optimized QEMU Command}\label{Optimized-Qemu-Command}
 
-Every additional device requires additional performance and time for starting the system. 
+Every additional device requires additional resources and time for starting the system. 
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the built s390x kernel with the name bzImage. In the given \ref{QEMU-Command}"Optimized QEMU command" the qemu command is executed in the directory with the built Linux kernel and the path is unimportant. \\  
+The kernel option is receiving the path to the s390x Linux kernel image. In the given \ref{QEMU-Command}"Optimized QEMU command" the qemu command is executed in the main directory with the Linux kernel. This one is transferred from the boot directory to the main directory during the automation process \\  
 The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. \textbf{-M s390-ccw-virtio} defines the machine type for s390x.
 \textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 

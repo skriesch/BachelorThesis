@@ -9,10 +9,10 @@ It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sp
 It is a processor emulator using binary translation \cite{Butt2011} which is executing and translating emulated instructions based on blocks. Each block comprises one entry and one exit point \cite[~p.5]{Wang2010}. 
 The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
 The TCG is a small compiler replacing GCC because of unlimited releases and code changes. The TCG is converting the blocks of target instructions into a standardized form. 
-Subsequently, it has to be compiled for the host or target architecture. 
+Subsequently, it has to be compiled for the host or target architecture for the guest system. 
 If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
 The TCG integrates new code for the new host architecture in the background then. It is also dedicated to improving performance with avoiding repeated translations by buffering already translated code \cite{Cota2017}. 
-The TCG takes care of the emulation of the guest processor running as a thread launched by QEMU. The memory of a quest is allocated during launch. Then that is mapped into the address space of the QEMU process  \cite[~p.29]{Opsahl2013}.\\
+The TCG takes care of the emulation of the guest processor running as a thread launched by QEMU. The memory of a guest is allocated during launch. Then that is mapped into the address space of the QEMU process  \cite[~p.29]{Opsahl2013}.\\
 It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a default package. 
 QEMU does not emulate the entire hardware. That is only possible for the CPU. QEMU is used for emulations in this Bachelor Thesis.
 
@@ -22,7 +22,7 @@ The full-system emulation emulates a whole system with hardware, the operating s
 The system (hardware and operating system) will be translated unmodified. The condition of system emulation (compared to user mode emulation) is that you can run privileged instructions \cite[~p.2]{Butt2011}. This feature enables the translation of the unmodified target code on the operating system.
 That all leads to a slowdown of the emulation in comparison to the user-mode emulation.
 Additionally, this emulation can be used as an application development platform where specific hardware is not available. 
-System emulation with emulated hardware is slower than a real machine because instructions should be executed directly in the guest hardware.  However, that has to be emulated in software. 
+System emulation with emulated hardware is slower than a real machine because instructions should be executed in the guest hardware.  However, that has to be emulated in software. 
 That implies multiple host instructions as a result because of the translation for a single guest instruction \cite[~p.1]{Tong2014}.
 It is possible to reduce the supported and attached additional devices with additional options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards, less hardware has to be emulated, which has given a better performance.  \\
 System emulation benefits from the virtualization support as KVM. In this case, CPU operations are not required to emulate.
@@ -66,16 +66,15 @@ In this way, it is possible to register another system architecture (s390x on x8
 The necessary command for s390x registration can be found under \ref{Qemu-S390-Registration}.
 The package \textbf{binfmt-support} has to be installed first for using this kernel feature. 
 
-\subsection{Qemu-user-static}
+\subsection{Qemu-user-static}\label{qemu-user-static}
 
 The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package contained in various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled QEMU emulators that alternative architectures can run on another architecture \cite{Yang2019}. When building for one new architecture, static binaries are relevant because of the possibility of an "exec init error" without them. \\
 The installation contains emulators for all available architectures supported by the QEMU project incl. s390x aligned with the specific host architecture. In this manner, you can build and run a binary for different architectures on the same host (see \ref{Optimized-Qemu-Command} Optimized Qemu Command). That is the base for \ref{BuildX}BuildX by Docker, too.
 
 \subsection{BuildX}\label{BuildX}
 
-As mentioned above, Docker is using QEMU for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} Registration of Qemu-S390x). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be cloned from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
+As mentioned in \ref{qemu-user-static}"Qemu-user-static", Docker is using QEMU for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} Registration of Qemu-S390x). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be cloned from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
 In general, BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes the possibility of multi-architecture builds and exceptional output configuration. That involves not only the upload possibility to your local docker registry (see the output of \textbf{docker images}). That includes the output of "docker build" (which creates a docker image based on the requirements and installations in the used Dockerfile) into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
-The \textbf{Dockerfile} is using the requirements by the base docker image in the FROM command on top of the Dockerfile together with installations and configurations executed by all RUN commands or attached scripts with the command ADD. The \textbf{-t} flag is adding a special name as a tag under \textbf{docker images}.
 The special architecture for multi-architecture\ref{MultiArchitectureImages} builds can be specified with the additional option \textbf{--platform}.
 The option \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
 
@@ -161,7 +160,8 @@ Then every docker command inside of the Dockerfile is adding an additional layer
 That is the reason that every executed docker command is receiving an own id in the disk memory during the build process.
 Every separate docker command is using his own disk space. So a docker image can grow really fast.
 It is reasonable to compress so much as possible of different routines into one docker command. 
-All sizes of different docker layers will exist continuously inside of the new filesystem.
+All sizes of different docker layers will exist continuously inside of the new filesystem. \\
+The example Docker image for Ubuntu 18.04 on s390x is using the base image scratch as a super minimal system and is adding the tar archive with the rootfs for Ubuntu Bionic on S390x, which is the version Ubuntu 18.04. That will be installed as a minimal Ubuntu system then.
 
 \begin{figure}[H]
 \centering
@@ -174,18 +174,17 @@ All sizes of different docker layers will exist continuously inside of the new f
 
 Ext4 is a journaling filesystem (equivalent to ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
+
 Such journal filesystems in the ext filesystem family are working with blocks \cite[~p.20]{Seufert2015}.
 The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
 The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
 Flex groups can combine multiple group blocks - inode bitmaps, inode tables and data blocks - to one logic block group. All data from inodes are only saved in the first flex group then. 
 So the search for files is more powerful because meta data are allocated at one place.\\
-All meta data from the journal can be relocated in inodes because changes of filesystem meta data are registered, too. \\
+All meta data from the journal can be relocated in inodes, if changes of filesystem meta data are registered, too. \\
 The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional check sums for journal transactions \cite[~p.28]{Seufert2015}.
-
 Ext4 provides a better performance than ext3. 
 This filesystem can be formated with mkfs.ext4 which is available in every Linux distribution.
-This tool is creating a group despriptor table for further group descriptors what allows an expanding of the filesystem. The filesystem can grow a maximum of the multiple 1024 of his existing size because of the saved space \cite[~p.21]{Seufert2015}. \\
-
+This tool is creating a group despriptor table for further group descriptors what allows an expanding of the filesystem. The filesystem can grow a maximum of the multiple 1024 of his existing size because of the saved space \cite[~p.21]{Seufert2015}. 
 Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption \cite[p.24]{Seufert2015}.
 
 \begin{figure}[H]
@@ -199,12 +198,12 @@ Another feature of ext4 is the possibility of inline files and inline directorie
 
 In \ref{FileSystems}"Filesystems" is described how to export a Docker filesystem into a directory. That has got the format of the \ref{UnionFS}"UnionFS" at this moment. QEMU contains the beneficial tool \textbf{qemu-img} for creating loadable images of filesystems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
 In the case of Cassandra, there will be used \\
-\lstinline!docker images | grep 'Cassandra:s390x' | awk '{print int($7+0.5)"G"}'!. \\
+\lstinline!docker images | grep 'Cassandra-s390x' | awk '{print int($7+0.5)"G"}'!. \\
 \lstinline!print $7! would give the output of the size raw of \lstinline!docker images!, which is a float number. The \textbf{int} is rounding down to an integer number. Accordingly, the \textbf{0.5} has to be summed up for rounding up. The GB has been removed in this process. \lstinline!qemu-img! requires a G behind the number. That can be added with "G" inside of the awk command. \\
 
 Finally, Cassandra is using the command \\
 \lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{RunningDockerImage}"Running the Docker Image") \\
-for the creation of a filesystem image with a Docker image size about 1.2G then. "2G" can be replaced by the command above in the CI/CD pipeline then (see \ref{CircleCI}"Circle CI configuration for Apache Cassandra"). \\
+for the creation of a filesystem image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the CI/CD pipeline then (see \ref{CircleCI}"Circle CI configuration for Apache Cassandra"). \\
 At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a filesystem. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4. Writing into cassandra.img is only executible if the image is mounted into a directory under \path{/mnt/} with \\
 \lstinline!mount -o loop cassandra.img /mnt/rootfs!. \\ 
 In the next step the content of the filesystem directory can be copied into \path{/mnt/rootfs/} with \\ 
