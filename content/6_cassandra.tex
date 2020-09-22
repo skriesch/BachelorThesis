@@ -76,7 +76,7 @@ As a result, Apache Cassandra can use the whole memory and delivered CPU, which 
 Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
 
 This case has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions on x86, but during the build process on s390x. This issue does not exist with the version AdoptOpenJDK 14, but Apache Cassandra does not work with this version. \\
-That is an emulation bug of qemu which has to be fixed. This issue has been reported to KVM Developers inside of IBM. 
+This emulation bug of qemu has to be fixed and the issue has been reported to KVM Developers inside of IBM. 
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -124,14 +124,14 @@ Aborted (core dumped)
 \end{figure}
 
 
-There is a workaround for the development process for finishing the project. The Docker image is buildable on s390x. Therefore, the Docker image has been built for s390x on s390x with \\  
+There exists a workaround for the development process for finishing the project. The Docker image is buildable on s390x. Therefore, the Docker image has been built for s390x on s390x with \\  
 \lstinline!docker build --squash -t cassandra .!. \\
 Afterwards, this image can be saved as a tar archive with \\
 \lstinline!docker save cassandra > cassandra.tar!\\ 
 on the host. It has to be transferred with rsync to the x86 system then. The image inside of the tar archive can be included to all existing images of \lstinline!docker images! with the command 
 \lstinline!docker load --input cassandra.tar!. \\
 After this action, the Docker image is usable as it would have been built on this system. 
-It can be integrated into QEMU and can be stated without any problems afterwards.
+It can be integrated into QEMU and is able to be started without any problems afterwards.
 
 \section{Nagios Monitoring Check for Tests} \label{monitoring}
 
