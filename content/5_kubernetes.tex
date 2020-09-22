@@ -7,6 +7,7 @@ There exist plugins for integration tests for Kubernetes with the name kubetest\
 That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes and building tests with Go is necessary. The challenge is, that 2 big Github repositories have to be cloned and integrated into the docker image. That is using a lot of space. The solution is using a multi staging Dockerfile. 
 So 2 different Dockerfiles are used in one Dockerfile and one of them is used for building. The other one is used for the installation and testing with built tests. At the end the size of the docker image has got only the size of the test image regardless of the repository size in the mother Dockerfile.
 
+
 \section{Multi-Staging Dockerfile}
 
 A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with "AS" behind the "FROM" with the base image name. 
@@ -17,6 +18,15 @@ Default one image is receiving the name build and the other one a name of what w
 The second image is copying with "COPY --from=build" all required built data from the first image that it can be used for running the application. 
 On this way, it is possible to reduce the size of a docker image. \\
 Multi-staging Dockerfiles are an approved method for executing binaries based on Github repositories.
+
+\section{Docker Multi-Arch Image}
+
+Docker Inc. is maintaining a Docker image with the name "Docker-in-Docker" for multiple architectures, incl. s390x. 
+This Docker image was introduced by the Docker contributor Jerome Petazzoni (Tianon) with the name dind\footnote{\url{https://github.com/jpetazzo/dind}}. Docker can be installed on Ubuntu, openSUSE, Fedora, ArchLinux and Alpine on this way.
+The base Docker image on Docker Hub\footnote{\url{https://hub.docker.com/_/docker}} is based on Ubuntu.
+The base image for a specified architecture can be integrated with 2 methods. Firstly, the s390x base image can be pulled to the local container registry with \textbf{docker pull s390x/docker}. The second option is the integration of \textbf{s390x/docker} into the FROM command inside of the Dockerfile. Both methods are downloading the latest Docker version with Ubuntu from \path{docker.io/s390x/docker:latest} and register this Docker image in the local registry.
+Therefore, this image is used as a base image in the self-developed Dockerfile for Kubernetes.
+
 
 \section{Installation}
 
@@ -133,7 +143,7 @@ CMD make WHAT="test/e2e/e2e.test vendor/github.com/onsi/ginkgo/ginkgo cmd/kubect
 The e2e.test suite is a end-to-end testing framework for Kubernetes. It is testing Kubernetes for all required functionality \cite{Ohly2019}. This framework is written in Go and is using the Ginkgo Testing framework\footnote{\url{https://onsi.github.io/ginkgo/}} for expressive and comprehensive tests with the style of Behavior Driven Development (BDD).
 Expected behaviors are described in specs inside of the Kubernetes directory for e2e-tests\footnote{\url{https://github.com/kubernetes/kubernetes/tree/master/test/e2e}}. These tests exist for every Kubernetes version in specified Github branches. \\
 The test is built with the installed Go based on the file \textbf{e2e\_test.go}. Kubernetes has been importing all multiple providers, in-tree tests, configuration support, and bindata file lookup in the file e2e\_test.go.
-The vendoring code and their dependencies are available under \path{k8s.io/kubernetes/vendor/}. These can be tested limited to necessary dependencies, too. \\
+The vendoring code and their dependencies are available under \path{k8s.io/kubernetes/vendor/}. Additionally, these can be tested limited to necessary dependencies. \\
 Conformance tests can be included with: \\
 \begin{figure}[H]
 \centering
