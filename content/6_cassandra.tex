@@ -2,10 +2,10 @@
 
 \section{Overview}
 
-Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra can be changed with every version. 
+Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra is able to be changed with every version. 
 That has to be recognized during the integration into the CI/CD pipeline of the project. There are different multi-arch Dockerfiles for all versions of AdoptOpenJDK for public usage. These can be applied for the base Cassandra image. Afterwards, a multi-arch Docker image for Cassandra, which includes the s390x architecture, can be published. 
 A \ref{monitoring}"nagios monitoring check" - usable for containerized environments - is chosen for tests. This one has to be assimilated in the setup. \\ 
-This Apache project is using Circle CI for Continuous Integration. 
+This Apache project is using CircleCI for Continuous Integration. 
 
 \section{Installation}\label{Cassandra-Installation}
 
