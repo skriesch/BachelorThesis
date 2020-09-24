@@ -203,7 +203,7 @@ In the case of Cassandra, there will be used \\
 
 Finally, Cassandra is using the command \\
 \lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{RunningDockerImage}"Running the Docker Image") \\
-for the creation of a filesystem image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the CI/CD pipeline then (see \ref{CircleCI}"Circle CI configuration for Apache Cassandra"). \\
+for the creation of a filesystem image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the CI/CD pipeline then (see \ref{CircleCI}"CircleCI configuration for Apache Cassandra"). \\
 At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a filesystem. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4. Writing into cassandra.img is only executible if the image is mounted into a directory under \path{/mnt/} with \\
 \lstinline!mount -o loop cassandra.img /mnt/rootfs!. \\ 
 In the next step the content of the filesystem directory can be copied into \path{/mnt/rootfs/} with \\ 

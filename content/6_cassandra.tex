@@ -209,10 +209,10 @@ Now it is possible to run the system with Cassandra: \\
 \newpage
 \section{Integration into CI/CD}
 
-The community of Apache Cassandra is using Circle CI\footnote{\url{https://circleci.com/}} as a Continious Integration system.
+The community of Apache Cassandra is using CircleCI\footnote{\url{https://circleci.com/}} as a Continious Integration system.
 This CI/CD system is connected with Github. The tests are running after every commit in the master repository.
 These tests can run in a container or in a virtual machine. These options make it possible to build the Docker image for the architecture s390x and to integrate it into QEMU via the CI/CD pipeline without additional scripting or workarounds. \\
-Circle CI is working with a yaml configuration\footnote{\url{https://circleci.com/docs/2.0/sample-config/}}. 
+CircleCI is working with a yaml configuration\footnote{\url{https://circleci.com/docs/2.0/sample-config/}}. 
 An enhancement is the opportunity to define shell commands with "command" in the yml file. Therefore, \ref{LinuxKernel}"Fetching Signed Linux Kernel Image" can be integrated. 
 Additionally, dependencies can be created. On this way, it can be assured that the build process for the Docker image is triggered before the filesystem creation. 
 The same counts for the kernel fetching process and the filesystem creation before the QEMU start. \\
