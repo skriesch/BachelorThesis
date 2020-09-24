@@ -73,7 +73,7 @@ As a result, Apache Cassandra can use the whole memory and delivered CPU, which 
 
 \section{Workaround Because of a JVM Issue}
 
-Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on IBM Z mainframes. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
+Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
 
 This case has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions on x86, but during the build process on s390x. This issue does not exist with the version AdoptOpenJDK 14, but Apache Cassandra does not work with this version. \\
 This emulation bug of qemu has to be fixed and the issue has been reported to KVM Developers inside of IBM. 
@@ -220,7 +220,7 @@ This configuration file with the whole test process has got the name \textbf{con
 \textbf{Workflows} defines the order of different process steps with their dependencies with \textbf{- requires}.
 The different processes are specified separately above then. 
 The advantage of different steps with dependencies is, that every step can be tested an the build process will be aborted after one failed process and this step will be listed with the error message in the CI/CD system. \\
-The configuration of Cirle CI is clearly structured. The workspace can be declared. Running steps can receive names. Shell commands can be executed. Additionally, binaries and other files can be stored as artifacts. \\
+The configuration of CircleCI is clearly structured. The workspace can be declared. Running steps can receive names. Shell commands can be executed. Additionally, binaries and other files can be stored as artifacts. \\
 The implementation of the job configuration can be found under \ref{CircleCI}. It can only work with a bug fix for the \ref{jvm-issue}"JVM Issue".\\
 The system is configured that the version number of Apache Cassandra can be replaced by a new version with \verb+--build-arg CASSANDRA_VERSION=$CASSANDRA_VERSION+ in the docker build command. With that, the checkout of the special Cassandra branch will be executed instead of the configured last one.
 

@@ -179,3 +179,11 @@ There exists a special \textbf{Kubernetes plugin}\footnote{\url{https://plugins.
 \textbf{Jenkins X}\footnote{\url{https://jenkins-x.io/}} has been developed based on Jenkins specialized on Kubernetes and cloud native environments. That means, that something as the Kubernetes plugin is integrated and the system can work with public cloud providers and other cloud technologies for test and production deployment pipelines. All in all, Jenkins X is an improved version of Jenkins for cloud environments. The system can work with container registries, understands yaml configuration files without additional plugins and is able to deploy scalable systems based on containers in the local data centre as well as in the public cloud (AWS, Google Cloud, IBM cloud, Azure).
 
 \textbf{Prow}\footnote{\url{https://jenkins-x.io/docs/reference/components/prow/}} is a Kubernetes-native solution based on Jenkins X. This CI/CD system is used by projects as Kubernetes, Istio und OpenShift which are all based on Kubernetes. This system is something as a Jenkins X expanded with special Kubernetes APIs and cloud specific features. It can understand and deploy only Kubernetes based environments. Other configurations are not supported. The benefit in comparison to Jenkins is, that yaml configurations for Kubernetes setups are transferable between Jenkins and Prow.
+
+\subsection{System Requirements}
+
+Jenkins can include all required installation of integration tests and the whole system setup into the specified Docker image. Therefore, the disk image size can be defined based on the Docker image and the specified command in \ref{ExternalFilesystem}"Mounting an External Filesystem" with \\
+\lstinline!docker images | grep 'Kubernetes-Test' | awk '{print int($7+0.5)"G"}'! \\
+
+The Kubernetes community is referencing\footnote{\url{https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/\#before-you-begin}} a minimum about 2GB of memory and 2 CPUs per system. 
+It has to be observerd, that Kubernetes is watching master and worker node as a own system. Both are on one system in our case. Additionally, some RAM and CPU should be added for running tests. Therefore, 6GB for memory and 5 CPUs will be calculated for the QEMU setup.

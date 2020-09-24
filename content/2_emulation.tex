@@ -194,7 +194,7 @@ Another feature of ext4 is the possibility of inline files and inline directorie
     \label{Ext4}
 \end{figure}
 
-\subsection{Mounting an External Filesystem}
+\subsection{Mounting an External Filesystem} \label{ExternalFilesystem}
 
 In \ref{FileSystems}"Filesystems" is described how to export a Docker filesystem into a directory. That has got the format of the \ref{UnionFS}"UnionFS" at this moment. QEMU contains the beneficial tool \textbf{qemu-img} for creating loadable images of filesystems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
 In the case of Cassandra, there will be used \\
