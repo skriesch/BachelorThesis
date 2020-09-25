@@ -131,7 +131,7 @@ The same procedure will be executed in the monitoring directory. The FROM comman
 \lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra-check .! \\
 It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
 \lstinline!qemu-img create -f raw cassandra-s390x.img 2G!  \\
-can be used. This image needs any Linux filesystem because QEMU does not know the Docker filesystem. The image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img! then. For receiving the filesystem of the docker image a directory with the name rootfs has to be created and the command \\
+can be used. This image needs any Linux file system because QEMU does not know the Docker file system. The image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img! then. For receiving the file system of the docker image a directory with the name rootfs has to be created and the command \\
 \lstinline!docker export $(docker create cassandra-check) | tar -C "rootfs" -xvf -!  \\ 
 is exporting the docker image into the directory rootfs. Following transfers the content of rootfs into the image cassandra.img.
 
@@ -168,8 +168,8 @@ This CI/CD system is connected with Github. The tests are running after every co
 These tests can run in a container or in a virtual machine. These options make it possible to build the Docker image for the architecture s390x and to integrate it into QEMU via the CI/CD pipeline without additional scripting or workarounds. \\
 CircleCI is working with a yaml configuration\footnote{\url{https://circleci.com/docs/2.0/sample-config/}}. 
 An enhancement is the opportunity to define shell commands with "command" in the yml file. Therefore, \ref{LinuxKernel} "Fetching Signed Linux Kernel Image" can be integrated. 
-Additionally, dependencies can be created. On this way, it can be assured that the build process for the Docker image is triggered before the filesystem creation. 
-The same counts for the kernel fetching process and the filesystem creation before the QEMU start. \\
+Additionally, dependencies can be created. On this way, it can be assured that the build process for the Docker image is triggered before the file system creation. 
+The same counts for the kernel fetching process and the file system creation before the QEMU start. \\
 This configuration file with the whole test process has got the name \textbf{config.yml}. \\
 \textbf{Workflows} defines the order of different process steps with their dependencies with \textbf{- requires}.
 The different processes are specified separately above then. 

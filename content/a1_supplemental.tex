@@ -36,13 +36,13 @@ jobs:
 \end{boxedverbatim}
 
 \begin{boxedverbatim}
-  prepare-filesystem:
+  prepare-file system:
     working_directory: ~/s390x
       steps:
         - attach_workspace:
                   at: .
         - run:
-              name: Creating a ext4 filesystem with integration of the Cassandra image
+              name: Creating a ext4 file system with integration of the Cassandra image
               command: |
                       mkdir rootfs; qemu-img create -f raw cassandra-s390x.img \
                       $(docker images | grep 'cassandra:s390x' | \
@@ -75,11 +75,11 @@ workflows:
         - build-docker-image
               requires: 
                   - prepare-kernel
-        - prepare-filesystem
+        - prepare-file system
               requires: 
                   - build-docker-image
         - test
              requires:
                  - prepare-kernel
-                 - prepare-filesystem
+                 - prepare-file system
 \end{boxedverbatim}

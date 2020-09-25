@@ -67,8 +67,8 @@ make install
 \section{Fetching Signed Linux Kernel Image} \label{LinuxKernel}
 
 QEMU needs a built Linux kernel to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
-The build process via CI/CD should be fast. Building the Linux kernel would require a lot of time with a minimum of 1 hour. Therefore, the second option will be used. The Docker filesystem in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
-The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the filesystem of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. The whole command is the following then: \\
+The build process via CI/CD should be fast. Building the Linux kernel would require a lot of time with a minimum of 1 hour. Therefore, the second option will be used. The Docker file system in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
+The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the file system of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. The whole command is the following then: \\
 \begin{figure}[H]
 \begin{boxedverbatim}
 debootstrap --include=linux-generic --arch=s390x --variant=minbase bionic \
@@ -94,8 +94,8 @@ Only the console is necessary for receiving an output and debugging.
 So this one is added as a device with \textbf{-chardev stdio,id=console,signal=off,mux=on -mon chardev=console} and \textbf{-device sclpconsole,chardev=console}. Additionally, the console has to be specified with \textbf{console=ttyS0} in the append part. \\ 
 Cassandra as a project does not need any network interface (-net none) or parallelism (-parallel none). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
 So we save system requirements. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
-The filesystem of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of the Bachelor Thesis for a considered open-source project. 
-That is the ideal option to mount a minimal filesystem for every application or system. 
+The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of the Bachelor Thesis for a considered open-source project. 
+That is the ideal option to mount a minimal file system for every application or system. 
 \path{/dev/vda} is the partition name and rdinit is used for using bash as a default shell. \\
 This command can be used for user mode emulation with Apache Cassandra as an example.
 

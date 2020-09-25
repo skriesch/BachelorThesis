@@ -182,7 +182,7 @@ There exists a special \textbf{Kubernetes plugin}\footnote{\url{https://plugins.
 
 \subsection{System Requirements}
 
-Jenkins can include all required installation of integration tests and the whole system setup into the specified Docker image. Therefore, the disk image size can be defined based on the Docker image and the specified command in \ref{ExternalFilesystem} "Mounting an External Filesystem" with \\
+Jenkins can include all required installation of integration tests and the whole system setup into the specified Docker image. Therefore, the disk image size can be defined based on the Docker image and the specified command in \ref{ExternalFile system} "Mounting an External File system" with \\
 \lstinline!docker images | grep 'Kubernetes-Test' | awk '{print int($7+0.5)"G"}'! \\
 
 The Kubernetes community is referencing\footnote{\url{https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/\#before-you-begin}} a minimum about 2GB of memory and 2 CPUs per system. 
