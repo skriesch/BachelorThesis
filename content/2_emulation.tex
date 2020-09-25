@@ -137,7 +137,7 @@ Buildx provides the possibility to consign different architectures (comma separa
 
 \section{Filesystems}\label{FileSystems}
 
-Docker is using the Union Filesystem which is not compatible with QEMU. \\
+Docker is using the Union Filesystem which is not compatible with QEMU, because it is not based on block devices as ext4 as an example. \\
 QEMU can integrate only hard disk formats for default Linux filesystems as ext2, ext3, ext4, XFS and Btrfs. 
 The driver virtio\_blk is used to mount external filesystems and emulates read/write in the physical block device\cite{Barboza2018}. Following it, is possible to integrate and start nonnative systems in QEMU. 
 Docker is advantageous to setup and start systems fast. 
@@ -156,7 +156,8 @@ The first layer is the typical Linux boot filesystem with the name bootfs.
 That performs the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
 So the bootfs can be used inside of another Linux filesystem to mount in an virtualization stack for a successful boot process with QEMU.
 The next layer contains the base image with the operating system given by the "FROM" command.
-Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or building binary files.
+Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or building binary files. 
+Docker is using only these specified sections of the filesystem for the container image.
 That is the reason that every executed docker command is receiving an own id in the disk memory during the build process.
 Every separate docker command is using his own disk space. So a docker image can grow really fast.
 It is reasonable to compress so much as possible of different routines into one docker command. 
