@@ -87,7 +87,7 @@ Every additional device requires additional resources and time for starting the 
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the s390x Linux kernel image. In the given \ref{QEMU-Command}"Optimized QEMU command" the qemu command is executed in the main directory with the Linux kernel. This one is transferred from the boot directory to the main directory during the automation process \\  
+The kernel option is receiving the path to the s390x Linux kernel image. In the given \ref{QEMU-Command} "Optimized QEMU command" the qemu command is executed in the main directory with the Linux kernel. This one is transferred from the boot directory to the main directory during the automation process \\  
 The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. \textbf{-M s390-ccw-virtio} defines the machine type for s390x.
 \textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 

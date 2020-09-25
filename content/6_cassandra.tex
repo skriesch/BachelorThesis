@@ -4,7 +4,7 @@
 
 Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra is able to be changed with every version. 
 That has to be recognized during the integration into the CI/CD pipeline of the project. There are different multi-arch Dockerfiles for all versions of AdoptOpenJDK for public usage. These can be applied for the base Cassandra image. Afterwards, a multi-arch Docker image for Cassandra, which includes the s390x architecture, can be published. 
-A \ref{monitoring}"nagios monitoring check" - usable for containerized environments - is chosen for tests. This one has to be assimilated in the setup. \\ 
+A \ref{monitoring} "nagios monitoring check" - usable for containerized environments - is chosen for tests. This one has to be assimilated in the setup. \\ 
 This Apache project is using CircleCI for Continuous Integration. 
 
 \section{Installation}\label{Cassandra-Installation}
@@ -12,7 +12,7 @@ This Apache project is using CircleCI for Continuous Integration.
 It should be created a Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/Dockerfile}} for a multi-arch image in this project with the reason for using it for different architectures.
 Apache Cassandra is a Java based application. Therefore, the research has contained the search for a multi-arch image with pre-installed Java. The Cassandra version 3.11.6 is supporting Java 8. 
 AdoptOpenJDK is maintaining multi-arch images for different Linux distributions with pre-installed AdoptOpenJDK.
-In the description of \ref{AdoptOpenJDK-Multi-Arch}"Multi-Arch Image AdoptOpenJDK 8" is explained how the recommended Java version will be chosen for the specific architecture in this base image. 
+In the description of \ref{AdoptOpenJDK-Multi-Arch} "Multi-Arch Image AdoptOpenJDK 8" is explained how the recommended Java version will be chosen for the specific architecture in this base image. 
 This base image is integrated with \lstinline!FROM adoptopenjdk:8-jdk-hotspot! on top of the Dockerfile.
 
 Apache Cassandra will be cloned from the Github repository with \\
@@ -167,7 +167,7 @@ The community of Apache Cassandra is using CircleCI\footnote{\url{https://circle
 This CI/CD system is connected with Github. The tests are running after every commit in the master repository.
 These tests can run in a container or in a virtual machine. These options make it possible to build the Docker image for the architecture s390x and to integrate it into QEMU via the CI/CD pipeline without additional scripting or workarounds. \\
 CircleCI is working with a yaml configuration\footnote{\url{https://circleci.com/docs/2.0/sample-config/}}. 
-An enhancement is the opportunity to define shell commands with "command" in the yml file. Therefore, \ref{LinuxKernel}"Fetching Signed Linux Kernel Image" can be integrated. 
+An enhancement is the opportunity to define shell commands with "command" in the yml file. Therefore, \ref{LinuxKernel} "Fetching Signed Linux Kernel Image" can be integrated. 
 Additionally, dependencies can be created. On this way, it can be assured that the build process for the Docker image is triggered before the filesystem creation. 
 The same counts for the kernel fetching process and the filesystem creation before the QEMU start. \\
 This configuration file with the whole test process has got the name \textbf{config.yml}. \\
@@ -175,6 +175,6 @@ This configuration file with the whole test process has got the name \textbf{con
 The different processes are specified separately above then. 
 The advantage of different steps with dependencies is, that every step can be tested an the build process will be aborted after one failed process and this step will be listed with the error message in the CI/CD system. \\
 The configuration of CircleCI is clearly structured. The workspace can be declared. Running steps can receive names. Shell commands can be executed. Additionally, binaries and other files can be stored as artifacts. \\
-The implementation of the job configuration can be found under \ref{CircleCI}. It can only work with a bug fix for the \ref{jvm-issue}"JVM Issue".\\
+The implementation of the job configuration can be found under \ref{CircleCI} "CircleCI configuration for Apache Cassandra". It can only work with a bug fix for the \ref{jvm-issue} "JVM Issue".\\
 The system is configured that the version number of Apache Cassandra can be replaced by a new version with \verb+--build-arg CASSANDRA_VERSION=$CASSANDRA_VERSION+ in the docker build command. With that, the checkout of the special Cassandra branch will be executed instead of the configured last one.
 
