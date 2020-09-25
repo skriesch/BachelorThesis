@@ -8,7 +8,7 @@ It is possible to install packages as \textbf{binfmt-support} and \textbf{qemu-u
 
 \section{Registration of Qemu-S390x}\label{Qemu-S390-Registration}
 
-The packages \textbf{qemu-user-static} and \textbf{binfmt-support} should be installed because of all binfmt configuration files for various architectures in the directory \path{/usr/lib/binfmt.d/} \cite{Yang2019}. 
+The packages \textbf{qemu-user-static} and \textbf{binfmt-support} should be installed because it contains all binfmt configuration files for various architectures in the directory \path{/usr/lib/binfmt.d/} \cite{Yang2019}. 
 
 The Linux kernel module binfmt\_misc can be mounted with the following command: \\
 \lstinline!mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc!
@@ -21,7 +21,7 @@ for the specific version of qemu-s390x-static on x86. This static binary in the 
 afterwards. 
 The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The configuration will be used by the installed qemu-user-static.\\
 
-s390x binaries have to be registered for s390x that they can be executable on x86. That is executed with the following command: \lstinline!sudo -i! and 
+s390x binaries have to be registered for s390x that they can be executable on x86, as described in ref{Binfmt} "Binfmt\_misc". That is executed with the following command: \lstinline!sudo -i! and 
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -94,7 +94,7 @@ Only the console is necessary for receiving an output and debugging.
 So this one is added as a device with \textbf{-chardev stdio,id=console,signal=off,mux=on -mon chardev=console} and \textbf{-device sclpconsole,chardev=console}. Additionally, the console has to be specified with \textbf{console=ttyS0} in the append part. \\ 
 Cassandra as a project does not need any network interface (-net none) or parallelism (-parallel none). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
 So we save system requirements. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
-The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in every chapter of the Bachelor Thesis for a considered open-source project. 
+The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in the chapters for considered open-source projects. 
 That is the ideal option to mount a minimal file system for every application or system. 
 \path{/dev/vda} is the partition name and rdinit is used for using bash as a default shell. \\
 This command can be used for user mode emulation with Apache Cassandra as an example.

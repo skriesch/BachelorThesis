@@ -3,13 +3,13 @@
 \section{Overview}
 
 Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra is able to be changed with every version. 
-That has to be recognized during the integration into the CI/CD pipeline of the project. There are different multi-arch Dockerfiles for all versions of AdoptOpenJDK for public usage. These can be applied for the base Cassandra image. Afterwards, a multi-arch Docker image for Cassandra, which includes the s390x architecture, can be published. 
+That has to be considered during the integration into the CI/CD pipeline of the project. There are different multi-arch Dockerfiles for all versions of AdoptOpenJDK for public usage. These can be applied for the base Cassandra image. Afterwards, a multi-arch Docker image for Cassandra, which includes the s390x architecture, can be published. 
 A \ref{monitoring} "nagios monitoring check" - usable for containerized environments - is chosen for tests. This one has to be assimilated in the setup. \\ 
 This Apache project is using CircleCI for Continuous Integration. 
 
 \section{Installation}\label{Cassandra-Installation}
 
-It should be created a Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/Dockerfile}} for a multi-arch image in this project with the reason for using it for different architectures.
+A Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/Dockerfile}} for a multi-arch image should be created in this project with the reason for using it for multiple architectures in the future.
 Apache Cassandra is a Java based application. Therefore, the research has contained the search for a multi-arch image with pre-installed Java. The Cassandra version 3.11.6 is supporting Java 8. 
 AdoptOpenJDK is maintaining multi-arch images for different Linux distributions with pre-installed AdoptOpenJDK.
 In the description of \ref{AdoptOpenJDK-Multi-Arch} "Multi-Arch Image AdoptOpenJDK 8" is explained how the recommended Java version will be chosen for the specific architecture in this base image. 
@@ -71,11 +71,11 @@ All these Java optimization options can be set as an environment variable with \
 As a result, Apache Cassandra can use the whole memory and delivered CPU, which is specified in the QEMU options.
 
 
-\section{Workaround Because of a JVM Issue}
+\section{Workaround Because of a JVM Issue}\label{jvm-issue}
 
 Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
 
-This case has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions on x86, but during the build process on s390x\footnote{\url{https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=951764}}. This issue does not exist with the version AdoptOpenJDK 14, but Apache Cassandra does not work with this version. \\
+This case has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions for emulated s390x guests on x86, but during the build process on s390x\footnote{\url{https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=951764}}. This issue does not exist with the version AdoptOpenJDK 14, but Apache Cassandra does not work with this version. \\
 This emulation bug of qemu has to be fixed and the issue has been reported to KVM Developers inside of IBM. 
 
 There exists a workaround for the development process for finishing the project. The Docker image is buildable on s390x. Therefore, the Docker image has been built for s390x on s390x with \\  
@@ -92,7 +92,7 @@ It can be integrated into QEMU and is able to be started without any problems af
 Nagios is an open-source monitoring system to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/skyscrapers/monitoring-plugins/blob/master/check_cassandra.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running, and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
 This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. \\
 All monitoring plugins in the referenced Github repository are developed additionally for integration into Docker. Following, these scripts do not require any installed nagios system for monitoring.
-Summarily, these monitoring plugins can be used for tests inside of containerized environments for test Docker images.
+Summarily, these monitoring plugins can be used for tests inside of containerized environments for testing Docker images.
 
 \newpage
 For a better maintenance, \textbf{cassandra\_check.pl} is integrated with a separate Dockerfile with the installation Dockerfile as a base image:
@@ -131,9 +131,9 @@ The same procedure will be executed in the monitoring directory. The FROM comman
 \lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra-check .! \\
 It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
 \lstinline!qemu-img create -f raw cassandra-s390x.img 2G!  \\
-can be used. This image needs any Linux file system because QEMU does not know the Docker file system. The image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img! then. For receiving the file system of the docker image a directory with the name rootfs has to be created and the command \\
+can be used. This image needs to be converted to any Linux file system because QEMU does not know the Docker file system. Therefore, the image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img!. A directory with the name rootfs has to be created and the command for receiving the file system of the Docker image. \\
 \lstinline!docker export $(docker create cassandra-check) | tar -C "rootfs" -xvf -!  \\ 
-is exporting the docker image into the directory rootfs. Following transfers the content of rootfs into the image cassandra.img.
+is exporting the docker image into the directory rootfs. Afterwards, the following command transfers the content of rootfs into the image cassandra.img.
 
 \begin{figure}[H]
 \centering

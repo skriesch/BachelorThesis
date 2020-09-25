@@ -8,7 +8,7 @@ QEMU is a generic emulator for different system architectures. It can also be us
 It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
 It is a processor emulator using binary translation \cite{Butt2011} which is executing and translating emulated instructions based on blocks. Each block comprises one entry and one exit point \cite[~p.5]{Wang2010}. 
 The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
-The TCG is a small compiler replacing GCC because of unlimited releases and code changes. The TCG is converting the blocks of target instructions into a standardized form. 
+The TCG is a small compiler replacing GCC because of unlimited releases and code changes. The TCG is converting the blocks of target instructions into a standardized form with machine instructions of the host hardware. 
 Subsequently, it has to be compiled for the host or target architecture for the guest system. 
 If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
 The TCG integrates new code for the new host architecture in the background then. It is also dedicated to improving performance with avoiding repeated translations by buffering already translated code \cite{Cota2017}. 
@@ -32,7 +32,7 @@ System emulation benefits from the virtualization support as KVM. In this case, 
 The user-mode emulation does not emulate the whole system. It is faster than the full-system emulation because it does not engage so much hardware resources. Application processes can be run in QEMU with a minimal system for a specific application. 
 This emulation type is working on a system call level. Therefore, the application has to be runnable as a single process executable itself. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{QEMU}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
 The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system. \\
-The disadvantage of user-mode emulation is the only possibility to run single processes. Most services contain different applications with the result of multiple processes. Consequently, these applications need a full system emulation.
+The disadvantage of user-mode emulation is the ability to run only single processes. Most services contain different applications with the result of multiple processes. Consequently, these applications need a full system emulation.
 
 
 \section{Emulation of Alternative Architectures}
@@ -53,7 +53,7 @@ The initrd should match the Linux kernel and is optional. It is used to start an
 
 
 \newpage
-\subsection{Binfmt\_misc}
+\subsection{Binfmt\_misc} \label{Binfmt}
 
 Binfmt\_misc is a kernel module which allows invoking almost every program by simply typing its name in the shell. That permits to execute user space applications such as emulators and virtual machines for other hardware architectures. It recognizes the binary-type by matching some bytes at the beginning of the file with a magic number. These executable formats have to be registered in the file \path{/proc/sys/fs/binfmt_misc/register}.\\
 The structure of the configuration for the registration is the following: \\ \textbf{:name:type:offset:magic:mask:interpreter:flags} 
@@ -68,7 +68,7 @@ The package \textbf{binfmt-support} has to be installed first for using this ker
 
 \subsection{Qemu-user-static}\label{qemu-user-static}
 
-The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package contained in various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled QEMU emulators that alternative architectures can run on another architecture \cite{Yang2019}. When building for one new architecture, static binaries are relevant because of the possibility of an "exec init error" without them. \\
+The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package contained in various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled QEMU emulators that applications compiled for alternative architectures can run on another architecture \cite{Yang2019}. When building for one new architecture, static binaries are relevant because of the possibility of an "exec init error" without them. \\
 The installation contains emulators for all available architectures supported by the QEMU project incl. s390x aligned with the specific host architecture. In this manner, you can build and run a binary for different architectures on the same host (see \ref{Optimized-Qemu-Command} "Optimized Qemu Command"). That is the base for \ref{BuildX} "BuildX" by Docker, too.
 
 \subsection{BuildX}\label{BuildX}
@@ -139,9 +139,9 @@ Buildx provides the possibility to consign different architectures (comma separa
 
 Docker is using the Union File system which is not compatible with QEMU, because it is not based on block devices as ext4 as an example. \\
 QEMU can integrate only hard disk formats for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
-The driver virtio\_blk is used to mount external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following it, is possible to integrate and start nonnative systems in QEMU. 
-Docker is advantageous to setup and start systems fast. 
-It would be nice to integrate the docker file system into QEMU. After building a docker image, it is realizable to export the file system into a directory with the name \textbf{rootfs} with the command \\ 
+The driver virtio\_blk is used to mount external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start nonnative systems in QEMU. 
+Docker is capable of setting up and starting containers fast. 
+It would be advantageous to integrate the docker file system into QEMU. After building a docker image, it is feasible to export the file system into a directory with the name \textbf{rootfs} with the command \\ 
 \lstinline!docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -!. \\
 
 Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
@@ -180,7 +180,7 @@ Such journal file systems in the ext file system family are working with blocks 
 The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
 The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
 Flex groups can combine multiple group blocks - inode bitmaps, inode tables and data blocks - to one logic block group. All data from inodes are only saved in the first flex group then. 
-So the search for files is more powerful because meta data are allocated at one place.\\
+So the search for files is speedier because meta data are allocated at one place.\\
 All meta data from the journal can be relocated in inodes, if changes of file system meta data are registered, too. \\
 The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional check sums for journal transactions \cite[~p.28]{Seufert2015}.
 Ext4 provides a better performance than ext3. 
