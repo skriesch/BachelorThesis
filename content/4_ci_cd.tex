@@ -50,16 +50,16 @@ CI/CD systems can split their tests in different test cases or \ref{TestLevel} "
 
 Repeating test cases after software changes is called regression test \cite[~p.98]{Spillner2019}. This practice is checking whether new code is matching the requirements and does not implicate accidentally side effects. That is the best release method with using the CI/CD system in comparison with manual releases.
 
-Most developed CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representation is "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
-Some systems can only handle only the Continuous Integration part. Others are developed to manage all in the CI/CD pipeline.
+Most developed CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representation indicates "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
+Some systems can handle only the Continuous Integration part. Others are developed to manage all in the CI/CD pipeline.
 The Release Manager or Product Manager can determine which test cases should be iterated in the CI/CD pipeline. Open-source projects have been appointing maintainers for this role and managing the CI/CD system.
 
 It is recommended to prepare separate environments for testing and production in the background \cite[~p.120]{Scholl2019}. 
 Default that will be done with virtual machines or containers on multiple hosts. The profit is that new base software versions can be tested together with the self developed software in the test environment during the system test before running in production.
 
-Some CI/CD systems are connected interrelated to the version control system that the creation of a release branch is possible from there. All functionality tests have to be passed.  If system tests are integrated, these tests "can" have to be matched. But this proceeding is no requirement. The goal of this Bachelor Thesis is to integrate first system tests for IBM Z into the CI/CD pipeline of open-source projects before the release. As a result, the software will be tested for the architecture s390x continuously and IBM Z will be supported by referred projects.
+Some CI/CD systems are connected interrelated to the version control system that the creation of a release branch is possible via CI/CD. All functionality tests have to be passed.  If system tests are integrated, these tests "can" have to be matched. But this proceeding is no requirement. The goal of this Bachelor Thesis is to integrate first system tests for IBM Z into the CI/CD pipeline of open-source projects before the release. As a result, the software will be tested for the architecture s390x continuously and IBM Z will be supported by referred projects.
 
-\section{Emulations for System Tests}
+\section{Emulation for System Tests}
 
 Traditionally development environments have been running on virtual machines or locally on development systems as the CI/CD system, as an example \cite[~p.123]{Scholl2019}. Progressively CI/CD systems are providing automated Docker builds and support for running containers besides of virtual machines. 
 Shell scripts and Python code are required decreasingly for system setups in separate scripts. Some systems allow the integration of shell commands into the job configuration.

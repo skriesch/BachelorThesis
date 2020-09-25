@@ -5,7 +5,7 @@
 Open-Source-Projekte entwickeln Software, bei der der Quellcode frei verfügbar ist. Diese Communitys lassen automatisierte Tests gegen jede Code-Änderung laufen, um die bester Software-Qualität zu garantieren. 
 Diese Tests sollen auf unterschiedlichen Architekturen laufen können. Es ist schwierig, Software für grundlegende Hardware ohne Zugriff darauf zu testen. Deshalb muss die in IBM Z verwendete s390x-Architektur für ausgewählte Open-Source-Projekte emuliert (nachgeahmt) und in die entsprechende CI/CD-Pipeline eingefügt werden. 
 Das sollte mit schnellen Deployment-Methoden im Emulator QEMU durchgeführt werden. 
-Kubernetes wird als containerisiertes Beispiel-Projekt als Grundlage für dafür eingeführte Anwendungen verwendet. Ein weiteres Open-Source-Projekt, Apache Cassandra, wird verwendet um Tests auf der Anwendungsschicht im Kubernetes-Stack zu repräsentieren. \\
+Kubernetes wird als containerisiertes Beispiel-Projekt als Grundlage für dafür eingeführte Anwendungen eingesetzt. Ein weiteres Open-Source-Projekt, Apache Cassandra, wird verwendet um Tests auf der Anwendungsschicht im Kubernetes-Stack zu repräsentieren. \\
 Zusätzlich müssen die minimalen Systemanforderungen für die Einrichtung innerhalb der CI/CD-Infrastruktur beider Projekte wegen der Minimierung an Festplattenplatz, Memory und CPU-Verbrauch analysiert werden. \\
 Zum Abschluss wird die automatische Emulation beider Projekte in die Test-Infrastruktur integriert, so dass diese Projekte für die s390x-Architektur von IBM Z Mainframes aktiviert sind. Allgemein soll diese Methode für weitere Open-Source-Projekte in der Zukunft wiederverwendet werden können.
 

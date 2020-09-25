@@ -20,7 +20,7 @@ Apache Cassandra will be cloned from the Github repository with \\
 The special version is set with an agument with the ARG variable. On this way, it is possible to checkout other versions with a given argument as \lstinline!--build-arg CASSANDRA_VERSION=3.12.4! in the docker build command. \\
 Apache Cassandra is using JNA (Java Native Library)\footnote{\url{https://github.com/java-native-access/jna}} as an extension of Java. JNA provides Java programs easy access to native shared libraries for an improved communication with the database system. The ant command is building the application and the JNA subsequently. \\
 The command \lstinline!sed -i ' s/Xss256k/Xss32m/'! is setting the size of the frame stack (JVM stack) used by each thread to store local variables. This frame size is reduced to a minimum and stored in both files build.xml and conf/jvm.options.
-A soft link (\textbf{ln -s} will be created to save space in the container. Such a soft link refers to a symbolic path of another file or directory. Following, all files inside of the build directory \path{/root/cassandra} are additionally available under \path{/usr/share/cassandra}. Another benefit is the low time for the creation of a soft link in comparison to a copy / move command.
+A soft link (\textbf{ln -s}) will be created to save space in the container. Such a soft link refers to a symbolic path of another file or directory. Following, all files inside of the build directory \path{/root/cassandra} are additionally available under \path{/usr/share/cassandra}. Another benefit is the low time for the creation of a soft link in comparison to a copy / move command.
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
