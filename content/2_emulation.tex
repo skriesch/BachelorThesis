@@ -6,7 +6,7 @@
 QEMU is an open-source emulator introduced by Fabrice Bellard in the year 2003 and available in most Linux distributions now. It is embedded in different virtualization tools as KVM and XEN, too. QEMU is well tested and contains all the necessary features for emulations of other architectures on alternative hardware. 
 QEMU is a generic emulator for different system architectures. It can also be used for emulation of obsolete hardware \cite[~p.24]{Opsahl2013}. 
 It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
-It is a processor emulator using binary translation \cite{Butt2011} which is executing and translating emulated instructions based on blocks. Each block comprises one entry and one exit point \cite[~p.5]{Wang2010}. 
+It is a processor emulator using binary translation \cite{Butt2011} which is executing and translating emulated instructions based on basic blocks. Each block comprises one entry and one exit point \cite[~p.5]{Wang2010}. 
 The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
 The TCG is a small compiler replacing GCC because of unlimited releases and code changes. The TCG is converting the blocks of target instructions into a standardized form with machine instructions of the host hardware. 
 Subsequently, it has to be compiled for the host or target architecture for the guest system. 
@@ -19,23 +19,23 @@ QEMU does not emulate the entire hardware. That is only possible for the CPU. QE
 \section{Full-System Emulation}
 
 The full-system emulation emulates a whole system with hardware, the operating system (with the Linux kernel) and the userspace (with application processes). 
-The system (hardware and operating system) will be translated unmodified. The condition of system emulation (compared to user mode emulation) is that you can run privileged instructions \cite[~p.2]{Butt2011}. This feature enables the translation of the unmodified target code on the operating system.
+The system (hardware and operating system) will be translated unmodified. The condition of system emulation (compared to user mode emulation) is that you can run privileged instructions \cite[~p.2]{Butt2011}. This feature enables the translation of the unmodified target code in the operating system.
 That all leads to a slowdown of the emulation in comparison to the user-mode emulation.
 Additionally, this emulation can be used as an application development platform where specific hardware is not available. 
 System emulation with emulated hardware is slower than a real machine because instructions should be executed in the guest hardware.  However, that has to be emulated in software. 
 That implies multiple host instructions as a result because of the translation for a single guest instruction \cite[~p.1]{Tong2014}.
 It is possible to reduce the supported and attached additional devices with additional options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards, less hardware has to be emulated, which has given a better performance.  \\
-System emulation benefits from the virtualization support as KVM. In this case, CPU operations are not required to emulate.
+System emulation benefits from the virtualization support as KVM, if the guest has the same architecture as the host. In this case, CPU operations are not required to emulate. Emulations of alternative architectures ( see \ref{AlternativeArchitectures} "Emulation of Alternative Architectures" require additional resources for the emulation of the whole system.
 
 \section{User-Mode Emulation}
 
 The user-mode emulation does not emulate the whole system. It is faster than the full-system emulation because it does not engage so much hardware resources. Application processes can be run in QEMU with a minimal system for a specific application. 
-This emulation type is working on a system call level. Therefore, the application has to be runnable as a single process executable itself. The emulator is using the Linux kernel to emulate system signal calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{QEMU}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
+This emulation type is working on a system call level. Therefore, the application has to be runnable as a single process executable itself. The emulator is using the Linux kernel to emulate system calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{QEMU}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
 The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system. \\
 The disadvantage of user-mode emulation is the ability to run only single processes. Most services contain different applications with the result of multiple processes. Consequently, these applications need a full system emulation.
 
 
-\section{Emulation of Alternative Architectures}
+\section{Emulation of Alternative Architectures}\label{AlternativeArchitectures}
 
 It is achievable to emulate alternative architectures on another hardware architecture. The package qemu-user-static has to be installed then, and the chosen architecture has to be registered in binfmt\_misc. binfmt\_misc is a kernel module. 
 You can register other architectures within that, so that multiple other architectures can be run on one host. 
@@ -139,10 +139,8 @@ Buildx provides the possibility to consign different architectures (comma separa
 
 Docker is using the Union File system which is not compatible with QEMU, because it is not based on block devices as ext4 as an example. \\
 QEMU can integrate only hard disk formats for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
-The driver virtio\_blk is used to mount external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start nonnative systems in QEMU. 
+The driver virtio\_blk is used for mounting external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start nonnative systems in QEMU. 
 Docker is capable of setting up and starting containers fast. 
-It would be advantageous to integrate the docker file system into QEMU. After building a docker image, it is feasible to export the file system into a directory with the name \textbf{rootfs} with the command \\ 
-\lstinline!docker export $(docker create initrd-s390x) | tar -C "rootfs" -xvf -!. \\
 
 Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
 QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} for the first partition \cite[~p.22]{White2020}.
@@ -173,7 +171,7 @@ The example Docker image for Ubuntu 18.04 on s390x is using the base image scrat
 
 \subsection{Ext4}
 
-Ext4 is a journaling file system (equivalent to ext3). The journal is registering transactional all changes on the operating system with meta data.
+Ext4 is a journaling file system (just as ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
 
 Such journal file systems in the ext file system family are working with blocks \cite[~p.20]{Seufert2015}.
@@ -195,9 +193,14 @@ Another feature of ext4 is the possibility of inline files and inline directorie
     \label{Ext4}
 \end{figure}
 
-\subsection{Mounting an External File system} \label{ExternalFile system}
+\subsection{Converting Docker Image to External File System} \label{ExternalFile system}
 
-In \ref{FileSystems} "File systems" is described how to export a Docker file system into a directory. That has got the format of the \ref{UnionFS} "UnionFS" at this moment. QEMU contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
+It would be nice to integrate the docker file system into QEMU. After building a docker
+image, it is realizable to export the file system into a directory with the name rootfs with
+the command \\
+\lstinline!docker export $(docker create image-s390x)| tar -C "rootfs"-xvf -!.
+
+The exported file system has got the format of the \ref{UnionFS} "UnionFS" at this moment. QEMU contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
 In the case of Cassandra, there will be used \\
 \lstinline!docker images | grep 'Cassandra-s390x' | awk '{print int($7+0.5)"G"}'!. \\
 \lstinline!print $7! would give the output of the size raw of \lstinline!docker images!, which is a float number. The \textbf{int} is rounding down to an integer number. Accordingly, the \textbf{0.5} has to be summed up for rounding up. The GB has been removed in this process. \lstinline!qemu-img! requires a G behind the number. That can be added with "G" inside of the awk command. \\
@@ -205,8 +208,9 @@ In the case of Cassandra, there will be used \\
 Finally, Cassandra is using the command \\
 \lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{RunningDockerImage} "Running the Docker Image") \\
 for the creation of a file system image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the CI/CD pipeline then (see \ref{CircleCI} "CircleCI configuration for Apache Cassandra"). \\
-At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4. Writing into cassandra.img is only executible if the image is mounted into a directory under \path{/mnt/} with \\
+At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4 for an emulated hard disk. Writing into cassandra.img is only executible if the image is mounted into a directory under \path{/mnt/} with \\
 \lstinline!mount -o loop cassandra.img /mnt/rootfs!. \\ 
-In the next step the content of the file system directory can be copied into \path{/mnt/rootfs/} with \\ 
+In the next step the content of the Docker file system directory can be copied into \path{/mnt/rootfs/} with \\ 
 \lstinline!cp -r rootfs/* /mnt/rootfs/.!. \\ 
-Then all data of the Docker image are saved into cassandra.img because it is mounted into \path{/mnt/rootfs/}. In conclusion, the image cassandra.img is usable for deployments with \textbf{qemu-system-s390x} (see \ref{RunCassandra} "Run Cassandra"). 
+Afterwards, the UnionFS is converted to ext4. All data of the Docker image are saved into cassandra.img because it is mounted into \path{/mnt/rootfs/}. In conclusion, the image cassandra.img is usable for deployments with \textbf{qemu-system-s390x} (see \ref{RunCassandra} "Run Cassandra"). 
+The Cassandra image can be unmounted with \lstinline!umount /mnt/rootfs! later.
