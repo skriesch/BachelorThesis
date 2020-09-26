@@ -4,7 +4,7 @@
 \begin{boxedverbatim}
 jobs:
   build-docker-image:
-    working_directory: ~/s390x
+    working_directory: ~/s390x/s390x-cassandra-ci-cd
     docker:
       - image: Dockerfile
     steps:
@@ -15,16 +15,35 @@ jobs:
             name: Build for s390x
             command: docker build buildx --platform=linux/s390x --squash \
                      --build-arg CASSANDRA_VERSION=$CASSANDRA_VERSION \
-                     -t cassandra:s390x .
+                     -t cassandra-s390x .
       - docker/check:
          registry: $DOCKER_REGISTRY 
+  prepare-test:
+    working directory:~/s390x/s390x-cassandra-ci-cd/monitoring
+    docker:
+      - image: Dockerfile
+    steps:
+      - attach_workspace:
+          at: .
+      
+      - run: 
+            name: Build tests for s390x
+            command: docker build buildx --platform=linux/s390x --squash \
+                     --build-arg -t cassandra-test-s390x .
+      - docker/check:
+         registry: $DOCKER_REGISTRY 
+
+\end{boxedverbatim}
+
+\begin{boxedverbatim}
   prepare-kernel:
     steps:
         - run:
               name: Fetching the Linux kernel
               command: |
-                      mkdir ~/s390x/kernel-bionic; debootstrap --include=linux-generic \
-                      --arch=s390x --variant=minbase bionic kernel-bionic \
+                      mkdir ~/s390x/kernel-bionic
+                      debootstrap --include=linux-generic --arch=s390x \
+                      --variant=minbase bionic kernel-bionic \
                       http://ports.ubuntu.com
         - store_artifacts:
               path: ~/s390x/kernel-bionic/boot/vmlinuz-4.15.0-20-generic
@@ -32,27 +51,28 @@ jobs:
                   root: .
                   paths:
                       - .
-        
-\end{boxedverbatim}
-
-\begin{boxedverbatim}
   prepare-file system:
     working_directory: ~/s390x
       steps:
         - attach_workspace:
                   at: .
         - run:
-              name: Creating a ext4 file system with integration of the Cassandra image
+              name: Creating ext4 file system with integration of the Cassandra image
               command: |
-                      mkdir rootfs; qemu-img create -f raw cassandra-s390x.img \
-                      $(docker images | grep 'cassandra:s390x' | \
-                      awk '{print int($7+0.5)"G"}'); \
-                      docker export $(docker create cassandra:s390x)| \
-                      tar -C "rootfs"-xvf -;  mkfs.ext4 -F cassandra-s390x.img;\
-                       mount -o loop cassandra-s390x.img /mnt/rootfs; \
+                      mkdir rootfs 
+                      qemu-img create -f raw cassandra-s390x.img \
+                      $(docker images | grep 'cassandra-test-s390x' | \
+                      awk '{print int($7+0.5)"G"}')
+                      docker export $(docker create cassandra-test-s390x)| \
+                      tar -C "rootfs"-xvf -;  mkfs.ext4 -F cassandra-s390x.img
+                      mount -o loop cassandra-s390x.img /mnt/rootfs; \
                       cp -r rootfs/* /mnt/rootfs/.
         - store_artifacts:
               path: ~/s390x/cassandra-s390x.img
+ 
+\end{boxedverbatim}
+
+\begin{boxedverbatim}
   test:
   working_directory: ~/s390x
     steps:
@@ -66,18 +86,20 @@ jobs:
                      chardev=console -parallel none -net none -chardev stdio,\
                      id=console,signal=off,mux=on -mon chardev=console \
                      -nographic -smp 3 -hda cassandra-s390x.img \
-                     --append ’root=/dev/vda rw console=ttyS0 rdinit=/bin/bash’  
+                     --append ’root=/dev/vda rw console=ttyS0 rdinit=/bin/bash’ 
 workflows:
     version: 1
     build-test:
       jobs:
         - prepare-kernel
         - build-docker-image
-              requires: 
-                  - prepare-kernel
+        - prepare-test
+              requires:
+                  - build-docker-image
         - prepare-file system
               requires: 
                   - build-docker-image
+                  - prepare-test
         - test
              requires:
                  - prepare-kernel
