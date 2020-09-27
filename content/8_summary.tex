@@ -4,10 +4,10 @@ This Bachelor Thesis has introduced a new method to deploy applications and emul
 If binfmt-support is enabled on any system, it is possible to use QEMU with qemu-user-static for emulations of multiple system architectures. 
 The challenge was that open-source communities do not support the architecture of IBM Z systems because of missing access for tests. The presented solution can be embedded in the CI/CD infrastructure of open-source projects. 
 
-A "Docker in Docker" solution has been present before the Bachelor Thesis project. "Kubernetes in Docker" is applied by the Kubernetes community for tests. 
+A "Docker in Docker" solution has been available before the Bachelor Thesis project. "Kubernetes in Docker" is applied by the Kubernetes community for tests. 
 Therefore, it is possible to upgrade Kubernetes setups inside of a container to a chosen version with a pre-installed Docker. A test environment has been created on this base with a Dockerfile for the installation and another Dockerfile for testing. During the evaluation of CI/CD systems, it has been annoyed that Prow can not be utilized for emulations because of his containerized Kubernetes concept. 
 Some research has yielded the result that Prow has been developed based on Jenkins and Jenkins X. Before the invention of Prow, the concept with Kubernetes based deployments had been  tried based on Jenkins with a Kubernetes plugin. Jenkins can deploy emulations and container systems. 
-All things considered the emulated system with the Docker image can be tested with Jenkins and ensuing transferred with the same configuration to Prow.
+All facts considered the emulated system with the Docker image can be tested with Jenkins and ensuing transferred with the same configuration to Prow.
 Tests have been contained because of the extension of the study. A network interface and specific open ports have to be attached to the QEMU emulation and analyzed. 
 
 CircleCI works with container technologies and virtualization/ emulation technologies. 

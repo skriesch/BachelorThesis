@@ -1,24 +1,25 @@
 \chapter{Introduction}\label{ch:intro}
 
-One business introduced by IBM is the mainframe, now known as a Z system. The Z system architecture is called \gls{s390x} and a default system \gls{x86}. 
-In the year 1978 x86 was introduced as a microprocessor architecture originally by Intel with the processor "8086". Afterwards, it has been apapted by AMD \cite{Ostler2020}. The acronym x86 has been tagged quickly for this processor family mostly used for home PCs. 
-The mainframe hardware architecture is different. Not every open-source community has got access to such a Z system. It is possible to run Linux on the mainframe since 1999. The same counts for LinuxONE systems based on the s390x architecture of IBM Z. There is a large community behind Linux and open-source projects. Open-source software does not contain only \gls{Linux}. There exist different applications and other software developed by open-source communities. Most open-source contributors own systems with the x86 architecture. Therefore, it should be possible to test hardware dependencies for s390x on available systems. The goal of this Bachelor Thesis is to integrate emulated IBM Z systems for different open-source projects to test their software for hardware dependencies so that it allows to release new versions in the CI/CD pipeline of the respective project for running on the architecture s390x without the available hardware. Deployments of the latest software version on Github and running tests have to be automated for this case.\\
-The focus is on Kubernetes based open-source projects. These should be emulated for IBM Z systems in the \gls{CI/CD} test infrastructure by these chosen projects. That will be done on systems by these communities. As the first step, the emulator will be chosen with the focus on functionality for IBM Z systems on x86 architecture. Afterwards, Kubernetes is installed in a Docker container. Additionally, tests should be able to be run on this system. Kubernetes and Docker are both written in Go. The full system setup will be integrated into the emulation environment for an automated start. In conclusion, the CI/CD system should be able to execute all tests. \\
+One business introduced by IBM is the mainframe, known as a Z system today. The Z system architecture is called \gls{s390x} and a default system \gls{x86}. 
+In the year 1978 x86 was introduced as a microprocessor architecture originally by Intel with the processor "8086". Afterwards, it has been adapted by AMD \cite{Ostler2020}. The acronym x86 has been tagged quickly for this processor family mostly used for home PCs. 
+The mainframe hardware architecture is different. Not every open-source community has got access to such a Z system. It is possible to run Linux on the mainframe since 1999. The same counts for LinuxONE systems based on the s390x architecture of IBM Z. There is a large community behind Linux and open-source projects. Open-source software does not contain only \gls{Linux}. There exist different applications and other software developed by open-source communities. Most open-source contributors own systems with the x86 architecture. Therefore, it should be possible to test hardware dependencies for s390x on available systems. The goal of this Bachelor Thesis is to integrate emulated IBM Z systems for different open-source projects to test their software for hardware dependencies so that it allows communities to release new versions in the CI/CD pipeline of the respective project for running on the architecture s390x without access to physical hardware. Deployments of the latest software version on Github and running tests have to be automated for this case.\\
+The focus is on Kubernetes based open-source projects. These should be emulated for IBM Z systems in the \gls{CI/CD} test infrastructure by these chosen projects. That will be done on systems by these communities. As the first step, the emulator will be chosen with the focus on functionality for IBM Z systems on x86 architecture. Afterwards, Kubernetes is installed in a Docker container. Additionally, tests should be able to be run on this system. Kubernetes and Docker are both written in Go. The full system setup will be integrated into the emulation environment for an automated start. In conclusion, the CI/CD system should be able to run all tests. \\
 The same will be done with the NoSQL database Cassandra, which is Java-based, for the Apache community to represent the whole system stack from Kubernetes until the \gls{application layer} for container platforms. Other points are minimal systems requirements and minimal systems sizes. Here are different methods evaluated to minimize the system for emulation.
 
 
 \section{Mainframe Computers}
 
-Mainframes are called as high-performance computers that process billions of simple calculations and transactions in real-time \cite{IBM}. Some of these computers are part of the Z series\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers, but also for mission-critical apps and blockchain. 
+Mainframes are called as high-performance computers that process billions of simple calculations and transactions in real-time \cite{IBM}. Some of these computers are part of the IBM Z\footnote{\url{https://www.ibm.com/it-infrastructure/z/hardware/}} by IBM. They are not only used as internet servers, but also for mission-critical applications and blockchain. 
 The IBM Z system is gladly utilized in sectors for banking, finance and insurances.
 Mainframes can handle a large number (2020: millions \cite{IBM2}) of transactions in one second \cite[~p.56]{Tanenbaum2014}. 
 Thousands of virtual machines can run on such a system \cite{OpenMainframeProject}. \gls{IBM Z systems} do not use the well known x86 architecture. 
-They are built with s390x. The current architecture version has been introduced in late 2000 by IBM \cite[~p.15]{Block2019}. The Z system as a mainframe has built in the fastest available processor with 5 GHz with on core and on chip cache, extensive memory and dedicated I/O processing \cite{OpenMainframeProject}.
+They have their own architecture s390x. Hence, applications have to be built specifically for this architecture. 
+The current architecture version has been introduced in late 2000 by IBM \cite[~p.15]{Block2019}. The Z system as a mainframe has built in the fastest available processor with 5 GHz with on core and on chip cache, extensive memory and dedicated I/O processing \cite{OpenMainframeProject}.
 \\
-IBM Z contains "IBM Z pervasive encryption" for comprehensive protection around the data on the system \cite[~p.4]{Lascu2020}. Such systems are offering a horizontal and upright \gls{scaling} of processes, which allows the operation of many hundred virtual systems in parallel \cite[~p.13]{Tschoeke2009}. One traditional operating system for IBM Z systems has been z/OS. 
+IBM Z contains "IBM Z pervasive encryption" for comprehensive protection around the data on the system \cite[~p.4]{Lascu2020}. Such systems are offering a upright into vertical \gls{scaling} of processes, which allows the operation of many hundred virtual systems in parallel \cite[~p.13]{Tschoeke2009}. One traditional operating system for IBM Z systems has been z/OS. 
 IBM Z systems have been optimized for open-source software as Linux \cite[~p.8]{Lascu2020}. The goal by IBM has been to offer a combination of a robust and securable hardware platform with the power of different Linux distributions. 
-The IBM Z system allows running multiple operating systems at the same time with the support of LPARS.
-An \gls{LPAR} is a logical partition to separate the mainframe for the corresponding operating system with associated applications. \\
+The IBM Z system allows running multiple operating systems at the same time with the support of logical partitions (LPARs).
+A \gls{LPAR}) partitions the mainframe into hardware resources for corresponding operating systems with associated applications. \\
 Ubuntu Linux is used as a base operating system for this Bachelor Thesis.
 
 
@@ -62,6 +63,22 @@ It is recommended to define one service or process for one single container and 
 \lstinline!docker run ${name}!. In this case, \lstinline!${name}! can be the name of the image or the image id. \\
 The command \lstinline!docker-compose! is available to automate the setup with multiple connected containers. 
 
+\begin{figure}[H]
+\centering
+\begin{boxedverbatim}
+FROM scratch
+ADD ubuntu-bionic-core-cloudimg-s390x-root.tar.gz /
+
+RUN set -xe \
+	&& echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
+	&& echo 'exit 101' >> /usr/sbin/policy-rc.d \
+	&& chmod +x /usr/sbin/policy-rc.d 
+RUN [ -z "$(apt-get indextargets)" ]
+CMD ["/bin/bash"]
+\end{boxedverbatim}
+ \caption{Example Dockerfile Ubuntu}
+    \label{ExampleDockerfile}
+\end{figure}
 The Dockerfile format has been spread as an easily understandable base for most container runtimes to create container images. Therefore, most container runtimes support this format.
 Docker has turned out to be more like a developer tool for many container technologies in the last years. 
 Consequently, as an example, Kubernetes is using Docker for their community tests as a base container runtime.
@@ -75,7 +92,7 @@ Kubernetes is scalable for using containers as distributed services in a pod. A 
 
 \subsection{Apache Cassandra}\label{Cassandra-Intro}
 
-Apache Cassandra\footnote{\url{https://cassandra.apache.org/}} is a NoSQL database management system developed by the Apache Foundation. The project had been started internally at Facebook and has been released as an open-source project in 2008. Cassandra provides continuous availability, high performance, and linear scalability besides  offering operational simplicity and effortless replication across data centres and geographies \cite{Datastax}. It is recommended for mission-critical data. The Cassandra Query Language (CQL) is similar to SQL and includes JSON support. The similarity simplifies migrations from relational database management systems to Apache Cassandra. \\ 
+Apache Cassandra\footnote{\url{https://cassandra.apache.org/}} is a NoSQL database management system developed by the Apache Foundation. The project had been started internally at Facebook and has been released as an open-source project in 2008. Cassandra provides continuous availability, high performance, and linear scalability besides  offering operational simplicity and effortless replication across data centres and geographies \cite{Datastax}. It is preferred for mission-critical data. The Cassandra Query Language (CQL) is similar to SQL and includes JSON support. The similarity simplifies migrations from relational database management systems to Apache Cassandra. \\ 
 CQL includes an abstraction layer that hides implementation details of the structure.  \\
 NoSQL database stores are using other methods than relational database management systems for data access and own a different structure. Cassandra is using hashing to fetch rows from the table as a column-oriented database management system (DBMS). Such a DBMS stores data tables by column rather than by row. \\ 
 NoSQL databases were developed as massively scalable database management systems that can write and read data anywhere while distributing availability to billions of users. This field is a part of Big Data.

@@ -73,15 +73,15 @@ The installation contains emulators for all available architectures supported by
 
 \subsection{BuildX}\label{BuildX}
 
-As mentioned in \ref{qemu-user-static} "Qemu-user-static", Docker is using QEMU for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} "Registration of Qemu-S390x"). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be cloned from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
-In general, BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes the possibility of multi-architecture builds and exceptional output configuration. That involves not only the upload possibility to your local docker registry (see the output of \textbf{docker images}). That includes the output of "docker build" (which creates a docker image based on the requirements and installations in the used Dockerfile) into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
-The special architecture for \ref{MultiArchitectureImages} multi-architecture builds can be specified with the additional option \textbf{--platform}.
-The option \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
+As mentioned in \ref{qemu-user-static} "Qemu-user-static", Docker is using QEMU for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} "Registration of Qemu-S390x"). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be obtained from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
+In general, BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes multi-architecture builds and exceptional output configuration. Not only the upload to your local docker registry is involved with that(see the output of \textbf{docker images}). Included are also the output of "docker build" (which creates a docker image based on the requirements and installations in the used Dockerfile) into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
+The special architecture for \ref{MultiArchitectureImages} multi-architecture builds can be specified with the additional option \verb+--platform+.
+The sub command \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
 
 \subsection{Multi-Architecture Images}\label{MultiArchitectureImages}
 
-Default Linux distribution providers have to package their software for different system architectures because of different required drivers included in the Linux kernel and dependecies to these.
-That is the reason that Docker images have to be built equally for different architectures. That can be performed with different base images for the respective architectures or with multi-arch images. 
+Typical Linux distribution providers have to package their software for different system architectures because of different required drivers included in the Linux kernel and dependencies to these. Ultimately, these architectures are supported by these Linux distributions.
+Referenced dependencies are the reason that Docker images have to be built equally for different architectures. That can be performed with different base images for the respective architectures or with multi-arch images. 
 It is possible to use one Dockerfile for different architectures then. One example for such a multi-arch Docker image is adoptopenjdk/adoptopenjdk8 based on Ubuntu\footnote{\url{https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/8/jdk/ubuntu/Dockerfile.hotspot.nightly.full}}. In this case hardware dependencies are selected with \lstinline!dpkg --print-architecture! and included as ARCH into the different cases for downloading the relevant tar archive of OpenJDK:
 \begin{figure}[H]
 \centering
@@ -139,11 +139,11 @@ Buildx provides the possibility to consign different architectures (comma separa
 
 Docker is using the Union File system which is not compatible with QEMU, because it is not based on block devices as ext4 as an example. \\
 QEMU can integrate only hard disk formats for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
-The driver virtio\_blk is used for mounting external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start nonnative systems in QEMU. 
+The driver virtio\_blk is used for mounting external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start non-native systems in QEMU. 
 Docker is capable of setting up and starting containers fast. 
 
 Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
-QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} for the first partition \cite[~p.22]{White2020}.
+QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} for the first partition and block device \cite[~p.22]{White2020}.
 
 \subsection{UnionFS}\label{UnionFS}
 
@@ -175,7 +175,7 @@ Ext4 is a journaling file system (just as ext3). The journal is registering tran
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
 
 Such journal file systems in the ext file system family are working with blocks \cite[~p.20]{Seufert2015}.
-The journal is splitted into the journal super block, descriptor blocks, commit blocks and revoke blocks.
+The journal is split into the journal super block, descriptor blocks, commit blocks and revoke blocks.
 The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
 Flex groups can combine multiple group blocks - inode bitmaps, inode tables and data blocks - to one logic block group. All data from inodes are only saved in the first flex group then. 
 So the search for files is speedier because meta data are allocated at one place.\\
@@ -208,7 +208,7 @@ In the case of Cassandra, there will be used \\
 Finally, Cassandra is using the command \\
 \lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{RunningDockerImage} "Running the Docker Image") \\
 for the creation of a file system image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the CI/CD pipeline then (see \ref{CircleCI} "CircleCI configuration for Apache Cassandra"). \\
-At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4 for an emulated hard disk. Writing into cassandra.img is only executible if the image is mounted into a directory under \path{/mnt/} with \\
+At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4 for an emulated hard disk. To add files into the image cassandra.img, mount it to the directory \path{/mnt/} with \\
 \lstinline!mount -o loop cassandra.img /mnt/rootfs!. \\ 
 In the next step the content of the Docker file system directory can be copied into \path{/mnt/rootfs/} with \\ 
 \lstinline!cp -r rootfs/* /mnt/rootfs/.!. \\ 
