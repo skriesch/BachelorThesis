@@ -22,25 +22,25 @@ Therefore, this image is used as a base image in the self-developed Dockerfile f
 \section{Multi-Staging Dockerfile}
 
 A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with "AS" behind the "FROM" with the base image name. 
-Default this feature is used for building applications in one stage and executing the copied application in another stage. The same counts for cloning Github repositories and building binary files based on it. On this way, a lot of space is saved.
+Default this feature is applied for building applications in one stage and executing the copied application in another stage. The same counts for cloning Github repositories and building binary files based on it. On this way, a lot of space is saved.
 Concluding, the docker image has got only the size of the executing system with the application file (without all the code). 
-That is an "experimental feature"  at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before using it (see \ref{Multi-Architecture-Images} "Multi-Architecture Images"). \\
-Default one image is receiving the name build and the other one a name of what will be done with that. In our case, the second image has got the name work. 
-The second image is copying with "COPY --from=build" all required built data from the first image that it can be used for running the application. 
+That is an "experimental feature"  at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before operating (see \ref{Multi-Architecture-Images} "Multi-Architecture Images"). \\
+Default one image is receiving the name build and the other one a name of how it will be applied. In our case, the second image has got the name work. 
+The second image is copying with "COPY --from=build" all required built data from the first image. Therefore, it can be used for running the application. 
 On this way, it is possible to reduce the size of a docker image. \\
 Multi-staging Dockerfiles are an approved method for executing binaries based on Github repositories.
 
 
 \section{Installation}
 
-Kubernetes requires a lot of packages for running and for tests. That will be all installed with the RUN command.
-\url{apt.kubernetes.io} has got later versions of Kubernetes than the Ubuntu repository. Therefore, this repository has to be added to Ubuntu. build is the name of the parent Dockerfile to be able to copy needed files and directories from there.
-Docker is pre-installed with the base Docker image in the FROM command. That is required for a successful installation of Kubernetes. \\
+Kubernetes requires a lot of packages for running and for tests. These will be installed together with the RUN command.
+\url{apt.kubernetes.io} has got later versions of Kubernetes than the Ubuntu repository. Therefore, this repository has to be added to Ubuntu. Build is the name of the parent Dockerfile to be able to copy needed files and directories from there.
+Docker is pre-installed with the base Docker image in the FROM command. This base is required for a successful installation of Kubernetes. \\
 A Dockerfile is installing only necessary packages and includes packages of the base image. Therefore, curl, git and gnupg have to be installed first for the following installation.
-After that, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. \textbf{Docker} in the base image contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. 
+Afterwards, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. \textbf{Docker} in the base image contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. 
 The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running with it. \\ 
-\textbf{Kubelet} is the primary node agent running on each node. He is responsible that different containers can run together in a pod. Pods are deployable units defined in JSON or a yaml file. 
-They include one or a group of containers with shared storage and network resources. Hosting of distributed systems  with different services in different containers can work together. Consequential one pod is something as one "logical host". \\
+\textbf{Kubelet} is the primary node agent running on each node. He is responsible for different runnable containers in a pod. Pods are deployable units defined in JSON or a yaml file. 
+They include a single or a group of containers with shared storage and network resources. Hosting of distributed systems  with different services in different containers can work together. Consequential one pod is something as one "logical host". \\
 \textbf{Kubeadm} is the administration tool to set up clusters. It is necessary to upgrade Kubernetes to other versions. Clusters can be initialized. The network can be configured and the command \textbf{kubectl} (Kubernetes Control Plane) for adding additional nodes to a cluster can be initialized. 
 
 \begin{figure}[H]
