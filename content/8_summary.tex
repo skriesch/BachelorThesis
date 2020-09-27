@@ -2,4 +2,8 @@
 
 This Bachelor Thesis has introduced a new method to deploy applications and emulate the s390x architecture with a combination of the emulator QEMU together with the container technology Docker.
 If binfmt-support is enabled on any system, it is possible to use QEMU with qemu-user-static for emulations of multiple system architectures. 
-The challenge was, that open-source communities do not support the architecture of IBM Z systems because of missing access for tests. The presented solution can be embedded into the CI/CD infrastructure of open-source projects.
+The challenge was, that open-source communities do not support the architecture of IBM Z systems because of missing access for tests. The presented solution can be embedded into the CI/CD infrastructure of open-source projects. 
+
+CicleCI works with container technologies and virtualization/ emulation technologies. 
+Therefore, the emulated setup of Apache Cassandra would be able to be integrated into the CI/CD pipeline of the community. But it fails at the moment because of an JVM issue in QEMU for s390x during the build process. 
+There exists a development workaroung with a Docker build process on IBM Z and the integration into the local registry after the synchronization to a x86 system. Afterwards, the emulation with the integrated Docker image has been working as described.
