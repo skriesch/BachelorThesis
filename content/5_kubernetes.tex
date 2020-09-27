@@ -4,14 +4,15 @@
 
 Kubernetes is a container platform for high availability clusters.
 There exist plugins for integration tests for Kubernetes with the name kubetest\footnote{\url{https://kubetest.readthedocs.io/en/latest/}}. They contain conformance tests, as well as e2e tests (end-to-end).
-That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes and building tests with Go is necessary. The challenge is, that 2 big Github repositories have to be cloned and integrated into the docker image. These are using a lot of space. One solution is using a multi staging Dockerfile. 
-So 2 different Dockerfiles are used in one Dockerfile and one of them is used for building. The other one is used for the installation and testing with built tests. At the end the size of the docker image has got only the size of the test image regardless of the repository size in the mother Dockerfile.
+That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes is necessary. The challenge is, that 2 big Github repositories have to be cloned and integrated into the docker image. These are using a lot of space. One solution is using a multi staging Dockerfile. 
+So 2 different Dockerfiles are used in one Dockerfile and one of them is used for building. The other one is used for the installation and upgrading to a special version. At the end the size of the Docker image has got only the size of the child image regardless of the repository size in the parent Dockerfile.
+Additionally, Dockerfile for executing tests based on the Kubernetes Docker image has to be written.
 
 \section{Docker Multi-Arch Image}
 As mentioned in \ref{Docker-Intro} "Introduction of Docker", Docker is used as a base container engine for Kubernetes tests by the community. \\  
 Docker Inc. is maintaining a Docker image with the name "Docker-in-Docker" for multiple architectures, incl. s390x. 
 This Docker image was introduced by the Docker contributor Jerome Petazzoni (Tianon) with the name dind\footnote{\url{https://github.com/jpetazzo/dind}}. Docker can be installed on Ubuntu, openSUSE, Fedora, ArchLinux and Alpine on this way.
-The base Docker image on Docker Hub\footnote{\url{https://hub.docker.com/_/docker}} is based on Ubuntu.
+The base Docker image on Docker Hub\footnote{\url{https://hub.docker.com/_/docker}} is based on Alpine Linux.
 The base image for a specified architecture can be integrated with 2 methods. Firstly, the s390x base image can be pulled to the local container registry with \textbf{docker pull s390x/docker}. The specification \textbf{docker} behind pull alone would download the Docker image for the host architecture or would choose the platform for a multi-arch build with the platform option of BuildX in the command \textbf{docker build}. The prefix \textbf{s390x} before docker specifies a specific available architecture. 
 The second option is the integration of \textbf{s390x/docker} into the FROM command inside of the Dockerfile. Both methods are downloading the latest Docker version with Ubuntu from \path{docker.io/s390x/docker:latest} and register this Docker image in the local registry.
 Therefore, this image is used as a base image in the self-developed Dockerfile for Kubernetes.
@@ -33,14 +34,14 @@ Multi-staging Dockerfiles are an approved method for executing binaries based on
 \section{Installation}
 
 Kubernetes requires a lot of packages for running and for tests. That will be all installed with the RUN command.
-\url{apt.kubernetes.io} has got later versions of Kubernetes than the Ubuntu repository. Therefore this repository has to be added to Ubuntu. kub-build is the name of the mother Dockerfile to be able to copy needed files and directories from there. \\
-In the intallation part of the Dockerfile the Kubernetes repository \url{https://apt.kubernetes.io} for Debian packages has to be registered together with with the gpg key used by  \url{https://packages.cloud.google.com/apt/doc/apt-key.gpg}.
-A Dockerfile is installing only necessary packages. Therefore, apt-transport-https, apt-utils, curl, git, ca-certificates, gnupg-agent and software-properties-common have to be installed first for the following installation.
-The system requires the lates update with \lstinline!apt-get update! after the registration of the additional repository besides of the default Ubuntu repositories imported with the base Ubuntu image "s390x/ubuntu:18.04" in the FROM command. After that the packages docker.io, kubelet and kubeadm can be installed from kubernetes.io. \textbf{Docker.io} contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. 
-The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running with it. \\ \textbf{Kubelet} is the primary node agent running on each node. He is responsible that different containers can run together in a pod. Pods are deployable units defined in JSON or a yaml file. 
+\url{apt.kubernetes.io} has got later versions of Kubernetes than the Ubuntu repository. Therefore, this repository has to be added to Ubuntu. build is the name of the parent Dockerfile to be able to copy needed files and directories from there.
+Docker is pre-installed with the base Docker image in the FROM command. That is required for a successful installation of Kubernetes. \\
+A Dockerfile is installing only necessary packages. Therefore, curl, git, ca-certificates and gnupg have to be installed first for the following installation.
+After that, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. \textbf{Docker} in the base image contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. 
+The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running with it. \\ 
+\textbf{Kubelet} is the primary node agent running on each node. He is responsible that different containers can run together in a pod. Pods are deployable units defined in JSON or a yaml file. 
 They include one or a group of containers with shared storage and network resources. Hosting of distributed systems  with different services in different containers can work together. Consequential one pod is something as one "logical host". \\
-\textbf{Kubeadm} is the administration tool to set up clusters. It is necessary to upgrade Kubernetes to other versions. Clusters can be initialized. The network can be configured and the command \textbf{kubectl} (Kubernetes Control Plane) for adding additional nodes to a cluster can be initialized. \\
-\lstinline!apt-mark hold! is keeping these special versions of kubelet, kubeadm and kubectl. 
+\textbf{Kubeadm} is the administration tool to set up clusters. It is necessary to upgrade Kubernetes to other versions. Clusters can be initialized. The network can be configured and the command \textbf{kubectl} (Kubernetes Control Plane) for adding additional nodes to a cluster can be initialized. 
 
 \begin{figure}[H]
 \centering
@@ -107,8 +108,20 @@ $(curl https://golang.org/VERSION?m=text).linux-s390x.tar.gz" \
     \label{go-installation}
 \end{figure}
 
+\section{Installation of special Kubernetes Versions}
+
+The Dockerfile should be usable for tests of different Kubernetes versions. Therefore, the feature of a changeable version number is added with \lstinline!ARG VERSION=release-1.13! with the minimal recommended version. This release version is adaptable with \\
+\verb+--build-arg VERSION=$KUBERNETES_VERSION+ \\
+in the build command of \textbf{docker buildx}.
+Jenkins and Prow are working both with executable scripts. The Kubernetes version can be handled as a variable for all required Docker builds.
+Default, the version of a special software and with it the branch can be chosen in the CI/CD system. Afterwards, the special software version has to be installed. In this case, the build command is receiving the variable for the installation.
+The Kubernetes project is providing a special Kubernetes installation for "Kubernetes in Docker" in their repository \textbf{kubernetes/kubernetes}.
+After the checkout of the chosen release inside of a working Go environment, \verb+make release-in-a-container ARCH=s390x+ is installing Kubernetes for the architecture s390x inside of a Docker container. \\
+This command is integrated into the parent Dockerfile with the Go environment. The version number is additionally used for the test Docker image.
+
+
 \section{Building Tests}
-After a successful installation of go, it is possible to build and install the Kubernetes test environment.
+After a successful installation of Go, it is possible to build and install the Kubernetes test environment.
 At first the directory k8s.io has to be created because kubernetes-tests are looking for this directory as a mother directory. The repository test-infra by the Kubernetes project has to be cloned to there. 
 The repository \textbf{test-infra} contains all tests for Kubernetes provided by the community. 
 These can be used of course and are updated continuously. That is the reason to clone this repository inside of the Dockerfile. Inside of this test-infra directory kubetest can be installed with \textbf{go install}. 
