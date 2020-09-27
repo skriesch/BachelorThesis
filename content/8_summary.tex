@@ -2,8 +2,17 @@
 
 This Bachelor Thesis has introduced a new method to deploy applications and emulate the s390x architecture with a combination of the emulator QEMU together with the container technology Docker.
 If binfmt-support is enabled on any system, it is possible to use QEMU with qemu-user-static for emulations of multiple system architectures. 
-The challenge was, that open-source communities do not support the architecture of IBM Z systems because of missing access for tests. The presented solution can be embedded into the CI/CD infrastructure of open-source projects. 
+The challenge was that open-source communities do not support the architecture of IBM Z systems because of missing access for tests. The presented solution can be embedded in the CI/CD infrastructure of open-source projects. 
 
-CicleCI works with container technologies and virtualization/ emulation technologies. 
-Therefore, the emulated setup of Apache Cassandra would be able to be integrated into the CI/CD pipeline of the community. But it fails at the moment because of an JVM issue in QEMU for s390x during the build process. 
-There exists a development workaroung with a Docker build process on IBM Z and the integration into the local registry after the synchronization to a x86 system. Afterwards, the emulation with the integrated Docker image has been working as described.
+A "Docker in Docker" solution has been present before the Bachelor Thesis project. "Kubernetes in Docker" is applied by the Kubernetes community for tests. 
+Therefore, it is possible to upgrade Kubernetes setups inside of a container to a chosen version with a pre-installed Docker. A test environment has been created on this base with a Dockerfile for the installation and another Dockerfile for testing. During the evaluation of CI/CD systems, it has been annoyed that Prow can not be utilized for emulations because of his containerized Kubernetes concept. 
+Some research has yielded the result that Prow has been developed based on Jenkins and Jenkins X. Before the invention of Prow, the concept with Kubernetes based deployments had been  tried based on Jenkins with a Kubernetes plugin. Jenkins can deploy emulations and container systems. 
+All things considered the emulated system with the Docker image can be tested with Jenkins and ensuing transferred with the same configuration to Prow.
+Tests have been contained because of the extension of the study. A network interface and specific open ports have to be attached to the QEMU emulation and analyzed. 
+
+CircleCI works with container technologies and virtualization/ emulation technologies. 
+Therefore, the emulated setup of Apache Cassandra would be able to be integrated into the CI/CD pipeline of the community. However, it fails at the moment because of a JVM issue in QEMU for s390x during the build process. 
+There exists a development workaround with a Docker build process on IBM Z and the integration into the local registry after the synchronization to a x86 system. Afterwards, the emulation with the integrated Docker image has been working as described.
+
+The approach with a combination with QEMU emulations and integrated Docker image can be applied for additional CI/CD pipelines of open-source projects. Sophisticated, this practice provides an excellent environment for fast software deployments in general. 
+Multiple system architectures can be emulated on different hardware. Following more system architectures can be supported by software vendors.
