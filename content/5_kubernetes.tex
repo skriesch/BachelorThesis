@@ -39,7 +39,7 @@ Docker is pre-installed with the base Docker image in the FROM command. This bas
 A Dockerfile is installing only necessary packages and includes packages of the base image. Therefore, curl, git and gnupg have to be installed first for the following installation.
 Afterwards, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. \textbf{Docker} in the base image contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. 
 The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running with it. \\ 
-\textbf{Kubelet} is the primary node agent running on each node and is responsible for different runnable containers in a pod. Pods are deployable units defined in JSON or a yaml file. This feature is used for \ref{Kub-IntegrationTest} "integration tests" in the CI/CD pipepline.
+\textbf{Kubelet} is the primary node agent running on each node and is responsible for different runnable containers in a pod. Pods are deployable units defined in JSON or a yaml file. This feature is used for \ref{Kub-IntegrationTest} "integration tests" in the \gls{CI/CD} pipepline.
 Pods include a single or a group of containers with shared storage and network resources. Hosting of distributed systems  with different services in different containers can work together. Consequential one pod is something as one "logical host". \\
 \textbf{Kubeadm} is the administration tool to set up clusters. It is necessary to upgrade Kubernetes to other versions. Clusters can be initialized. The network can be configured and the command \textbf{kubectl} (Kubernetes Control Plane) for adding additional nodes to a cluster can be initialized. 
 
@@ -114,7 +114,7 @@ The Dockerfile should be usable for tests of different Kubernetes versions. Ther
 \verb+--build-arg VERSION=$KUBERNETES_VERSION+ \\
 in the build command of \textbf{docker buildx}.
 Jenkins and Prow are working both with executable scripts. The Kubernetes version can be handled as a variable for all required Docker builds.
-Default, the version of a special software and with it the branch can be chosen in the CI/CD system. Afterwards, the special software version has to be installed. In this case, the build command is receiving the variable for the installation. These verian numbers are used as tags in Github. So one special tagged branch can be chosen during \textbf{git clone} with \verb+--branch ${VERSION}+.
+Default, the version of a special software and with it the branch can be chosen in the \gls{CI/CD} system. Afterwards, the special software version has to be installed. In this case, the build command is receiving the variable for the installation. These verian numbers are used as tags in Github. So one special tagged branch can be chosen during \textbf{git clone} with \verb+--branch ${VERSION}+.
 The Kubernetes project is providing a special Kubernetes installation for "Kubernetes in Docker" in their repository \textbf{kubernetes/kubernetes}.
 After the checkout of the chosen release inside of a working Go environment, \verb+CMD make release-in-a-container ARCH=s390x+ is installing Kubernetes for the architecture s390x inside of a Docker container. \\
 This command is integrated into the parent Dockerfile with the Go environment. The version number is additionally used for the test Docker image.
@@ -135,7 +135,7 @@ In this case a static e2e.test file is used for every Kubernetes version inside 
 Conformance tests are testing all dependencies with other cloud providers or with additional software. The following command is used to integrate conformance tests. \\
 \verb+e2e.test --kubeconfig /etc/kubernetes/admin.conf --provider local \+ \\
 \verb+-ginkgo.focus="\[sig-network\].*Conformance" -num-nodes 1+  \\
-The \textbf{local} behind provider identifies that all tests should run only local at the moment. That has the reason that the QEMU command has to be adapted with network configurations and open ports for communication for these features.
+The \textbf{local} behind provider identifies that all tests should run only local at the moment. That has the reason that the \gls{QEMU} command has to be adapted with network configurations and open ports for communication for these features.
 The \textbf{gingo.focus} includes conformance tests.
 
 
@@ -177,10 +177,10 @@ The Kubernetes community has got a test team with the name Sig-Testing. They are
 
 Jenkins can deploy a specified Kubernetes cluster inside of a Docker image based on the requirements im the yaml file.
 
-\section{Integration into CI/CD}
+\section{Integration into \gls{CI/CD}}
 
-The Kubernetes project has been using Prow as a CI/CD system. Prow is a Kubernetes based CI/CD system further developed based on Jenkins \cite{JAXenter}. That implifies, that the existing CI/CD pipeline can work only with containers.
-Before the integration into the community pipeline, it is possible to use a default Jenkins system with an integrated Kubernetes plugin because of identical configuration files. An additional advantage in this case is the chance to test the integration of Kubernetes into QEMU before providing the IBM Z environment container based for test purposes.
+The Kubernetes project has been using Prow as a \gls{CI/CD} system. Prow is a Kubernetes based \gls{CI/CD} system further developed based on Jenkins \cite{JAXenter}. That implifies, that the existing \gls{CI/CD} pipeline can work only with containers.
+Before the integration into the community pipeline, it is possible to use a default Jenkins system with an integrated Kubernetes plugin because of identical configuration files. An additional advantage in this case is the chance to test the integration of Kubernetes into \gls{QEMU} before providing the IBM Z environment container based for test purposes.
 
 \begin{figure}[H]
 \centering
@@ -192,12 +192,12 @@ Before the integration into the community pipeline, it is possible to use a defa
 
 \subsection{Jenkins versus Prow}
 
-As mentioned in \ref{CI-CD} "CI/CD Systems", \textbf{Jenkins}\footnote{\url{https://www.jenkins.io/}} is the most popular open-source CI/CD system. This open-source project has started with a default CI/CD workflow based on real hardware and later on virtual machines to test software before the release. Jenkins provides many plugins\footnote{\url{https://plugins.jenkins.io/}} for git integration about release management support until container deployments. \\
+As mentioned in \ref{CI-CD} "\gls{CI/CD} Systems", \textbf{Jenkins}\footnote{\url{https://www.jenkins.io/}} is the most popular open-source \gls{CI/CD} system. This open-source project has started with a default \gls{CI/CD} workflow based on real hardware and later on virtual machines to test software before the release. Jenkins provides many plugins\footnote{\url{https://plugins.jenkins.io/}} for git integration about release management support until container deployments. \\
 There exists a special \textbf{Kubernetes plugin}\footnote{\url{https://plugins.jenkins.io/kubernetes/}}, that Jenkins can understand yaml configuration files for Kubernetes deployments which are used for integration tests by the Kubernetes community as an example. On this way, Jenkins can execute the same tests as Prow together with emulations because the Kubernetes environment is deployed inside of a emulated system. Jenkins can handle emulated systems the same as virtual machines. The Kubernetes plugin makes automated Kubernetes deployments possible. Therefore, a Jenkins installation is the best choice for the transition from emulated systems together with container technologies to a working test strategy with container based test environments in Prow.
 
 \textbf{Jenkins X}\footnote{\url{https://jenkins-x.io/}} has been developed based on Jenkins specialized on Kubernetes and cloud native environments. That means, that something as the Kubernetes plugin is integrated and the system can work with public cloud providers and other cloud technologies for test and production deployment pipelines. All in all, Jenkins X is an improved version of Jenkins for cloud environments. The system can work with container registries, understands yaml configuration files without additional plugins and is able to deploy scalable systems based on containers in the local data centre as well as in the public cloud (AWS, Google Cloud, IBM cloud, Azure).
 
-\textbf{Prow}\footnote{\url{https://jenkins-x.io/docs/reference/components/prow/}} is a Kubernetes-native solution based on Jenkins X. This CI/CD system is used by projects as Kubernetes, Istio und OpenShift which are all based on Kubernetes. This system is something as a Jenkins X expanded with special Kubernetes APIs and cloud specific features. It can understand and deploy only Kubernetes based environments. Other configurations are not supported. The benefit in comparison to Jenkins is, that yaml configurations for Kubernetes setups are transferable between Jenkins and Prow.
+\textbf{Prow}\footnote{\url{https://jenkins-x.io/docs/reference/components/prow/}} is a Kubernetes-native solution based on Jenkins X. This \gls{CI/CD} system is used by projects as Kubernetes, Istio und OpenShift which are all based on Kubernetes. This system is something as a Jenkins X expanded with special Kubernetes APIs and cloud specific features. It can understand and deploy only Kubernetes based environments. Other configurations are not supported. The benefit in comparison to Jenkins is, that yaml configurations for Kubernetes setups are transferable between Jenkins and Prow.
 
 \subsection{System Requirements} \label{Kubernetes_Requirements}
 
@@ -205,18 +205,18 @@ Jenkins can include all required installation of integration tests and the whole
 \lstinline!docker images | grep 'Kubernetes-Test' | awk '{print int($7+0.5)"G"}'! \\
 
 The Kubernetes community is referencing\footnote{\url{https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/\#before-you-begin}} a minimum about 2GB of memory and 2 CPUs per system. 
-It has to be observerd, that Kubernetes is watching master and worker node as a own system. Both are on one system in our case. Additionally, some RAM and CPU should be added for running tests. Therefore, 6GB for memory and 5 CPUs will be calculated for the QEMU setup.
+It has to be observerd, that Kubernetes is watching master and worker node as a own system. Both are on one system in our case. Additionally, some RAM and CPU should be added for running tests. Therefore, 6GB for memory and 5 CPUs will be calculated for the \gls{QEMU} setup.
 
 \subsection{Tests with Jenkins}
 
 Both Docker images can be built with Jenkins. The Kubernetes plugin can read yaml files for deployments of pods.
 Therefore, the Kubernetes base environment can be set up first and Jenkins can install the test environment for integration tests inside of the Docker image. The test Docker image is built in the next step based on this test environment.
-Afterwards, the launch of the system with QEMU is executed.
+Afterwards, the launch of the system with \gls{QEMU} is executed.
 
-In this step the QEMU image has to be prepared with the size of the Docker image \textbf{kubernetes-test}.
+In this step the \gls{QEMU} image has to be prepared with the size of the Docker image \textbf{kubernetes-test}.
 The file system of kubernetes-test has to be exported to a new directory \textbf{rootfs}.
 Then the image has to be formatted with ext4 and this image is mounted in \path{/mnt/} as \textbf{rootfs}.
-On this way, the content of the Docker image can be copied into the formatted QEMU image via \path{/mnt/rootfs/}.
+On this way, the content of the Docker image can be copied into the formatted \gls{QEMU} image via \path{/mnt/rootfs/}.
 
 \begin{figure}[H]
 \centering

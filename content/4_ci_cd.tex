@@ -1,20 +1,20 @@
 \chapter{Continuous Integration}\label{ch:ci_cd}
 
-\section{CI/CD in the Software Development Lifecycle}
+\section{\gls{CI/CD} in the Software Development Lifecycle}
 
-CI/CD is the short name for Continuous Integration/Continuous Delivery. This method contains systems and technologies used for Test Driven Development. Continuous Integration provides executing changes in the code, building them to an application and testing it directly. 
+\gls{CI/CD} is the short name for Continuous Integration/Continuous Delivery. This method contains systems and technologies used for Test Driven Development. Continuous Integration provides executing changes in the code, building them to an application and testing it directly. 
 If all is working fine, it can be merged. Continuous Delivery is adding automated releases to the process. 
 The software is tested automatically by the system beforehand. If all tests succeed, it can be released.
 
 These tests during the software development lifecycle are integrated into all sprints for agile software development. That has got the name DevOps after adapting these practices with expanding with automated deployments for operations. It is playing an important role through all phases in the software development because of the quality improvement of code. The code complexity is growing with the size of the project. Therefore, it is beneficially to have automated tests running directly after the Pull Request. 
 
-In the past, all systems had to be set up manually. Automating the software cycle and Test Driven Development (TDD) have promoted software for configuration management, CI/CD and version control. In combination, software can be deployed and tested over the full software development lifecycle. Developers can test their newly written software before submitting and are receiving the feedback by the CI/CD system for the integration and system test whether the software is working in cooperation with other modules on multiple systems with their base operating systems.
+In the past, all systems had to be set up manually. Automating the software cycle and Test Driven Development (TDD) have promoted software for configuration management, \gls{CI/CD} and version control. In combination, software can be deployed and tested over the full software development lifecycle. Developers can test their newly written software before submitting and are receiving the feedback by the \gls{CI/CD} system for the integration and system test whether the software is working in cooperation with other modules on multiple systems with their base operating systems.
 
 This process should be automated. "Infrastructure as Code" is a provision for managing the setup of systems, networks and services via written code \cite[~p.110]{Scholl2019}. Deployable systems are described in configuration files how to be launched eith this method. These servers are installable on real servers in any data centre or in the public cloud. Using code as a base ensures that all systems have been installed and configured on the same way matching the system requirements. 
 
 \section{Test Levels}\label{TestLevel}
 
-Test suites can be executed repeatable and consistent with an point of view on the functionality, new requirements and software quality. These automated tests are part of the CI/CD pipeline with integrated deployments into system environments \cite[~p.112]{Scholl2019}. \\
+Test suites can be executed repeatable and consistent with an point of view on the functionality, new requirements and software quality. These automated tests are part of the \gls{CI/CD} pipeline with integrated deployments into system environments \cite[~p.112]{Scholl2019}. \\
 Test suites can be split into different test levels:
 \begin{itemize}
 \item \textbf{Component Test}  \\
@@ -34,38 +34,38 @@ The system test integrates all hardware and system requirement for the product \
 Every customer can use different hardware or services as a foundation. That can expect special system settings and can have an effect on the behavior of the system.
 This test level includes tests for functional sustainability \cite[~p.87]{Spillner2019} and non-functional sustainability.
 Performance testing, usability testing, security testing and compliance testing are part of non-functional sustainability. But also the system compatibility and tests with multiple configurations suit to non-functional tests. \\
-Many software manufacturers are using live environments by their customers because of missing hardware for this test level. Integrated system emulations into the CI/CD pipeline would solve this problem.
+Many software manufacturers are using live environments by their customers because of missing hardware for this test level. Integrated system emulations into the \gls{CI/CD} pipeline would solve this problem.
 
 \item \textbf{Acceptance Test} \\
 The acceptance test requires users. The User Experience has to be tested on this test level. Mostly the Product Management and/ or the Customer Support are appointed for this task after the Alpha and Beta release. These release phases are executed before the final release for the possibility to fix critical or major bugs.
 Some software companies are offering such releases for free, if a customer wants to test the software in the customer environment.
 \end{itemize}
-This order of test levels has to be kept. 3 of 4 phases can be automated with CI/CD. 
+This order of test levels has to be kept. 3 of 4 phases can be automated with \gls{CI/CD}. 
 
-\section{CI/CD Systems} \label{CI-CD}
+\section{\gls{CI/CD} Systems} \label{CI-CD}
 
-There is no one CI/CD system. These systems exist as open-source software and commercial software. They can integrate version control systems for automated tests of new software code or for their releases. Most common used CI/CD systems are Jenkins, CircleCI, Bamboo, TeamCity, GitLab CI and Travis CI\footnote{\url{https://medium.com/devops-dudes/top-7-best-ci-cd-tools-you-should-get-your-hands-on-in-2020-832c29db936a}}.
+There is no one \gls{CI/CD} system. These systems exist as open-source software and commercial software. They can integrate version control systems for automated tests of new software code or for their releases. Most common used \gls{CI/CD} systems are Jenkins, CircleCI, Bamboo, TeamCity, GitLab CI and Travis CI\footnote{\url{https://medium.com/devops-dudes/top-7-best-ci-cd-tools-you-should-get-your-hands-on-in-2020-832c29db936a}}.
 
-CI/CD systems can split their tests in different test cases or \ref{TestLevel} "levels". Developers can define which test should run on which branch and in which phase. A branch is a labeled software version with code in a version control system as Github, Gitlab or SVN. It supports teams working parallel on the same code and to manage that. The code contribution by a single Developer should be tested and approved before the merge into the master branch. That can be triggered via CI/CD after the Pull Request. The Pull Request is a request for merging the offered code contribution to the master branch. This test before the merge is in the CI/CD stage for component tests. Afterwards, integration tests can be adjoined in the next stage.
+\gls{CI/CD} systems can split their tests in different test cases or \ref{TestLevel} "levels". Developers can define which test should run on which branch and in which phase. A branch is a labeled software version with code in a version control system as Github, Gitlab or SVN. It supports teams working parallel on the same code and to manage that. The code contribution by a single Developer should be tested and approved before the merge into the master branch. That can be triggered via \gls{CI/CD} after the Pull Request. The Pull Request is a request for merging the offered code contribution to the master branch. This test before the merge is in the \gls{CI/CD} stage for component tests. Afterwards, integration tests can be adjoined in the next stage.
 
-Repeating test cases after software changes is called regression test \cite[~p.98]{Spillner2019}. This practice is checking whether new code is matching the requirements and does not implicate accidentally side effects. That is the best release method with using the CI/CD system in comparison with manual releases.
+Repeating test cases after software changes is called regression test \cite[~p.98]{Spillner2019}. This practice is checking whether new code is matching the requirements and does not implicate accidentally side effects. That is the best release method with using the \gls{CI/CD} system in comparison with manual releases.
 
-Most developed CI/CD systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representation indicates "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
-Some systems can handle only the Continuous Integration part. Others are developed to manage all in the CI/CD pipeline.
-The Release Manager or Product Manager can determine which test cases should be iterated in the CI/CD pipeline. Open-source projects have been appointing maintainers for this role and managing the CI/CD system.
+Most developed \gls{CI/CD} systems are web applications connected to the code base. All test cases are listed in the application. If the code matches to the respective test, the test case has the output "Passed" and the next test case will be executed. If the representation indicates "Failed", a bug has been found or the code does not fit the requirements of the functionality any more. \\
+Some systems can handle only the Continuous Integration part. Others are developed to manage all in the \gls{CI/CD} pipeline.
+The Release Manager or Product Manager can determine which test cases should be iterated in the \gls{CI/CD} pipeline. Open-source projects have been appointing maintainers for this role and managing the \gls{CI/CD} system.
 
 It is recommended to prepare separate environments for testing and production in the background \cite[~p.120]{Scholl2019}. 
 Usually, that will be done with virtual machines or containers on multiple hosts. The profit is that new base software versions can be tested together with the self developed software in the test environment during the system test before running in production.
 
-Some CI/CD systems are connected interrelated to the version control system that the creation of a release branch is possible via CI/CD. All functionality tests have to be passed.  If system tests are integrated, these tests "can" have to be matched. But this proceeding is no requirement. The goal of this Bachelor Thesis is to integrate first system tests for IBM Z into the CI/CD pipeline of open-source projects before the release. As a result, the software will be tested for the architecture s390x continuously and IBM Z will be supported by referred projects.
+Some \gls{CI/CD} systems are connected interrelated to the version control system that the creation of a release branch is possible via \gls{CI/CD}. All functionality tests have to be passed.  If system tests are integrated, these tests "can" have to be matched. But this proceeding is no requirement. The goal of this Bachelor Thesis is to integrate first system tests for IBM Z into the \gls{CI/CD} pipeline of open-source projects before the release. As a result, the software will be tested for the architecture s390x continuously and IBM Z will be supported by referred projects.
 
 \section{Emulation for System Tests}
 
-Traditionally development environments have been running on virtual machines or locally on development systems as the CI/CD system, as an example \cite[~p.123]{Scholl2019}. Progressively CI/CD systems are providing automated Docker builds and support for running containers alongside virtual machines. 
+Traditionally development environments have been running on virtual machines or locally on development systems as the \gls{CI/CD} system, as an example \cite[~p.123]{Scholl2019}. Progressively \gls{CI/CD} systems are providing automated Docker builds and support for running containers alongside virtual machines. 
 Shell scripts and Python code are required decreasingly for system setups in separate scripts. Some systems allow the integration of shell commands into the job configuration.
 
-System tests should integrate tests for system dependencies for multiple hardware architectures. Hosting of such systems should not be required. QEMU and other emulation software are providing features to emulate multiple system architectures.
-That can be integrated into the CI/CD pipeline. Host systems or test systems in the cloud have to be prepared with the listed \ref{ch:prequisites} "Prerequisites". That can be automated with any configuration management system.
+System tests should integrate tests for system dependencies for multiple hardware architectures. Hosting of such systems should not be required. \gls{QEMU} and other emulation software are providing features to emulate multiple system architectures.
+That can be integrated into the \gls{CI/CD} pipeline. Host systems or test systems in the cloud have to be prepared with the listed \ref{ch:prequisites} "Prerequisites". That can be automated with any configuration management system.
 
-QEMU in combination with container technologies exhibits a method of fast sytem deployments with all required system configuration with the possibility to emulate most used system architectures. That can keep software providers (and open-source communities) reassured that the developed software is supporting all tested architectures. 
+\gls{QEMU} in combination with container technologies exhibits a method of fast sytem deployments with all required system configuration with the possibility to emulate most used system architectures. That can keep software providers (and open-source communities) reassured that the developed software is supporting all tested architectures. 
 In conclusion, they gain confidence into their software on various platforms.

@@ -78,7 +78,7 @@ jobs:
       - attach_workspace:
                   at: .
       - run:
-             name: Run test with QEMU
+             name: Run test with \gls{QEMU}
              command: |
                      /usr/bin/qemu-system-s390x -kernel vmlinuz-4.15.0-20-generic \
                      -m 48 -M s390-ccw-virtio -nodefaults -device sclpconsole,\
