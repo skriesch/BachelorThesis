@@ -30,7 +30,7 @@ System emulation benefits from the virtualization support as \gls{KVM}, if the g
 \section{User-Mode Emulation}
 
 The user-mode emulation does not emulate the whole system. It is faster than the full-system emulation because it does not engage so much hardware resources. Application processes can be run in \gls{QEMU} with a minimal system for a specific application. 
-This emulation type is working on a system call level. Therefore, the application has to be runnable as a single process executable itself. The emulator is using the Linux kernel to emulate system calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{\gls{QEMU}}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
+This emulation type is working on a system call level. Therefore, the application has to be runnable as a single process executable itself. The emulator is using the Linux kernel to emulate system calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{QEMU}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
 The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system. \\
 The disadvantage of user-mode emulation is the ability to run only single processes. Most services contain different applications with the result of multiple processes. Consequently, these applications need a full system emulation.
 
@@ -47,8 +47,8 @@ The initrd should match the Linux kernel and is optional. It is used to start an
 \begin{figure}[H]
 \centering
 \includegraphics[height=9cm, width=9cm]{Qemu_setup}
- \caption{Emulation with \gls{QEMU}}
-    \label{\gls{QEMU}_Emulation}
+ \caption{Emulation with QEMU}
+    \label{QEMU_Emulation}
 \end{figure}
 
 
@@ -68,7 +68,7 @@ The package \textbf{binfmt-support} has to be installed first for using this ker
 
 \subsection{Qemu-user-static}\label{qemu-user-static}
 
-The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{\gls{QEMU}}. This package contained in various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled \gls{QEMU} emulators that applications compiled for alternative architectures can run on another architecture \cite{Yang2019}. When building for one new architecture, static binaries are relevant because of the possibility of an "exec init error" without them. \\
+The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package contained in various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled \gls{QEMU} emulators that applications compiled for alternative architectures can run on another architecture \cite{Yang2019}. When building for one new architecture, static binaries are relevant because of the possibility of an "exec init error" without them. \\
 The installation contains emulators for all available architectures supported by the \gls{QEMU} project incl. s390x aligned with the specific host architecture. In this manner, you can build and run a binary for different architectures on the same host (see \ref{Optimized-Qemu-Command} "Optimized Qemu Command"). That is the base for \ref{BuildX} "BuildX" by Docker, too.
 
 \subsection{BuildX}\label{BuildX}

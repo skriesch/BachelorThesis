@@ -15,7 +15,7 @@ Zum Abschluss wird die automatische Emulation beider Projekte in die Test-Infras
 \label{sec:abstract}
 
 Open-source projects are developing software with freely available source code. These communities are running automated tests against every code change in order to guarantee the best software quality. 
-These tests should be able to run on different architectures. It is difficult to test software for essential hardware without access. Therefore, the \gls{s390x} architecture used in IBM Z has to be emulated on x86 for chosen open-source projects and included in their \gls{\gls{CI/CD}} pipeline. 
+These tests should be able to run on different architectures. It is difficult to test software for essential hardware without access. Therefore, the \gls{s390x} architecture used in IBM Z has to be emulated on x86 for chosen open-source projects and included in their \gls{CI/CD} pipeline. 
 That should run with fast deployment methods in the \gls{emulator} \gls{QEMU}. 
 Kubernetes is used as a \gls{containerized} example project as the foundation for instituting applications. Another open-source project, Apache Cassandra, is applied to represent tests on the \gls{application layer} in the Kubernetes stack. \\
 Additionally, minimal system requirements have to be analyzed for the setup inside of the \gls{CI/CD} infrastructure of both projects concerning the minimization of disk space, memory and CPU usage for deployments. \\

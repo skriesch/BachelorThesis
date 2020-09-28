@@ -66,8 +66,8 @@ make install
 
 \section{Fetching Signed Linux Kernel Image} \label{LinuxKernel}
 
-\gls{QEMU} needs a built Linux kernel repeatingly to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
-The build process via \gls{CI/CD} should be fast. Additionaly, using the Linux kernel matching the base Docker image can prevent from subtle interface differences between the kernel interface and user space libraries depending on particular kernel features. 
+QEMU needs a built Linux kernel repeatingly to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
+The build process via CI/CD should be fast. Additionaly, using the Linux kernel matching the base Docker image can prevent from subtle interface differences between the kernel interface and user space libraries depending on particular kernel features. 
 Therefore, the second option will be used. The Docker file system in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
 The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the file system of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. The whole command is the following then: \\
 \begin{figure}[H]
@@ -79,18 +79,18 @@ kernel-bionic http://ports.ubuntu.com
     \label{Debootstrap}
 \end{figure}
 
-This command "debootstrap" is validating all downloaded packages for additional security. This process is easy to automate and requires only 10 seconds. In conclusion, the generic and signed Linux kernel image can be used in the \path{/boot/} directory for the integration into \gls{QEMU}.
+This command "debootstrap" is validating all downloaded packages for additional security. This process is easy to automate and requires only 10 seconds. In conclusion, the generic and signed Linux kernel image can be used in the \path{/boot/} directory for the integration into QEMU.
  
 
-\section{Optimized \gls{QEMU} Command}\label{Optimized-Qemu-Command}
+\section{Optimized QEMU Command}\label{Optimized-Qemu-Command}
 
 Every additional device requires additional resources and time for starting the system. 
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the s390x Linux kernel image. In the given \ref{\gls{QEMU}-Command} "Optimized \gls{QEMU} command" the qemu command is executed in the main directory with the Linux kernel. This one is transferred from the boot directory to the main directory during the automation process \\  
+The kernel option is receiving the path to the s390x Linux kernel image. In the given \ref{QEMU-Command} "Optimized QEMU command" the qemu command is executed in the main directory with the Linux kernel. This one is transferred from the boot directory to the main directory during the automation process \\  
 The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. \textbf{-M s390-ccw-virtio} defines the machine type for s390x.
-\textbf{-nodefaults} is deactivating default additional devices activated in \gls{QEMU}. 
+\textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 
 So this one is added as a device with \textbf{-chardev stdio,id=console,signal=off,mux=on -mon chardev=console} and \textbf{-device sclpconsole,chardev=console}. Additionally, the console has to be specified with \textbf{console=ttyS0} in the append part. \\ 
 Cassandra as a project does not need any network interface (-net none) or parallelism (-parallel none). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
@@ -110,7 +110,7 @@ id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 \
 -hda /data/cassandra.img  --append 'root=/dev/vda rw console=ttyS0 \
 rdinit=/bin/bash'
 \end{boxedverbatim}
- \caption{Optimized \gls{QEMU} Command}
-    \label{\gls{QEMU}-Command}
+ \caption{Optimized QEMU Command}
+    \label{QEMU-Command}
 \end{figure}
 
