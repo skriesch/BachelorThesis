@@ -1,20 +1,20 @@
 
 \chapter{Emulation}\label{ch:emulation}
 
-\section{QEMU}
+\section{\gls{QEMU}}
 
-QEMU is an open-source emulator introduced by Fabrice Bellard in the year 2003 and available in most Linux distributions now. It is embedded in different virtualization tools as KVM and XEN, too. QEMU is well tested and contains all the necessary features for emulations of other architectures on alternative hardware. 
-QEMU is a generic emulator for different system architectures. It can also be used for emulation of obsolete hardware \cite[~p.24]{Opsahl2013}. 
+\gls{QEMU} is an open-source emulator introduced by Fabrice Bellard in the year 2003 and available in most Linux distributions now. It is embedded in different virtualization tools as \gls{KVM} and \gls{XEN}, too. \gls{QEMU} is well tested and contains all the necessary features for emulations of other architectures on alternative hardware. 
+\gls{QEMU} is a generic emulator for different system architectures. It can also be used for emulation of obsolete hardware \cite[~p.24]{Opsahl2013}. 
 It has been extended for various architectures as x86, ARM, PowerPC, Sparc32, Sparc64, MIPS and s390x.
 It is a processor emulator using binary translation \cite{Butt2011} which is executing and translating emulated instructions based on basic blocks. Each block comprises one entry and one exit point \cite[~p.5]{Wang2010}. 
-The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of QEMU. 
+The binary translation will be executed with the "Tiny Code Generator" (TCG) inside of \gls{QEMU}. 
 The TCG is a small compiler replacing GCC because of unlimited releases and code changes. The TCG is converting the blocks of target instructions into a standardized form with machine instructions of the host hardware. 
 Subsequently, it has to be compiled for the host or target architecture for the guest system. 
-If a binary for a new target architecture is necessary, the frontend of TCG will be converted while QEMU is ported to a new architecture. 
+If a binary for a new target architecture is necessary, the frontend of TCG will be converted while \gls{QEMU} is ported to a new architecture. 
 The TCG integrates new code for the new host architecture in the background then. It is also dedicated to improving performance with avoiding repeated translations by buffering already translated code \cite{Cota2017}. 
-The TCG takes care of the emulation of the guest processor running as a thread launched by QEMU. The memory of a guest is allocated during launch. Then that is mapped into the address space of the QEMU process  \cite[~p.29]{Opsahl2013}.\\
-It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because QEMU is integrated as a default package. 
-QEMU does not emulate the entire hardware. That is only possible for the CPU. QEMU is used for emulations in this Bachelor Thesis.
+The TCG takes care of the emulation of the guest processor running as a thread launched by \gls{QEMU}. The memory of a guest is allocated during launch. Then that is mapped into the address space of the \gls{QEMU} process  \cite[~p.29]{Opsahl2013}.\\
+It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because \gls{QEMU} is integrated as a default package. 
+\gls{QEMU} does not emulate the entire hardware. That is only possible for the CPU. \gls{QEMU} is used for emulations in this Bachelor Thesis.
 
 \section{Full-System Emulation}
 
@@ -25,12 +25,12 @@ Additionally, this emulation can be used as an application development platform 
 System emulation with emulated hardware is slower than a real machine because instructions should be executed in the guest hardware.  However, that has to be emulated in software. 
 That implies multiple host instructions as a result because of the translation for a single guest instruction \cite[~p.1]{Tong2014}.
 It is possible to reduce the supported and attached additional devices with additional options. The deactivation of a graphic card can be specified with \textbf{-nographic} as an example. Afterwards, less hardware has to be emulated, which has given a better performance.  \\
-System emulation benefits from the virtualization support as KVM, if the guest has the same architecture as the host. In this case, CPU operations are not required to emulate. Emulations of alternative architectures ( see \ref{AlternativeArchitectures} "Emulation of Alternative Architectures" require additional resources for the emulation of the whole system.
+System emulation benefits from the virtualization support as \gls{KVM}, if the guest has the same architecture as the host. In this case, CPU operations are not required to emulate. Emulations of alternative architectures ( see \ref{AlternativeArchitectures} "Emulation of Alternative Architectures" require additional resources for the emulation of the whole system.
 
 \section{User-Mode Emulation}
 
-The user-mode emulation does not emulate the whole system. It is faster than the full-system emulation because it does not engage so much hardware resources. Application processes can be run in QEMU with a minimal system for a specific application. 
-This emulation type is working on a system call level. Therefore, the application has to be runnable as a single process executable itself. The emulator is using the Linux kernel to emulate system calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{QEMU}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
+The user-mode emulation does not emulate the whole system. It is faster than the full-system emulation because it does not engage so much hardware resources. Application processes can be run in \gls{QEMU} with a minimal system for a specific application. 
+This emulation type is working on a system call level. Therefore, the application has to be runnable as a single process executable itself. The emulator is using the Linux kernel to emulate system calls then. That can be managed by mapping system calls of the target system to an equivalent system call on the host with threading (with a separate virtual CPU) \cite{\gls{QEMU}}. This process does not require the emulation of the full  memory  management  unit \cite[~p.2]{Butt2011}.
 The user-mode emulation can run directly non-privileged instructions or is using system calls to ask for a selected service from the operating system. \\
 The disadvantage of user-mode emulation is the ability to run only single processes. Most services contain different applications with the result of multiple processes. Consequently, these applications need a full system emulation.
 
@@ -39,16 +39,16 @@ The disadvantage of user-mode emulation is the ability to run only single proces
 
 It is achievable to emulate alternative architectures on another hardware architecture. The package qemu-user-static has to be installed then, and the chosen architecture has to be registered in binfmt\_misc. binfmt\_misc is a kernel module. 
 You can register other architectures within that, so that multiple other architectures can be run on one host. 
-Not only QEMU can be used for system emulation. But also, container technologies as Docker include an integrated QEMU compatibility as an additional emulation feature for building images for other architectures. 
-This technology has got the name \ref{BuildX} "BuildX". Accordingly, a hybrid virtualization approach is practicable with different virtualization and emulation technologies as with QEMU and Docker together. In this case, an external Linux kernel will be integrated into QEMU, and the application can be mounted via a loaded Docker image in a hard disk image. 
-The Linux kernel is required for QEMU and should be built or downloaded (see \ref{LinuxKernel} "Fetching Linux Kernel Image").\\
+Not only \gls{QEMU} can be used for system emulation. But also, container technologies as Docker include an integrated \gls{QEMU} compatibility as an additional emulation feature for building images for other architectures. 
+This technology has got the name \ref{BuildX} "BuildX". Accordingly, a hybrid virtualization approach is practicable with different virtualization and emulation technologies as with \gls{QEMU} and Docker together. In this case, an external Linux kernel will be integrated into \gls{QEMU}, and the application can be mounted via a loaded Docker image in a hard disk image. 
+The Linux kernel is required for \gls{QEMU} and should be built or downloaded (see \ref{LinuxKernel} "Fetching Linux Kernel Image").\\
 The initrd should match the Linux kernel and is optional. It is used to start an init process together with the required test scripts. \\
 
 \begin{figure}[H]
 \centering
 \includegraphics[height=9cm, width=9cm]{Qemu_setup}
- \caption{Emulation with QEMU}
-    \label{QEMU_Emulation}
+ \caption{Emulation with \gls{QEMU}}
+    \label{\gls{QEMU}_Emulation}
 \end{figure}
 
 
@@ -68,12 +68,12 @@ The package \textbf{binfmt-support} has to be installed first for using this ker
 
 \subsection{Qemu-user-static}\label{qemu-user-static}
 
-The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{QEMU}. This package contained in various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled QEMU emulators that applications compiled for alternative architectures can run on another architecture \cite{Yang2019}. When building for one new architecture, static binaries are relevant because of the possibility of an "exec init error" without them. \\
-The installation contains emulators for all available architectures supported by the QEMU project incl. s390x aligned with the specific host architecture. In this manner, you can build and run a binary for different architectures on the same host (see \ref{Optimized-Qemu-Command} "Optimized Qemu Command"). That is the base for \ref{BuildX} "BuildX" by Docker, too.
+The package \textbf{qemu-user-static}\footnote{\url{https://github.com/multiarch/qemu-user-static}} enables the execution of multi-architecture container emulation based on \textbf{binfmt\_misc} with \textbf{\gls{QEMU}}. This package contained in various Linux distributions includes a set of binfmt configurations for various architectures together with an amount of statically compiled \gls{QEMU} emulators that applications compiled for alternative architectures can run on another architecture \cite{Yang2019}. When building for one new architecture, static binaries are relevant because of the possibility of an "exec init error" without them. \\
+The installation contains emulators for all available architectures supported by the \gls{QEMU} project incl. s390x aligned with the specific host architecture. In this manner, you can build and run a binary for different architectures on the same host (see \ref{Optimized-Qemu-Command} "Optimized Qemu Command"). That is the base for \ref{BuildX} "BuildX" by Docker, too.
 
 \subsection{BuildX}\label{BuildX}
 
-As mentioned in \ref{qemu-user-static} "Qemu-user-static", Docker is using QEMU for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} "Registration of Qemu-S390x"). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be obtained from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
+As mentioned in \ref{qemu-user-static} "Qemu-user-static", Docker is using \gls{QEMU} for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} "Registration of Qemu-S390x"). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be obtained from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
 In general, BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes multi-architecture builds and exceptional output configuration. Not only the upload to your local docker registry is involved with that(see the output of \textbf{docker images}). Included are also the output of "docker build" (which creates a docker image based on the requirements and installations in the used Dockerfile) into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
 The special architecture for \ref{MultiArchitectureImages} multi-architecture builds can be specified with the additional option \verb+--platform+.
 The sub command \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
@@ -137,13 +137,13 @@ Buildx provides the possibility to consign different architectures (comma separa
 
 \section{File Systems}\label{FileSystems}
 
-Docker is using the Union File system which is not compatible with QEMU, because it is not based on block devices as ext4 as an example. \\
-QEMU can integrate only hard disk formats for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
-The driver virtio\_blk is used for mounting external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start non-native systems in QEMU. 
+Docker is using the Union File system which is not compatible with \gls{QEMU}, because it is not based on block devices as ext4 as an example. \\
+\gls{QEMU} can integrate only hard disk formats for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
+The driver virtio\_blk is used for mounting external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start non-native systems in \gls{QEMU}. 
 Docker is capable of setting up and starting containers fast. 
 
 Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
-QEMU is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} for the first partition and block device \cite[~p.22]{White2020}.
+\gls{QEMU} is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} for the first partition and block device \cite[~p.22]{White2020}.
 
 \subsection{UnionFS}\label{UnionFS}
 
@@ -152,7 +152,7 @@ Docker images are based on the Union File system (UnionFS) \cite[~p.21]{Ashraf20
 This file system is using different file system layers with grouping directories and files in branches. 
 The first layer is the typical Linux boot file system with the name bootfs. 
 That performs the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
-So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with QEMU.
+So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with \gls{QEMU}.
 The next layer contains the base image with the operating system given by the "FROM" command.
 Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or building binary files. 
 Docker is using only these specified sections of the file system for the container image.
@@ -195,20 +195,20 @@ Another feature of ext4 is the possibility of inline files and inline directorie
 
 \subsection{Converting Docker Image to External File System} \label{ExternalFile system}
 
-It would be nice to integrate the docker file system into QEMU. After building a docker
+It would be nice to integrate the docker file system into \gls{QEMU}. After building a docker
 image, it is realizable to export the file system into a directory with the name rootfs with
 the command \\
 \lstinline!docker export $(docker create image-s390x)| tar -C "rootfs"-xvf -!.
 
-The exported file system has got the format of the \ref{UnionFS} "UnionFS" at this moment. QEMU contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
+The exported file system has got the format of the \ref{UnionFS} "UnionFS" at this moment. \gls{QEMU} contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
 In the case of Cassandra, there will be used \\
 \lstinline!docker images | grep 'Cassandra-s390x' | awk '{print int($7+0.5)"G"}'!. \\
 \lstinline!print $7! would give the output of the size raw of \lstinline!docker images!, which is a float number. The \textbf{int} is rounding down to an integer number. Accordingly, the \textbf{0.5} has to be summed up for rounding up. The GB has been removed in this process. \lstinline!qemu-img! requires a G behind the number. That can be added with "G" inside of the awk command. \\
 
 Finally, Cassandra is using the command \\
 \lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{RunningDockerImage} "Running the Docker Image") \\
-for the creation of a file system image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the CI/CD pipeline then (see \ref{CircleCI} "CircleCI configuration for Apache Cassandra"). \\
-At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But QEMU does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4 for an emulated hard disk. To add files into the image cassandra.img, mount it to the directory \path{/mnt/} with \\
+for the creation of a file system image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the \gls{CI/CD} pipeline then (see \ref{CircleCI} "CircleCI configuration for Apache Cassandra"). \\
+At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But \gls{QEMU} does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4 for an emulated hard disk. To add files into the image cassandra.img, mount it to the directory \path{/mnt/} with \\
 \lstinline!mount -o loop cassandra.img /mnt/rootfs!. \\ 
 In the next step the content of the Docker file system directory can be copied into \path{/mnt/rootfs/} with \\ 
 \lstinline!cp -r rootfs/* /mnt/rootfs/.!. \\ 
