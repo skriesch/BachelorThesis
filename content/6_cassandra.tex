@@ -121,7 +121,7 @@ The separation of both Dockerfiles profits by the reutilization of the main Dock
 The test Dockerfile in the monitoring directory\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/monitoring/Dockerfile}} can be reused for every Cassandra container image based on Ubuntu or Debian. The unique requirement is that the FROM line is matching the name of the tested Cassandra image name.
 
 
-\section{Run Docker Image in \gls{QEMU}}\label{RunningDockerImage}
+\section{Run Docker Image in QEMU}\label{RunningDockerImage}
 
 The Docker image will be built with the command  \\
 \lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra-s390 .! \\
@@ -161,7 +161,7 @@ Now it is possible to run the system with Cassandra: \\
 \end{figure}
 
 \newpage
-\section{Integration into \gls{CI/CD}}
+\section{Integration into CI/CD}
 
 The community of Apache Cassandra is using CircleCI\footnote{\url{https://circleci.com/}} as a Continious Integration system.
 This \gls{CI/CD} system is connected with Github. The tests are running after every commit in the master repository.
