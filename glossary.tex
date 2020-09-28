@@ -46,69 +46,24 @@
     description={Free operating system developed by different communities and available as different distributions}
 }
 
-\newglossaryentry{instruction}
+\newglossaryentry{x86}
 {
-    name={instruction},
-    description={A single operation of a processor given by a program statement to be performed by the computer}
+    name={x86},
+    description={Architecture of a default PC}
 }
 
-\newglossaryentry{database management system}
-{
-    name={database management system},
-    description={System software for managing databases}
-}
-
-\newglossaryentry{Sparc32}
-{
-    name={Sparc32},
-    description={32 bit architecture of Sparc (Scalable Processor Architecture) developed by Sun Microsystems}
-}
-
-\newglossaryentry{Sparc64}
-{
-    name={Sparc64},
-    description={64 bit architecture of Sparc (Scalable Processor Architecture) developed by Sun Microsystems}
-}
-
-\newglossaryentry{MIPS}
-{
-    name={MIPS},
-    description={MIPS (Microprocessor without Interlocked Pipelined Stages) is a load-store architecture developed by MIPS Technologies}
-}
-
-\newglossaryentry{PowerPC}
-{
-    name={PowerPC},
-    description={Performance optimization with enhanced RISC Performance Chip is a RISC microprocessor architecture designed by IBM, Apple and Motorola}
-}
-
-\newglossaryentry{ARM}
-{
-    name={ARM},
-    description={Architecture by Advanced RISC Machines (ARM) developed for System on Chips (SoC)}
-}
 
 \newglossaryentry{mainframe}
 {
     name={mainframe},
-    description={A large computer with extensive capabilities and resources which is able to execute millions of transactions in parallel}
+    description={Large computer which is able to execute millions of transactions in parallel}
 }
 
-\newglossaryentry{binary translation}
-{
-    name={binary translation},
-    description={A method in which the machine language code of an application for the guest operating system is translated to the machine language code of the host operating system}
-}
 
-\newglossaryentry{x86}
-{
-    name={x86},
-    description={Architecture of a default PC with processors by Intel or AMD}
-}
 \newglossaryentry{CI/CD}
 {
     name={CI/CD},
-    description={Continuous Integration/Continuous Delivery is a method for automated tests with integrated builds in the software development}
+    description={Continuous Integration/Continuous Delivery is a method for automated tests in the software development}
 }
 
 \newglossaryentry{emulator}
@@ -126,26 +81,21 @@
 \newglossaryentry{container}
 {
     name={container},
-    description={A a runtime instance consisting of a container image, an execution environment and a standard set of instructions}
+    description={A standard unit with the minimum of mandatory software}
 }
 
 \newglossaryentry{pod}
 {
     name={pod},
-    description={A group of one or multiple containers that are running on a Kubernetes cluster}
+    description={An association of multiple containers with services for one application}
 }
 
 \newglossaryentry{registry}
 {
     name={registry},
-    description={A public or private container image storage and distribution service with built container images}
+    description={Built container images are registered and maintained there for general usage}
 }
 
-\newglossaryentry{NoSQL}
-{
-    name={NoSQL},
-    description={A class of database management systems that consist of non-relational, distributed data stores}
-}
 \newglossaryentry{application layer}
 {
     name={application layer},
@@ -155,7 +105,7 @@
 \newglossaryentry{Kubernetes stack}
 {
     name={Kubernetes stack},
-    description={Kubernetes split into different layers from the container environment until the application layer}
+    description={Kubernetes splitted into different layers from the container environment until the application layer}
 }
 
 \newglossaryentry{library}
@@ -174,24 +124,6 @@
 {
     name={Java},
     description={Programming language much used for Enterprise software development}
-}
-
-\newglossaryentry{monitoring system}
-{
-    name={monitoring system},
-    description={A hardware/ software component to monitor system resources regarding availability, usage and performance}
-}
-
-\newglossaryentry{cluster}
-{
-    name={cluster},
-    description={Resources as worker nodes, networks, and storage devices that keep apps highly available or performant}
-}
-
-\newglossaryentry{deployment}
-{
-    name={deployment},
-    description={A system setup with pre-defined configuration properties and installed packages}
 }
 
 \newglossaryentry{JVM}
@@ -242,11 +174,6 @@
     description={The place inside of a computer for saving data before writing on the hard disk}
 }
 
-\newglossaryentry{RAM}
-{
-    name={RAM},
-    description={Random-Access Memory in memory inside of a computer typically for storing working data and machine code}
-}
 
 \newglossaryentry{Dockerfile}
 {
@@ -257,19 +184,13 @@
 \newglossaryentry{Docker image}
 {
     name={Docker image},
-    description={A Docker file system with execution parameters that are used within a container runtime to create a Docker container}
+    description={A built system listed under "docker images" which is runnable}
 }
 
 \newglossaryentry{Docker daemon}
 {
     name={Docker daemon},
     description={Manages and organizes objects inside of the container engine Docker}
-}
-
-\newglossaryentry{layer}
-{
-    name={layer},
-    description={A container file system consist of layers, where the changed version is layered on top of the parent container image to create the new image}
 }
 
 \newglossaryentry{container engine}
@@ -296,28 +217,16 @@
     description={Unix shell and command language integrated in all Linux operating systems}
 }
 
-\newglossaryentry{bug}
-{
-    name={bug},
-    description={A problem in software which results in an error}
-}
-
-\newglossaryentry{static}
-{
-    name={static},
-    description={dependencies resolved during the compile time and copied into a executable target application}
-}
-
-\newglossaryentry{archive}
-{
-    name={archive},
-    description={A compressed directory saved as a single file}
-}
-
 \newglossaryentry{issue}
 {
     name={issue},
     description={A bug report because of a failure in the software}
+}
+
+\newglossaryentry{deployment}
+{
+    name={deployment},
+    description={Fast automated setup of a system with applications and configurations}
 }
 
 \newglossaryentry{root permissions}
@@ -332,6 +241,11 @@
     description={Saved settings for an application or computer program}
 }
 
+\newglossaryentry{configuration management}
+{
+    name={configuration management},
+    description={A process for maintaining computer systems, servers and software in a defined consistent state}
+}
 \newglossaryentry{mounted}
 {
     name={mounted},
@@ -350,34 +264,10 @@
     description={Method for compiling code for a different computer system or architecture}
 }
 
-\newglossaryentry{block device}
-{
-    name={block device},
-    description={A peripheral device that handles data in blocks such as a disk}
-}
-
-\newglossaryentry{guest system}
-{
-    name={guest system},
-    description={An additional virtual machine which is hosted on a local physical system}
-}
-
 \newglossaryentry{JSON}
 {
     name={JSON},
     description={The JavaScript Object Notation is an open standard file format for saving data structured}
-}
-
-\newglossaryentry{yaml}
-{
-    name={yaml},
-    description={A human-readable data-serialization language commonly used for configuration files or system deployment definitions}
-}
-
-\newglossaryentry{initrd}
-{
-    name={initrd},
-    description={The initial RAM disk is the first file system (incl. executables) loaded in a Linux operating system when the root file system is available}
 }
 
 \newglossaryentry{Ubuntu}
@@ -395,7 +285,7 @@
 \newglossaryentry{repository}
 {
     name={repository},
-    description={A persistent storage area for data or other application resources, and used for software development}
+    description={The location in the internet where software packages are downloadable for installations provided by Linux distributions and other providers}
 }
 
 \newglossaryentry{Github}
