@@ -50,7 +50,7 @@ The configuration of the Docker daemon is written in the JSON format. It lists a
 After a restart of the Docker daemon, there should be listed this experimental flag in the command  \lstinline!docker version!. An alternative way is to export this flag as an environment variable in the shell with  \lstinline!export DOCKER_CLI_EXPERIMENTAL=enabled! to enable it. Now it is possible to build docker images for s390x on x86 with \\ \lstinline!docker build --platform=linux/s390x -t image-example:s390x .! \\
 based on a Dockerfile in the existing directory.
 
- 
+ \newpage
 Additionally, the latest version of BuildX is required. The pre-installed version of Docker has got bugs with the consequence of a broken build process with \textbf{Illegal instructions} at Go applications. This bug is fixed with the new version on Github. \\
 Therefore, the new version has to be installed with:
 \begin{figure}[H]
