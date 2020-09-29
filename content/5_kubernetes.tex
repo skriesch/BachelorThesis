@@ -177,7 +177,7 @@ The Kubernetes community has got a test team with the name Sig-Testing. They are
 
 Jenkins can deploy a specified Kubernetes cluster inside of a Docker image based on the requirements im the yaml file.
 
-\section{Integration into \gls{CI/CD}}
+\section{Integration into CI/CD}
 
 The Kubernetes project has been using Prow as a \gls{CI/CD} system. Prow is a Kubernetes based \gls{CI/CD} system further developed based on Jenkins \cite{JAXenter}. That implifies, that the existing \gls{CI/CD} pipeline can work only with containers.
 Before the integration into the community pipeline, it is possible to use a default Jenkins system with an integrated Kubernetes plugin because of identical configuration files. An additional advantage in this case is the chance to test the integration of Kubernetes into \gls{QEMU} before providing the IBM Z environment container based for test purposes.
@@ -192,7 +192,7 @@ Before the integration into the community pipeline, it is possible to use a defa
 
 \subsection{Jenkins versus Prow}
 
-As mentioned in \ref{CI-CD} "\gls{CI/CD} Systems", \textbf{Jenkins}\footnote{\url{https://www.jenkins.io/}} is the most popular open-source \gls{CI/CD} system. This open-source project has started with a default \gls{CI/CD} workflow based on real hardware and later on virtual machines to test software before the release. Jenkins provides many plugins\footnote{\url{https://plugins.jenkins.io/}} for git integration about release management support until container deployments. \\
+As mentioned in \ref{CI-CD} "CI/CD Systems", \textbf{Jenkins}\footnote{\url{https://www.jenkins.io/}} is the most popular open-source \gls{CI/CD} system. This open-source project has started with a default \gls{CI/CD} workflow based on real hardware and later on virtual machines to test software before the release. Jenkins provides many plugins\footnote{\url{https://plugins.jenkins.io/}} for git integration about release management support until container deployments. \\
 There exists a special \textbf{Kubernetes plugin}\footnote{\url{https://plugins.jenkins.io/kubernetes/}}, that Jenkins can understand yaml configuration files for Kubernetes deployments which are used for integration tests by the Kubernetes community as an example. On this way, Jenkins can execute the same tests as Prow together with emulations because the Kubernetes environment is deployed inside of a emulated system. Jenkins can handle emulated systems the same as virtual machines. The Kubernetes plugin makes automated Kubernetes deployments possible. Therefore, a Jenkins installation is the best choice for the transition from emulated systems together with container technologies to a working test strategy with container based test environments in Prow.
 
 \textbf{Jenkins X}\footnote{\url{https://jenkins-x.io/}} has been developed based on Jenkins specialized on Kubernetes and cloud native environments. That means, that something as the Kubernetes plugin is integrated and the system can work with public cloud providers and other cloud technologies for test and production deployment pipelines. All in all, Jenkins X is an improved version of Jenkins for cloud environments. The system can work with container registries, understands yaml configuration files without additional plugins and is able to deploy scalable systems based on containers in the local data centre as well as in the public cloud (AWS, Google Cloud, IBM cloud, Azure).
