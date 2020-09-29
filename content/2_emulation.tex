@@ -13,7 +13,7 @@ Subsequently, it has to be compiled for the host or target architecture for the 
 If a binary for a new target architecture is necessary, the frontend of TCG will be converted while \gls{QEMU} is ported to a new architecture. 
 The TCG integrates new code for the new host architecture in the background then. It is also dedicated to improving performance with avoiding repeated translations by buffering already translated code \cite{Cota2017}. 
 The TCG takes care of the emulation of the guest processor running as a thread launched by \gls{QEMU}. The memory of a guest is allocated during launch. Then that is mapped into the address space of the \gls{QEMU} process  \cite[~p.29]{Opsahl2013}.\\
-It is possible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because \gls{QEMU} is integrated as a default package. 
+It is feasible to run unmodified guest operating systems. The open-source projects can use any Linux distribution as their base operating system then because \gls{QEMU} is integrated as a default package. 
 \gls{QEMU} does not emulate the entire hardware. That is only possible for the CPU. \gls{QEMU} is used for emulations in this Bachelor Thesis.
 
 \section{Full-System Emulation}
@@ -74,15 +74,15 @@ The installation contains emulators for all available architectures supported by
 \subsection{BuildX}\label{BuildX}
 
 As mentioned in \ref{qemu-user-static} "Qemu-user-static", Docker is using \gls{QEMU} for emulations with BuildX\footnote{\url{https://github.com/docker/buildx}}. That is an integrated "experimental Feature" since version Docker 19.03. That implies that it is not enabled as default because it is very new and for experiments. It has to be activated with \lstinline!DOCKER_CLI_EXPERIMENTAL=enabled! (see \ref{Qemu-S390-Registration} "Registration of Qemu-S390x"). The disadvantage of the provided BuildX inside of Docker is that you do not receive the up-to-date version of BuildX. There is a version with a more detailed output and better working with an additional \textbf{buildx} behind \textbf{docker build}. This version can be obtained from \url{https://github.com/docker/buildx} and installed with \textbf{make install}. \\
-In general, BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes multi-architecture builds and exceptional output configuration. Not only the upload to your local docker registry is involved with that(see the output of \textbf{docker images}). Included are also the output of "docker build" (which creates a docker image based on the requirements and installations in the used Dockerfile) into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
+In general, BuildX is a Docker CLI plugin for expanding the "docker build" command. That includes multi-architecture builds and exceptional output configuration. Not only the upload to the local docker registry is involved with that(see the output of \textbf{docker images}). Included are also the output of "docker build" (which creates a docker image based on the requirements and installations in the used Dockerfile) into a local directory, a tar archive or a public registry on Docker Hub. Docker Hub is the most used and maintained registry for Docker images. \\
 The special architecture for \ref{MultiArchitectureImages} multi-architecture builds can be specified with the additional option \verb+--platform+.
-The sub command \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
+The subcommand \textbf{build create} provides the option to create different build instances for multiple build combinations of architectures.
 
 \subsection{Multi-Architecture Images}\label{MultiArchitectureImages}
 
 Typical Linux distribution providers have to package their software for different system architectures because of different required drivers included in the Linux kernel and dependencies to these. Ultimately, these architectures are supported by these Linux distributions.
 Referenced dependencies are the reason that Docker images have to be built equally for different architectures. That can be performed with different base images for the respective architectures or with multi-arch images. 
-It is possible to use one Dockerfile for different architectures then. One example for such a multi-arch Docker image is adoptopenjdk/adoptopenjdk8 based on Ubuntu\footnote{\url{https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/8/jdk/ubuntu/Dockerfile.hotspot.nightly.full}}. In this case hardware dependencies are selected with \lstinline!dpkg --print-architecture! and included as ARCH into the different cases for downloading the relevant tar archive of OpenJDK:
+It is possible to use one Dockerfile for different architectures then. One example of such a multi-arch Docker image is adoptopenjdk/adoptopenjdk8 based on Ubuntu\footnote{\url{https://github.com/AdoptOpenJDK/openjdk-docker/blob/master/8/jdk/ubuntu/Dockerfile.hotspot.nightly.full}}. In this case, hardware dependencies are selected with \lstinline!dpkg --print-architecture! and included as ARCH into the different cases for downloading the relevant tar archive of OpenJDK:
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -137,12 +137,12 @@ Buildx provides the possibility to consign different architectures (comma separa
 
 \section{File Systems}\label{FileSystems}
 
-Docker is using the Union File system which is not compatible with \gls{QEMU}, because it is not based on block devices as ext4 as an example. \\
-\gls{QEMU} can integrate only hard disk formats for default Linux file systems as ext2, ext3, ext4, XFS and Btrfs. 
+Docker is using the Union File system, which is not compatible with \gls{QEMU} because it is not based on block devices as ext4 as an example. \\
+\gls{QEMU} can integrate only hard disk formats for default Linux file systems like ext2, ext3, ext4, XFS and Btrfs. 
 The driver virtio\_blk is used for mounting external file systems and emulates read/write in the physical block device\cite{Barboza2018}. Following this, it is possible to integrate and start non-native systems in \gls{QEMU}. 
 Docker is capable of setting up and starting containers fast. 
 
-Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default docker file system UnionFS to another one as ext4 for example can be done then. \\
+Linux has got the feature that it is adventitious to reformat directories for file systems and to copy/ mount content into this one. Reformatting the default Docker file system UnionFS to another one as ext4, for example, can be done then. \\
 \gls{QEMU} is accepting the new file system as a block device for the guest system then. The default path to the mounted file system as a hard disk is \path{/dev/vda} for the first partition and block device \cite[~p.22]{White2020}.
 
 \subsection{UnionFS}\label{UnionFS}
@@ -152,14 +152,14 @@ Docker images are based on the Union File system (UnionFS) \cite[~p.21]{Ashraf20
 This file system is using different file system layers with grouping directories and files in branches. 
 The first layer is the typical Linux boot file system with the name bootfs. 
 That performs the same as in a Linux virtualization stack with using memory at first and unmounting to receiving RAM free by the initrd disk image. 
-So the bootfs can be used inside of another Linux file system to mount in an virtualization stack for a successful boot process with \gls{QEMU}.
+So the bootfs can be used inside of another Linux file system to mount in a virtualization stack for a successful boot process with \gls{QEMU}.
 The next layer contains the base image with the operating system given by the "FROM" command.
-Then every docker command inside of the Dockerfile is adding an additional layer with the installation of applications or building binary files. 
+Then every Docker command inside of the Dockerfile is adding a supplementary layer with the installation of applications or building binary files. 
 Docker is using only these specified sections of the file system for the container image.
-That is the reason that every executed docker command is receiving an own id in the disk memory during the build process.
-Every separate docker command is using his own disk space. So a docker image can grow really fast.
-It is reasonable to compress so much as possible of different routines into one docker command. 
-All sizes of different docker layers will exist continuously inside of the new file system. \\
+That is the reason that every executed Docker command is receiving an own id in the disk memory during the build process.
+Every separate Docker command is using his own disk space. So a Docker image can grow incredibly fast.
+It is reasonable to compress so much as possible of different routines into one Docker command. 
+All sizes of different Docker layers will exist continuously inside of the new file system. \\
 The example Docker image for Ubuntu 18.04 on s390x is using the base image scratch as a super minimal system and is adding the tar archive with the rootfs for Ubuntu Bionic on S390x, which is the version Ubuntu 18.04. That will be installed as a minimal Ubuntu system then.
 
 \begin{figure}[H]
@@ -171,19 +171,19 @@ The example Docker image for Ubuntu 18.04 on s390x is using the base image scrat
 
 \subsection{Ext4}
 
-Ext4 is a journaling file system (just as ext3). The journal is registering transactional all changes on the operating system with meta data.
+Ext4 is a journaling file system (just as ext3). The journal is registering transactional all changes on the operating system with metadata.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
 
 Such journaling file systems in the ext file system family are working with blocks \cite[~p.20]{Seufert2015}.
 The journal is split into the journal super block, descriptor blocks, commit blocks and revoke blocks.
-The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
+The super block contains all metadata of the journal. Descriptor blocks include the special destination address and a sequence number. 
 Flex groups can combine multiple group blocks - inode bitmaps, inode tables and data blocks - to one logic block group. All data from inodes are only saved in the first flex group then. 
-So the search for files is speedier because meta data are allocated at one place.\\
-All meta data from the journal can be relocated in inodes, if changes of file system meta data are registered, too. \\
-The difference to the journal in ext3 are the option writing asynchronous commit blocks and additional check sums for journal transactions \cite[~p.28]{Seufert2015}.
-Ext4 provides a better performance than ext3. 
-This file system can be formated with mkfs.ext4 which is available in every Linux distribution.
-This tool is creating a group despriptor table for further group descriptors what allows an expanding of the file system. The file system can grow a maximum of the multiple 1024 of his existing size because of the saved space \cite[~p.21]{Seufert2015}. 
+So the search for files is speedier because metadata are allocated at one place.\\
+All metadata from the journal can be relocated in inodes, if changes of file system metadata are registered, too. \\
+The difference to the journal in ext3 is the option writing asynchronous commit blocks, and additional checksums for journal transactions \cite[~p.28]{Seufert2015}.
+Ext4 provides better performance than ext3. 
+This file system can be formatted with mkfs.ext4 which is available in every Linux distribution.
+This tool is creating a group descriptor table for further group descriptors what allows an expanding of the file system. The file system can grow a maximum of the multiple 1024 of his existing size because of the saved space \cite[~p.21]{Seufert2015}. 
 Another feature of ext4 is the possibility of inline files and inline directories. So small files and directories can be saved directly in inodes instead of data blocks. From this follows less disk space consumption \cite[p.24]{Seufert2015}.
 
 \begin{figure}[H]
@@ -195,20 +195,22 @@ Another feature of ext4 is the possibility of inline files and inline directorie
 
 \subsection{Converting Docker Image to External File System} \label{ExternalFile system}
 
-It would be nice to integrate the docker file system into \gls{QEMU}. After building a docker
+It would be nice to integrate the Docker file system into \gls{QEMU}. After building a Docker
 image, it is realizable to export the file system into a directory with the name rootfs with
 the command \\
 \lstinline!docker export $(docker create image-s390x)| tar -C "rootfs"-xvf -!.
 
-The exported file system has got the format of the \ref{UnionFS} "UnionFS" at this moment. \gls{QEMU} contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \lstinline!docker images | grep ${id}!. Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
+The exported file system has got the format of the \ref{UnionFS} "UnionFS" at this moment. \gls{QEMU} contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \\
+\lstinline!docker images | grep ${id}!.\\ 
+Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
 In the case of Cassandra, there will be used \\
 \lstinline!docker images | grep 'Cassandra-s390x' | awk '{print int($7+0.5)"G"}'!. \\
-\lstinline!print $7! would give the output of the size raw of \lstinline!docker images!, which is a float number. The \textbf{int} is rounding down to an integer number. Accordingly, the \textbf{0.5} has to be summed up for rounding up. The GB has been removed in this process. \lstinline!qemu-img! requires a G behind the number. That can be added with "G" inside of the awk command. \\
+\lstinline!print $7! would give the output of the size raw of \lstinline!docker images!, which is a float number. The \textbf{int} is rounding down to an integer number. Accordingly, the \textbf{0.5} has to be summed up for rounding up. The GB has been removed in this process. \lstinline!qemu-img! requires a G behind the number, which can be added with "G" inside of the awk command. \\
 
 Finally, Cassandra is using the command \\
 \lstinline!qemu-img create -f raw cassandra.img 2G! (see \ref{RunningDockerImage} "Running the Docker Image") \\
 for the creation of a file system image with a Docker image size about 1.2G then. This size is given by the output of \lstinline!docker images!.  "2G" can be replaced by the command above in the \gls{CI/CD} pipeline then (see \ref{CircleCI} "CircleCI configuration for Apache Cassandra"). \\
-At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. But \gls{QEMU} does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4 for an emulated hard disk. To add files into the image cassandra.img, mount it to the directory \path{/mnt/} with \\
+At first, cassandra.img is empty. The content of \textbf{rootfs} has to be transferred into this image file. However, \gls{QEMU} does not know UnionFS as a file system. That is the reason for formatting cassandra.img with \lstinline!mkfs.ext4 -F cassandra.img! to ext4 for an emulated hard disk. To add files into the image cassandra.img, mount it to the directory \path{/mnt/} with \\
 \lstinline!mount -o loop cassandra.img /mnt/rootfs!. \\ 
 In the next step the content of the Docker file system directory can be copied into \path{/mnt/rootfs/} with \\ 
 \lstinline!cp -r rootfs/* /mnt/rootfs/.!. \\ 

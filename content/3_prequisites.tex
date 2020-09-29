@@ -1,7 +1,7 @@
 \chapter{Prerequisites}\label{ch:prequisites}
 
 
-Different software is necessary to run qemu or docker for multiple architectures. Therefore, \textbf{docker} and \textbf{qemu} should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are important for running multi-architecture containers. \\
+Different software is necessary to run qemu or docker for multiple architectures. Therefore, \textbf{docker} and \textbf{qemu} should be installed. Additionally, qemu-user-static \footnote{\url{https://github.com/multiarch/qemu-user-static}} and binfmt\_misc \footnote{\url{https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html}} are essential for running multi-architecture containers. \\
 \textbf{Root permissions} are required for installation, configuration and running emulated systems.
 
 It is possible to install packages as \textbf{binfmt-support} and \textbf{qemu-user-static} by different Linux distributions, but it is recommended to use the latest version for s390x. \\
@@ -19,9 +19,9 @@ Ultimate stable releases of qemu-user-static can be found under \url{https://git
 for the specific version of qemu-s390x-static on x86. This static binary in the archive is extracted to the directory \path{/usr/bin/} with the command \\ 
 \lstinline!sudo tar -xvzf x86_64_qemu-s390x-static.tar.gz -C /usr/bin/! \\
 afterwards. 
-The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The configuration will be used by the installed qemu-user-static.\\
+The architecture name before qemu is the architecture of the host system. The name between qemu and static is the emulated architecture. This archive contains only the new version for the unique architecture. The freshly installed qemu-user-static will use the configuration.\\
 
-s390x binaries have to be registered for s390x that they can be run on x86, as described in ref{Binfmt} "Binfmt\_misc". This command is executed as follows: \lstinline!sudo -i! and 
+s390x binaries have to be registered for s390x that they can be run on x86, as described in \ref{Binfmt} "Binfmt\_misc". This command is executed as follows: \lstinline!sudo -i! and 
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -35,7 +35,7 @@ xfe\xff\xff:/usr/bin/qemu-s390x-static:OCF' > /proc/sys/fs/binfmt_misc/register
 
 \section{Enabling Multi-Architecture Images}\label{Multi-Architecture-Images}
 
-Typically, Docker is configured to build only for the host architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build docker images for s390x on x86. It can be added with the following configuration to the Docker daemon after the installation of docker:
+Typically, Docker is configured to build only for the host architecture, which is x86 at open-source projects. The "Experimental" flag exists for new available features which are not ready for production. So you can build Docker images for s390x on x86. It can be added with the following configuration to the Docker daemon after the installation of docker:
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
@@ -47,7 +47,7 @@ Typically, Docker is configured to build only for the host architecture, which i
     \label{DockerExperimentalFlag}
 \end{figure}
 The configuration of the Docker daemon is written in the JSON format. It lists are saved in \path{/etc/docker/daemon.json}.
-After a restart of the docker daemon, there should be listed this experimental flag in the command  \lstinline!docker version!. An alternative way is to export this flag as an environment variable in the shell with  \lstinline!export DOCKER_CLI_EXPERIMENTAL=enabled! to enable it. Now it is possible to build docker images for s390x on x86 with \\ \lstinline!docker build --platform=linux/s390x -t image-example:s390x .! \\
+After a restart of the Docker daemon, there should be listed this experimental flag in the command  \lstinline!docker version!. An alternative way is to export this flag as an environment variable in the shell with  \lstinline!export DOCKER_CLI_EXPERIMENTAL=enabled! to enable it. Now it is possible to build docker images for s390x on x86 with \\ \lstinline!docker build --platform=linux/s390x -t image-example:s390x .! \\
 based on a Dockerfile in the existing directory.
 
  
@@ -66,10 +66,10 @@ make install
 
 \section{Fetching Signed Linux Kernel Image} \label{LinuxKernel}
 
-QEMU needs a built Linux kernel repeatingly to start a full system emulation. There are the two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
-The build process via CI/CD should be fast. Additionaly, using the Linux kernel matching the base Docker image can prevent from subtle interface differences between the kernel interface and user space libraries depending on particular kernel features. 
+QEMU needs a built Linux kernel repeatedly to start a full system emulation. There are two options, to build the Linux kernel repeating because of security updates or to fetch the matching Linux kernel for the Docker image from the associated repository of the corresponding Linux distribution. \\ 
+The build process via CI/CD should be fast. Additionally, using the Linux kernel matching the base Docker image can prevent from subtle interface differences between the kernel interface and userspace libraries depending on particular kernel features. 
 Therefore, the second option will be used. The Docker file system in rootfs does not contain any Linux kernel in the directory \path{/boot/}.
-The prequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command line tool can download the file system of a minimal system to a sub directory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. To receive only a minimal system, the additional option \lstinline!--variant=minbase! should be used. The whole command is the following then: \\
+The prerequisite for fetching of a signed Linux kernel image for a minimal system is the installed package \textbf{debootstrap}. This command-line tool can download the file system of a minimal system to a subdirectory on a Debian based system. There are additional options to specify the architecture with \lstinline!--arch=s390x! in our case and to include the Linux kernel with \lstinline!--include=linux-generic!. The additional option \lstinline!--variant=minbase! should be used to receive only a minimal system. The whole command is the following then: \\
 \begin{figure}[H]
 \begin{boxedverbatim}
 debootstrap --include=linux-generic --arch=s390x --variant=minbase bionic \
@@ -80,7 +80,7 @@ kernel-bionic http://ports.ubuntu.com
 \end{figure}
 
 This command "debootstrap" is validating all downloaded packages for additional security. This process is easy to automate and requires only 10 seconds. In conclusion, the generic and signed Linux kernel image can be used in the \path{/boot/} directory for the integration into QEMU.
- 
+\newpage 
 
 \section{Optimized QEMU Command}\label{Optimized-Qemu-Command}
 
@@ -88,17 +88,17 @@ Every additional device requires additional resources and time for starting the 
 So the systems requirements had to be figured out to be minimal for every given open-source project and for running tests on it. 
 That counts for the number of CPUs, too. \\
 
-The kernel option is receiving the path to the s390x Linux kernel image. In the given \ref{QEMU-Command} "Optimized QEMU command" the qemu command is executed in the main directory with the Linux kernel. This one is transferred from the boot directory to the main directory during the automation process \\  
+The kernel option is receiving the path to the s390x Linux kernel image. In the given \ref{QEMU-Command} "Optimized QEMU command" the qemu command is executed in the main directory with the Linux kernel. This one is transferred from the boot directory to the main directory during the automation process. \\  
 The option \textbf{-m} is available to add the minimal guest memory matching the system requirements of every open-source project. \textbf{-M s390-ccw-virtio} defines the machine type for s390x.
-\textbf{-nodefaults} is deactivating default additional devices activated in QEMU. 
+\textbf{-nodefaults} is deactivating additional default devices activated in QEMU. 
 Only the console is necessary for receiving an output and debugging. 
 So this one is added as a device with \textbf{-chardev stdio,id=console,signal=off,mux=on -mon chardev=console} and \textbf{-device sclpconsole,chardev=console}. Additionally, the console has to be specified with \textbf{console=ttyS0} in the append part. \\ 
-Cassandra as a project does not need any network interface (-net none) or parallelism (-parallel none). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
+Cassandra as a project does not need any network interface (\textbf{-net none}) or parallelism (\textbf{-parallel none}). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
 So system requirements are reduced. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
-The file system of containers can be loaded as a hard disk with the option \textbf{-hda} which is explained in the chapters for considered open-source projects. 
+The file system of containers can be loaded as a hard disk with the option \textbf{-hda}, which is explained in the chapters for considered open-source projects. 
 That is the ideal option to mount a minimal file system for every application or system. 
-\path{/dev/vda} is the partition name and \textbf{rdinit} is used for using bash as a default shell. \\
-This command can be used for user mode emulation with Apache Cassandra as an example.
+\path{/dev/vda} is the partition name, and \textbf{rdinit} is used for using bash as a default shell. \\
+This command can be used for user-mode emulation with Apache Cassandra as an example.
 
 
 \begin{figure}[H]
