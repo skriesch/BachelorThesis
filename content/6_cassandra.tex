@@ -150,11 +150,11 @@ Now it is possible to run the system with Cassandra: \\
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
- /usr/bin/qemu-system-s390x -kernel vmlinuz-4.15.0-20-generic -m 8G -M s390-ccw-virtio -nodefaults \
- -device sclpconsole,chardev=console -parallel none -net none -chardev stdio, \
- id=console,signal=off,mux=on -mon chardev=console -nographic -smp 3 \
- -hda cassandra-s390x.img --append 'root=/dev/vda rw console=ttyS0 \
- rdinit=/bin/bash' 
+ /usr/bin/qemu-system-s390x -kernel vmlinuz-4.15.0-20-generic -m 8G \
+ -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console \
+ -parallel none -net none -chardev stdio,id=console,signal=off,mux=on \
+ -mon chardev=console -nographic -smp 3 -hda cassandra-s390x.img \ 
+ --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash' 
 \end{boxedverbatim}
  \caption{Run Cassandra}
     \label{RunCassandra}
