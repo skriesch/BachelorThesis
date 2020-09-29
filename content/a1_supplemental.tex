@@ -29,7 +29,7 @@ jobs:
       - run: 
             name: Build tests for s390x
             command: docker build buildx --platform=linux/s390x --squash \
-                     --build-arg -t cassandra-test-s390x .
+                     -t cassandra-test-s390x .
       - docker/check:
          registry: $DOCKER_REGISTRY 
 
@@ -120,23 +120,27 @@ workflows:
 
 \begin{boxedverbatim}
 agent {
-    // "docker build -f Dockerfile.alpine --build-arg version=${KUB_VERSION} ./s390x-kubernetes-test/
+// "docker build -f Dockerfile --build-arg version=${KUB_VERSION}
+// ./s390x-kubernetes-test/
     dockerfile {
-        filename 'Dockerfile.alpine'
+        filename 'Dockerfile'
         dir 's390x-kubernetes-test'
         label 'kubernetes'
-        additionalBuildArgs  '--build-arg version=${KUB_VERSION}'
+        additionalBuildArgs  '--platform=linux/s390x \
+        --build-arg version=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
 }
 
 agent {
-    // "docker build -f Dockerfile.alpine-test --build-arg version=${KUB_VERSION} ./s390x-kubernetes-test/test/
+// "docker build -f Dockerfile --build-arg version=${KUB_VERSION}
+// ./s390x-kubernetes-test/test/
     dockerfile {
         filename 'Dockerfile.build'
         dir 's390x-kubernetes-test/test/'
         label 'kubernetes-test'
-        additionalBuildArgs  '--build-arg version=${KUB_VERSION}'
+        additionalBuildArgs  '--platform=linux/s390x \
+        --build-arg version=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
 }
@@ -145,9 +149,9 @@ node('master'){
    checkout scm
    yamlFromFile = readFile 'integration.yml' //Read yaml file
 }
+\end{boxedverbatim}
 
-
-
+\begin{boxedverbatim}
 pipeline {
     agent none 
     stages {
