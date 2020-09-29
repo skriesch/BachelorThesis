@@ -128,7 +128,7 @@ The Docker image will be built with the command  \\
 in the directory with the Cassandra Dockerfile  for the architecture s390x. That is the base Cassandra image.\\
 The \verb+--squash+ option is compressing a Docker image and is combining commands in a Dockerfile automatically. The prequisites for building s390x images on x86 are set during the emulation preparation. The command \lstinline!docker images! has to show the registered Docker image with the name cassandra-390 in the local container registry. Afterwards, the monitoring check has to be added. 
 The same procedure will be executed in the monitoring directory. The FROM command is referencing the self built Cassandra image with cassandra-s390. With the following command the monitoring check can be attached to the exiting Cassandra image to test it: \\
-\lstinline!docker build buildx --platform=linux/s390x --squash -t cassandra-test-s390x .! \\
+\verb+docker build buildx --platform=linux/s390x --squash -t cassandra-test-s390x .+ \\
 It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
 \lstinline!qemu-img create -f raw cassandra-s390x.img 2G!  \\
 can be used. This image needs to be converted to any Linux file system because \gls{QEMU} does not know the Docker file system. Therefore, the image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img!. A directory with the name rootfs has to be created and the command for receiving the file system of the Docker image. \\
