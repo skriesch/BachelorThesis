@@ -174,7 +174,7 @@ The example Docker image for Ubuntu 18.04 on s390x is using the base image scrat
 Ext4 is a journaling file system (just as ext3). The journal is registering transactional all changes on the operating system with meta data.
 So no data  are lost after a system failure. They can be restored based on the journal without a save procedure by the user.
 
-Such journal file systems in the ext file system family are working with blocks \cite[~p.20]{Seufert2015}.
+Such journaling file systems in the ext file system family are working with blocks \cite[~p.20]{Seufert2015}.
 The journal is split into the journal super block, descriptor blocks, commit blocks and revoke blocks.
 The super block contains all meta data of the journal. Descriptor blocks include the special destination adress and a sequence number. 
 Flex groups can combine multiple group blocks - inode bitmaps, inode tables and data blocks - to one logic block group. All data from inodes are only saved in the first flex group then. 
