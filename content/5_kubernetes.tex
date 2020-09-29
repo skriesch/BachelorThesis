@@ -221,7 +221,7 @@ On this way, the content of the Docker image can be copied into the formatted \g
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
-qemu-img create -f raw cassandra-s390x.img $(docker images | grep 'kubernetes-test' \
+qemu-img create -f raw kubernetes-s390x.img $(docker images | grep 'kubernetes-test' \
 | awk '{print int($7+0.5)"G"}')
 docker export $(docker create kubernetes-test) | tar -C "rootfs" -xvf -
 mkfs.ext4 -F kubernetes-s390x.img
