@@ -127,7 +127,7 @@ agent {
         dir 's390x-kubernetes-test'
         label 'kubernetes'
         additionalBuildArgs  '--platform=linux/s390x \
-        --build-arg version=${KUB_VERSION}'
+        --build-arg KUBERNETES_VERSION=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
 }
@@ -140,7 +140,7 @@ agent {
         dir 's390x-kubernetes-test/test/'
         label 'kubernetes-test'
         additionalBuildArgs  '--platform=linux/s390x \
-        --build-arg version=${KUB_VERSION}'
+        --build-arg KUBERNETES_VERSION=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
 }

@@ -2,7 +2,7 @@
 
 \section{Overview}
 
-Apache Cassandra is a Java based NoSQL database management system. It contains the commandline interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra is able to be changed with every version. 
+Apache Cassandra is a Java-based NoSQL database management system. It contains the command-line interface CQL for Cassandra database commands instead of SQL. It has to be recognized that the supported Java version by the open-source project Apache Cassandra is able to be changed with every version. 
 That has to be considered during the integration into the \gls{CI/CD} pipeline of the project. There are different multi-arch Dockerfiles for all versions of AdoptOpenJDK for public usage. These can be applied for the base Cassandra image. Afterwards, a multi-arch Docker image for Cassandra, which includes the s390x architecture, can be published. 
 A \ref{monitoring} "nagios monitoring check" - usable for containerized environments - is chosen for tests. This one has to be assimilated in the setup. \\ 
 This Apache project is using CircleCI for Continuous Integration. 
@@ -10,15 +10,15 @@ This Apache project is using CircleCI for Continuous Integration.
 \section{Installation}\label{Cassandra-Installation}
 
 A Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-cassandra-ci-cd/blob/master/Dockerfile}} for a multi-arch image should be created in this project with the reason for using it for multiple architectures in the future.
-Apache Cassandra is a Java based application. Therefore, the research has contained the search for a multi-arch image with pre-installed Java. The Cassandra version 3.11.6 is supporting Java 8. 
+Apache Cassandra is a Java-based application. Therefore, the research has contained the search for a multi-arch image with pre-installed Java. The Cassandra version 3.11.6 is supporting Java 8. 
 AdoptOpenJDK is maintaining multi-arch images for different Linux distributions with pre-installed AdoptOpenJDK.
 In the description of \ref{AdoptOpenJDK-Multi-Arch} "Multi-Arch Image AdoptOpenJDK 8" is explained how the recommended Java version will be chosen for the specific architecture in this base image. 
 This base image is integrated with \lstinline!FROM adoptopenjdk:8-jdk-hotspot! on top of the Dockerfile.
 
 Apache Cassandra will be cloned from the Github repository with \\
 \lstinline!git clone https://github.com/apache/cassandra.git!. \\
-The special version is set with an agument with the ARG variable. On this way, it is possible to checkout other versions with a given argument as \lstinline!--build-arg CASSANDRA_VERSION=3.12.4! in the docker build command. \\
-Apache Cassandra is using JNA (Java Native Library)\footnote{\url{https://github.com/java-native-access/jna}} as an extension of Java. JNA provides Java programs easy access to native shared libraries for an improved communication with the database system. The ant command is building the application and the JNA subsequently. \\
+The selected version is set with an argument with the ARG variable. On this way, it is possible to check out other versions with a given argument as \lstinline!--build-arg CASSANDRA_VERSION=3.12.4! in the docker build command. \\
+Apache Cassandra is using JNA (Java Native Library)\footnote{\url{https://github.com/java-native-access/jna}} as an extension of Java. JNA provides Java programs easy access to native shared libraries for improved communication with the database system. The ant command is building the application and the JNA subsequently. \\
 The command \lstinline!sed -i ' s/Xss256k/Xss32m/'! is setting the size of the frame stack (JVM stack) used by each thread to store local variables. This frame size is reduced to a minimum and stored in both files build.xml and conf/jvm.options.
 A soft link (\textbf{ln -s}) will be created to save space in the container. Such a soft link refers to a symbolic path of another file or directory. Following, all files inside of the build directory \path{/root/cassandra} are additionally available under \path{/usr/share/cassandra}. Another benefit is the low time for the creation of a soft link in comparison to a copy / move command.
 \begin{figure}[H]
@@ -55,7 +55,7 @@ Cassandra can be started with \lstinline!CMD ["cassandra", "-R", "-f"]! with \te
 
 Apache Cassandra should be allowed to use all available memory of the minimal system effectively.
 Default the JVM is configured that only a part of that can be used. These configurations are set in the Java Options.
-Afterwards, Apache Cassandra can work with a good performance. \\
+Afterwards, Apache Cassandra can work with good performance. \\
 Every major Java release can differ from another one with such options for Java optimization.
 
 Following Java optimizations are available for Java 8: \\
@@ -73,10 +73,10 @@ As a result, Apache Cassandra can use the whole memory and delivered CPU, which 
 
 \section{Workaround Because of a JVM Issue}\label{jvm-issue}
 
-Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non successful builds of Java applications there. That counts for all more complex Java applications.
+Apache Cassandra is using OpenJDK 8 for running as default. There are some discussions\footnote{\url{https://lists.apache.org/thread.html/r38f6beaa22e247cb38212f476f5f79efdc6587f83af0397406c06d7c\%40<dev.cassandra.apache.org>}} about supporting OpenJDK 11 at the moment. The Dockerfile mentioned above is using AdoptOpenJDK 8 at the build process is working without any problems on Z systems. There exists a JVM issue during the build process on x86 which is the reason for non-successful builds of Java applications there. That counts for all more complex Java applications.
 
 This case has been tested with AdoptOpenJDK 8 and AdoptOpenJDK 11. The library hsdis-s390.so is not loadable for both Java versions for emulated s390x guests on x86, but during the build process on s390x\footnote{\url{https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=951764}}. This issue does not exist with the version AdoptOpenJDK 14, but Apache Cassandra does not work with this version. \\
-This emulation bug of qemu has to be fixed and the issue has been reported to \gls{KVM} Developers inside of IBM. 
+This emulation bug of qemu has to be fixed, and the issue has been reported to \gls{KVM} Developers inside of IBM. 
 
 There exists a workaround for the development process for finishing the project. The Docker image is buildable on s390x. Therefore, the Docker image has been built for s390x on s390x with \\  
 \lstinline!docker build --squash -t cassandra .!. \\
@@ -85,12 +85,12 @@ Afterwards, this image can be saved as a tar archive with \\
 on the host. It has to be transferred with rsync to the x86 system then. The image inside of the tar archive can be included to all existing images of \lstinline!docker images! with the command 
 \lstinline!docker load --input cassandra.tar!. \\
 After this action, the Docker image is usable as it would have been built on this system. 
-It can be integrated into \gls{QEMU} and is able to be started without any problems afterwards.
+It can be integrated into \gls{QEMU} and be started without any problems afterwards.
 
 \section{Nagios Monitoring Check for Tests} \label{monitoring}
 
 Nagios is an open-source \gls{monitoring system} to check the status of systems with their services. There are many checks for different services available. One monitoring check\footnote{\url{https://github.com/skyscrapers/monitoring-plugins/blob/master/check_cassandra.pl}} exists for Apache Cassandra. It is testing whether Java would be working, the service Apache Cassandra would be up and running, and whether CQL commands would be possible to execute without any issues. This Perl script is using \textbf{nodetool} for monitoring the JVM and the application. Nodetool is delivered together with Cassandra. It is connecting with the database and can dispense statistics about the Cassandra cluster / host \cite[~p.256]{Carpenter2020}. The result contains the status, information about memory usage and other capacities. This tool can indicate issues resulting in messages via the monitoring plugin in our case.\\
-This monitoring check is written in Perl and is a nice choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. \\
+This monitoring check is written in Perl and is an excellent choice for automated tests with error messages in the case if any output would not give an \textbf{OK}. \\
 All monitoring plugins in the referenced Github repository are developed additionally for integration into Docker. Following, these scripts do not require any installed nagios system for monitoring.
 Summarily, these monitoring plugins can be used for tests inside of containerized environments for testing Docker images.
 
