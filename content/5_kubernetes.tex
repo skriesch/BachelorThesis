@@ -4,14 +4,14 @@
 
 Kubernetes is a container platform for high availability clusters.
 There exist plugins for integration tests for Kubernetes with the name kubetest\footnote{\url{https://kubetest.readthedocs.io/en/latest/}}. They contain conformance tests, as well as e2e tests (end-to-end).
-That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes is necessary. The challenge is, that 2 big Github repositories have to be cloned and integrated into the docker image. These are using a lot of space. One solution is using a self-developed multi staging Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-kubernetes-test/blob/master/Dockerfile}}. 
-So 2 different Dockerfiles are used in one Dockerfile and one of them is required for building. The other one is applied for the installation and upgrading to a special version. At the end the size of the Docker image has got only the size of the child image regardless of the repository size in the parent Dockerfile.
+That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes is necessary. The challenge is that 2 big Github repositories have to be cloned and integrated into the docker image. These are using much space. One solution is using a self-developed multi staging Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-kubernetes-test/blob/master/Dockerfile}}. 
+So 2 different Dockerfiles are used in one Dockerfile, and one of them is required for building. The other one is applied for the installation and upgrading to a special version. At the end, the size of the Docker image has got only the size of the child image regardless of the repository size in the parent Dockerfile.
 Additionally, a Dockerfile for executing tests based on the Kubernetes Docker image has to be written.
 
 \section{Docker Multi-Arch Image}
 As mentioned in \ref{Docker-Intro} "Introduction of Docker", Docker is integrated as a base container engine for Kubernetes tests by the community. \\  
 Docker Inc. is maintaining a Docker image with the name "Docker-in-Docker" for multiple architectures, incl. s390x. 
-This Docker image was introduced by the Docker contributor Jerome Petazzoni (Tianon) with the name dind\footnote{\url{https://github.com/jpetazzo/dind}}. Docker can be installed on Ubuntu, openSUSE, Fedora, ArchLinux and Ubuntu on this way.
+The Docker contributor Jerome Petazzoni (Tianon) introduced this Docker image with the name dind\footnote{\url{https://github.com/jpetazzo/dind}}. Docker can be installed on Ubuntu, openSUSE, Fedora, ArchLinux and Ubuntu in this way.
 The base Docker image on Docker Hub\footnote{\url{https://hub.docker.com/_/docker}} is based on Ubuntu Linux.
 The base image for a specified architecture can be integrated with 2 methods. Firstly, the s390x base image can be pulled to the local container registry with \textbf{docker pull s390x/docker}. The specification \textbf{docker} behind pull alone would download the Docker image for the host architecture or would choose the platform for a multi-arch build with the platform option of BuildX in the command \textbf{docker build}. The prefix \textbf{s390x} before docker specifies a specific available architecture. 
 The second option is the integration of \textbf{s390x/docker} into the FROM command inside of the Dockerfile. Both methods are downloading the latest Docker version with Ubuntu from \path{docker.io/s390x/docker:latest} and register this Docker image in the local registry.
@@ -33,13 +33,13 @@ Multi-staging Dockerfiles are an approved method for executing binaries based on
 
 \section{Installation}
 
-Kubernetes requires a lot of packages for running and for tests. These will be installed together with the RUN command.
+Kubernetes requires many packages for running and tests. These will be installed together with the RUN command.
 Build is the name of the parent Dockerfile to be able to copy needed files and directories from there.
 Docker is pre-installed with the base Docker image in the FROM command. This base is required for a successful installation of Kubernetes. \\
 A Dockerfile is installing only necessary packages and includes packages of the base image. Therefore, curl, git and gnupg have to be installed first for the following installation.
 Afterwards, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. \textbf{Docker} in the base image contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. 
 The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running with it. \\ 
-\textbf{Kubelet} is the primary node agent running on each node and is responsible for different runnable containers in a pod. Pods are deployable units defined in JSON or a yaml file. This feature is used for \ref{Kub-IntegrationTest} "integration tests" in the \gls{CI/CD} pipepline.
+\textbf{Kubelet} is the primary node agent running on each node and is responsible for different runnable containers in a pod. Pods are deployable units defined in JSON or a yaml file. This feature is used for \ref{Kub-IntegrationTest} "integration tests" in the \gls{CI/CD} pipeline.
 Pods include a single or a group of containers with shared storage and network resources. Hosting of distributed systems  with different services in different containers can work together. Consequential one pod is something as one "logical host". \\
 \textbf{Kubeadm} is the administration tool to set up clusters. It is necessary to upgrade Kubernetes to other versions. Clusters can be initialized. The network can be configured and the command \textbf{kubectl} (Kubernetes Control Plane) for adding additional nodes to a cluster can be initialized. 
 
@@ -184,7 +184,7 @@ Before the integration into the community pipeline, it is possible to use a defa
 
 \begin{figure}[H]
 \centering
-\includegraphics[height=8cm, width=12cm]{Jenkins-versus-Prow}
+\includegraphics[height=8cm, width=13cm]{Jenkins-versus-Prow}
  \caption{Jenkins versus Prow}
     \label{JenkinsProw}
 \end{figure}
