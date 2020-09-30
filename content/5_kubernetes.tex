@@ -5,7 +5,7 @@
 Kubernetes is a container platform for high availability clusters.
 There exist plugins for integration tests for Kubernetes with the name kubetest\footnote{\url{https://kubetest.readthedocs.io/en/latest/}}. They contain conformance tests, as well as e2e tests (end-to-end).
 That can be all built and executed on the system. Therefore, a Dockerfile for setting up Kubernetes is necessary. The challenge is that 2 big Github repositories have to be cloned and integrated into the docker image. These are using much space. One solution is using a self-developed multi staging Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-kubernetes-test/blob/master/Dockerfile}}. 
-So 2 different Dockerfiles are used in one Dockerfile, and one of them is required for building. The other one is applied for the installation and upgrading to a special version. At the end, the size of the Docker image has got only the size of the child image regardless of the repository size in the parent Dockerfile.
+So 2 different Dockerfiles are used in one Dockerfile, and one of them is required for building. The other one is applied for the installation and upgrading to a specified version. At the end, the size of the Docker image has got only the size of the child image regardless of the repository size in the parent Dockerfile.
 Additionally, a Dockerfile for executing tests based on the Kubernetes Docker image has to be written.
 
 \section{Docker Multi-Arch Image}
@@ -21,13 +21,13 @@ Therefore, this image is used as a base image in the self-developed Dockerfile f
 
 \section{Multi-Staging Dockerfile}
 
-A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving special names as indicators with "AS" behind the "FROM" with the base image name. 
+A multi-staging Dockerfile is using different systems in one Dockerfile for different stages. These systems are receiving specified names as indicators with "AS" behind the "FROM" with the base image name. 
 Default this feature is applied for building applications in one stage and executing the copied application in another stage. The same counts for cloning Github repositories and building binary files based on it. On this way, a lot of space is saved.
 Concluding, the docker image has got only the size of the executing system with the application file (without all the code). 
 That is an "experimental feature"  at the moment. Therefore the \textbf{experimental flag} is necessary to export or set before operating (see \ref{Multi-Architecture-Images} "Multi-Architecture Images"). \\
 Default one image is receiving the name build and the other one a name of how it will be applied. In our case, the second image has got the name work. 
 The second image is copying with "COPY --from=build" all required built data from the first image. Therefore, it can be used for running the application. 
-On this way, it is possible to reduce the size of a docker image. \\
+On this way, it is possible to reduce the size of a docker image. 
 Multi-staging Dockerfiles are an approved method for executing binaries based on Github repositories.
 
 
@@ -37,7 +37,7 @@ Kubernetes requires many packages for running and tests. These will be installed
 Build is the name of the parent Dockerfile to be able to copy needed files and directories from there.
 Docker is pre-installed with the base Docker image in the FROM command. This base is required for a successful installation of Kubernetes. \\
 A Dockerfile is installing only necessary packages and includes packages of the base image. Therefore, curl, git and gnupg have to be installed first for the following installation.
-Afterwards, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. \textbf{Docker} in the base image contains the container engine docker with all docker commands. CRI/O or containerd would be allowed, too. 
+Afterwards, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. \textbf{Docker} in the base image contains the container engine Docker with all docker commands. CRI/O or containerd would be allowed, too. 
 The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running with it. \\ 
 \textbf{Kubelet} is the primary node agent running on each node and is responsible for different runnable containers in a pod. Pods are deployable units defined in JSON or a yaml file. This feature is used for \ref{Kub-IntegrationTest} "integration tests" in the \gls{CI/CD} pipeline.
 Pods include a single or a group of containers with shared storage and network resources. Hosting of distributed systems  with different services in different containers can work together. Consequential one pod is something as one "logical host". \\
@@ -82,9 +82,9 @@ kubeadm \
 
 There were some issues with older Go versions as 1.10 during building tests for Kubernetes. Therefore a higher version (min. 1.13) should be used. It is recommended to use the latest Go version for last versioned Kubernetes tests. It is possible to receive the version number of the last Go release with the command \\ 
 \lstinline!curl https://golang.org/VERSION?m=text!. \\ 
-This version number has to be included before linux-s390x.tar.gz for downloading the selected s390x archive from the Go directory by \url{dl.google.com}. Then the version number has to be called with curl inside of another curl command with the whole path to the special tar archive on \url{dl.google.com}. Every tar archive has got the same structure for every version (\lstinline!$version.$architecture.tar.gz!). On this way, the latest version of Go is integrable into the curl command that it can be installed. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. These are not integrated into the tar archive. \\
+This version number has to be included before linux-s390x.tar.gz for downloading the selected s390x archive from the Go directory by \url{dl.google.com}. Then the version number has to be called with curl inside of another curl command with the whole path to the special tar archive on \url{dl.google.com}. Every tar archive has got the same structure for every version (\lstinline!$version.$architecture.tar.gz!). On this way, the latest version of Go is integrable into the curl command that it can be installed. Directories for bin, pkg and src have to be created after extracting this tar archive in the \path{/root/} directory. These are not integrated into the tar archive. 
 
-The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on the top of the Dockerfile for successful builds later. PWD is added because Github repositories have to be cloned to this directory. \\
+The environment variables for GOROOT, GOPATH and PATH have to be set with ENV on the top of the Dockerfile for successful builds later. PWD is added because Github repositories have to be cloned to this directory. 
 
 The ENV variables will be on the top of the Dockerfile. The part for the "Installation of Go" will be attached to the end of the Kubernetes installation part.
 
