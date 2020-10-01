@@ -46,7 +46,7 @@ Typically, Docker is configured to build only for the host architecture, which i
  \caption{Docker Experimental Flag}
     \label{DockerExperimentalFlag}
 \end{figure}
-The configuration of the Docker daemon is written in the JSON format. It lists are saved in \path{/etc/docker/daemon.json}.
+The configuration of the Docker daemon is written in the JSON format. That is saved in \path{/etc/docker/daemon.json}.
 After a restart of the Docker daemon, there should be listed this experimental flag in the command  \lstinline!docker version!. An alternative way is to export this flag as an environment variable in the shell with  \lstinline!export DOCKER_CLI_EXPERIMENTAL=enabled! to enable it. Now it is possible to build docker images for s390x on x86 with \\ \lstinline!docker build --platform=linux/s390x -t image-example:s390x .! \\
 based on a Dockerfile in the existing directory.
 
@@ -94,7 +94,7 @@ The option \textbf{-m} is available to add the minimal guest memory matching the
 Only the console is necessary for receiving an output and debugging. 
 So this one is added as a device with \textbf{-chardev stdio,id=console,signal=off,mux=on -mon chardev=console} and \textbf{-device sclpconsole,chardev=console}. Additionally, the console has to be specified with \textbf{console=ttyS0} in the append part. \\ 
 Cassandra as a project does not need any network interface (\textbf{-net none}) or parallelism (\textbf{-parallel none}). The option \textbf{-nographic} is responsible for not adding any graphical interface. 
-So system requirements are reduced. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
+So, system requirements are reduced. The option \textbf{-smp} is the minimal number of CPUs for the guest. 
 The file system of containers can be loaded as a hard disk with the option \textbf{-hda}, which is explained in the chapters for considered open-source projects. 
 That is the ideal option to mount a minimal file system for every application or system. 
 \path{/dev/vda} is the partition name, and \textbf{rdinit} is used for using bash as a default shell. \\
