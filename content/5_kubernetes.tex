@@ -205,7 +205,7 @@ Jenkins can include all required installation of integration tests and the whole
 \lstinline!docker images | grep 'Kubernetes-Test' | awk '{print int($7+0.5)"G"}'! \\
 
 The Kubernetes community is referencing\footnote{\url{https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/\#before-you-begin}} a minimum requirement 2GB of RAM and 2 CPUs per system. 
-It has to be observed, that Kubernetes is watching master and worker node as an own system. Both are on one system in our case. Additionally, some RAM and CPU should be added for running tests. Therefore, 6GB for memory and 5 CPUs will be calculated for the \gls{QEMU} setup.
+It has to be observed, that Kubernetes is watching master and worker node as an own system. Both are on one system in our case. Additionally, the integration test has defined 40 GB RAM and 6 cores of CPU in the yaml file. Therefore, 40GB for memory and 5 CPUs will be calculated for the \gls{QEMU} setup and some additional memory is added for base tests.
 
 \subsection{Tests with Jenkins}
 
@@ -246,10 +246,10 @@ If the file system import was executed successfully, the emulation can be starte
 \begin{figure}[H]
 \centering
 \begin{boxedverbatim}
- /usr/bin/qemu-system-s390x -kernel bzImage -m 40G -M s390-ccw-virtio -nodefaults \
- -device sclpconsole,chardev=console -parallel none -net none -chardev stdio, \
- id=console,signal=off,mux=on -mon chardev=console -nographic -smp 5 \
- -hda /kubernetes-test.img \
+ /usr/bin/qemu-system-s390x -kernel vmlinuz-4.15.0-20-generic -m 40G \
+ -M s390-ccw-virtio -nodefaults -device sclpconsole,chardev=console \
+ -parallel none -net none -chardev stdio,id=console,signal=off,mux=on \
+ -mon chardev=console -nographic -smp 6 -hda kubernetes-test.img \
  --append 'root=/dev/vda rw console=ttyS0 rdinit=/bin/bash' 
 \end{boxedverbatim}
  \caption{Run Kubernetes}

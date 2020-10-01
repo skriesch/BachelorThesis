@@ -6,7 +6,7 @@ jobs:
   build-docker-image:
     working_directory: ~/s390x/s390x-cassandra-ci-cd
     docker:
-      - image: Dockerfile
+      - image: cassandra-s390x
     steps:
       - attach_workspace:
           at: .
@@ -21,7 +21,7 @@ jobs:
   prepare-test:
     working directory:~/s390x/s390x-cassandra-ci-cd/monitoring
     docker:
-      - image: Dockerfile
+      - image: cassandra-test-s390x
     steps:
       - attach_workspace:
           at: .
@@ -81,7 +81,7 @@ jobs:
              name: Run test with \gls{QEMU}
              command: |
                      /usr/bin/qemu-system-s390x -kernel vmlinuz-4.15.0-20-generic \
-                     -m 48 -M s390-ccw-virtio -nodefaults -device sclpconsole,\
+                     -m 8G -M s390-ccw-virtio -nodefaults -device sclpconsole,\
                      chardev=console -parallel none -net none -chardev stdio,\
                      id=console,signal=off,mux=on -mon chardev=console \
                      -nographic -smp 3 -hda cassandra-s390x.img \
@@ -127,7 +127,7 @@ agent {
         dir 's390x-kubernetes-test'
         label 'kubernetes'
         additionalBuildArgs  '--platform=linux/s390x \
-        --build-arg KUBERNETES_VERSION=${KUB_VERSION}'
+        --build-arg VERSION=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
 }
@@ -136,11 +136,11 @@ agent {
 // "docker build -f Dockerfile --build-arg version=${KUB_VERSION}
 // ./s390x-kubernetes-test/test/
     dockerfile {
-        filename 'Dockerfile.build'
+        filename 'Dockerfile'
         dir 's390x-kubernetes-test/test/'
         label 'kubernetes-test'
         additionalBuildArgs  '--platform=linux/s390x \
-        --build-arg KUBERNETES_VERSION=${KUB_VERSION}'
+        --build-arg VERSION=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
 }
