@@ -131,7 +131,7 @@ The same procedure will be executed in the monitoring directory. The FROM comman
 \verb+docker build buildx --platform=linux/s390x --squash -t cassandra-test-s390x .+ \\
 It should be possible to integrate this Docker image into the qemu command. Therefore, a qemu-image will be created with an rounded given size besides of the Docker image in the  \lstinline!docker images! command. So the command \\  
 \lstinline!qemu-img create -f raw cassandra-s390x.img 2G!  \\
-can be used. This image needs to be converted to any Linux file system because \gls{QEMU} does not know the Docker file system. Therefore, the image is formated with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img!. A directory with the name rootfs has to be created and the command for receiving the file system of the Docker image. \\
+can be used. This image needs to be converted to any Linux file system because \gls{QEMU} does not know the Docker file system. Therefore, the image is formatted with the command  \lstinline!mkfs.ext4 -F cassandra-s390x.img!. A directory with the name rootfs has to be created and the command for receiving the file system of the Docker image. \\
 \lstinline!docker export $(docker create cassandra-test-s390x) | tar -C "rootfs" -xvf -!  \\ 
 is exporting the docker image into the directory rootfs. Afterwards, the following command transfers the content of rootfs into the image cassandra.img.
 
@@ -163,7 +163,7 @@ Now it is possible to run the system with Cassandra: \\
 \newpage
 \section{Integration into CI/CD}
 
-The community of Apache Cassandra is using CircleCI\footnote{\url{https://circleci.com/}} as a Continious Integration system.
+The community of Apache Cassandra is using CircleCI\footnote{\url{https://circleci.com/}} as a Continuous Integration system.
 This \gls{CI/CD} system is connected with Github. The tests are running after every commit in the master repository.
 These tests can run in a container or in a virtual machine. These options make it possible to build the Docker image for the architecture s390x and to integrate it into \gls{QEMU} via the \gls{CI/CD} pipeline without additional scripting or workarounds. \\
 CircleCI is working with a yaml configuration\footnote{\url{https://circleci.com/docs/2.0/sample-config/}}. 
