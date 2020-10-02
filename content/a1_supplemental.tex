@@ -13,7 +13,7 @@ jobs:
       
       - run: 
             name: Build for s390x
-            command: docker build buildx --platform=linux/s390x --squash \
+            command: docker buildx build --platform=linux/s390x --squash \
                      --build-arg CASSANDRA_VERSION=$CASSANDRA_VERSION \
                      -t cassandra-s390x .
       - docker/check:
@@ -28,7 +28,7 @@ jobs:
       
       - run: 
             name: Build tests for s390x
-            command: docker build buildx --platform=linux/s390x --squash \
+            command: docker buildx build --platform=linux/s390x --squash \
                      -t cassandra-test-s390x .
       - docker/check:
          registry: $DOCKER_REGISTRY 
@@ -57,7 +57,7 @@ jobs:
         - attach_workspace:
                   at: .
         - run:
-              name: Creating ext4 file system with integration of the Cassandra image
+              name: Creating ext4 file system withCassandra image integration
               command: |
                       mkdir rootfs 
                       qemu-img create -f raw cassandra-s390x.img \
@@ -121,6 +121,17 @@ workflows:
 \begin{boxedverbatim}
 agent {
 // "docker build -f Dockerfile --build-arg version=${KUB_VERSION}
+// ./s390x-kubernetes-test/dind/
+    dockerfile {
+        filename 'Dockerfile'
+        dir 's390x-kubernetes-test/dind/'
+        label 'dind-Ubuntu'
+        additionalBuildArgs  '--platform=linux/s390x --squash'
+        args '-v /tmp:/tmp'
+    }
+}
+agent {
+// "docker build -f Dockerfile --build-arg version=${KUB_VERSION}
 // ./s390x-kubernetes-test/
     dockerfile {
         filename 'Dockerfile'
@@ -131,7 +142,6 @@ agent {
         args '-v /tmp:/tmp'
     }
 }
-
 agent {
 // "docker build -f Dockerfile --build-arg version=${KUB_VERSION}
 // ./s390x-kubernetes-test/test/
@@ -144,7 +154,6 @@ agent {
         args '-v /tmp:/tmp'
     }
 }
-
 node('master'){
    checkout scm
    yamlFromFile = readFile 'integration.yml' //Read yaml file

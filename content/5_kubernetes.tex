@@ -37,7 +37,7 @@ Multi-staging Dockerfiles are an approved method for executing binaries based on
 Kubernetes requires many packages for running and tests. These will be installed together with the RUN command.
 Build is the name of the parent Dockerfile to be able to copy needed files and directories from there.
 Docker is pre-installed with the base Docker image (\textbf{dind-ubuntu}) in the FROM command. This base is required for a successful installation of Kubernetes based on Docker. \textbf{Docker} in the base image contains the container engine Docker with all docker commands. CRI/O or containerd would be allowed, too.  \\
-A Dockerfile is installing only necessary packages and includes packages of the base image. Therefore, curl, git and gnupg have to be installed first for the following installation.
+A Dockerfile is installing only necessary packages and includes packages of the base image. Therefore, apt-utils, curl, git, ca-certificates, gnupg-agent and software-properties-common have to be installed first for the following installation.
 Afterwards, the packages kubelet and kubeadm can be installed in the parent Dockerfile for working with Kubernetes. 
 The Docker daemon will be used because that is the main used container engine of the Kubernetes project and all tests are running with it. \\ 
 \textbf{Kubelet} is the primary node agent running on each node and is responsible for different runnable containers in a pod. Pods are deployable units defined in JSON or a yaml file. This feature is used for \ref{Kub-IntegrationTest} "integration tests" in the \gls{CI/CD} pipeline.
@@ -122,7 +122,7 @@ This command is integrated into the parent Dockerfile with the Go environment. T
 Some problems appeared during the build of the static e2e.test file with Go inside of a Docker image. 
 Default the repository \textbf{test-infra} contains all tests for Kubernetes provided by the community. 
 These can be used, of course, and are updated continuously. That is the reason that a separate e2e.test exist for every version. Inside of this test-infra directory kubetest can be installed with \textbf{go install}. 
-That is downloading all available Kubernetes tests. So, you can use them to test the own Kubernetes cluster and the used software. \\
+That is downloading all available Kubernetes tests. So, you can use them to test the own Kubernetes cluster and the used software. 
 
 The test Kubernetes Dockerfile\footnote{\url{https://github.com/s390x-container-samples/s390x-kubernetes-test/blob/master/test/Dockerfile}} has integrated the download of a tar archive with a static e2e.test file and all required Go frameworks as ginkgo.
 These tests can be found under \path{/root/kubernetes/test/bin/} then. That includes conformance tests.
@@ -135,12 +135,13 @@ Conformance tests are testing all dependencies with other cloud providers or wit
 The \textbf{local} behind provider identifies that all tests should run only local at the moment. That has the reason that the \gls{QEMU} command has to be adapted with network configurations and open ports for communication for these features.
 The \textbf{gingo.focus} includes conformance tests.
 
-
+\newpage
 \subsection{End To End Testing}
 The e2e.test suite is an end-to-end testing framework for Kubernetes. It is testing Kubernetes for all required functionality \cite{Ohly2019}. This framework is written in Go and is using the Ginkgo Testing framework\footnote{\url{https://onsi.github.io/ginkgo/}} for expressive and comprehensive tests with the style of Behavior Driven Development (BDD).
 Expected behaviors are described in specs inside of the Kubernetes directory for e2e-tests\footnote{\url{https://github.com/kubernetes/kubernetes/tree/master/test/e2e}}. These tests exist for every Kubernetes version in specified Github branches. \\
 The test is built with the installed Go based on the file \textbf{e2e\_test.go}. Kubernetes has been importing all multiple providers, in-tree tests, configuration support, and bindata file lookup in the file e2e\_test.go.
-The vendor code and their dependencies are available under \path{k8s.io/kubernetes/vendor/}. Additionally, these can be tested limited to necessary dependencies. \\
+The vendor code and their dependencies are available under \path{k8s.io/kubernetes/vendor/}. Additionally, these can be tested limited to necessary dependencies. 
+
 Conformance tests can be included with: \\
 \begin{figure}[H]
 \centering
@@ -195,11 +196,11 @@ There exists a special \textbf{Kubernetes plugin}\footnote{\url{https://plugins.
 \textbf{Jenkins X}\footnote{\url{https://jenkins-x.io/}} has been developed based on Jenkins specialized on Kubernetes and cloud-native environments. That means, that something as the Kubernetes plugin is integrated and the system can work with public cloud providers and other cloud technologies for test and production deployment pipelines. All in all, Jenkins X is an improved version of Jenkins for cloud environments. The system can work with container registries, understands yaml configuration files without additional plugins and can deploy scalable systems based on containers in the local data centre as well as in the public cloud (AWS, Google Cloud, IBM cloud, Azure).
 
 \textbf{Prow}\footnote{\url{https://jenkins-x.io/docs/reference/components/prow/}} is a Kubernetes-native solution based on Jenkins X. This \gls{CI/CD} system is used by projects as Kubernetes, Istio and OpenShift which are all based on Kubernetes. This system is something as a Jenkins X expanded with special Kubernetes APIs and cloud-specific features. It can understand and deploy only Kubernetes based environments. Other configurations are not supported. The benefit in comparison to Jenkins is, that yaml configurations for Kubernetes setups are transferable between Jenkins and Prow.
-
+\newpage
 \subsection{System Requirements} \label{Kubernetes_Requirements}
 
 Jenkins can include all required installation of integration tests and the whole system setup into the specified Docker image. Therefore, the disk image size can be defined based on the Docker image and the specified command in \ref{ExternalFile system} "Converting Docker Image to External File System" with \\
-\lstinline!docker images | grep 'Kubernetes-Test' | awk '{print int($7+0.5)"G"}'! \\
+\lstinline!docker images | grep 'Kubernetes-Test' | awk '{print int($7+0.5)"G"}'! 
 
 The Kubernetes community is referencing\footnote{\url{https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/\#before-you-begin}} a minimum requirement 2GB of RAM and 2 CPUs per system. 
 It has to be observed, that Kubernetes is watching master and worker node as an own system. Both are on one system in our case. Additionally, the integration test has defined 40 GB RAM and 6 cores of CPU in the yaml file. Therefore, 40GB for memory and 5 CPUs will be calculated for the \gls{QEMU} setup and some additional memory is added for base tests.
@@ -232,11 +233,16 @@ cp -r rootfs/* /mnt/rootfs/.
 
 The command \textbf{debootstrap} can be used for fetching the signed Linux Kernel of Ubuntu Linux, too.
 This command is the following: \\
+\begin{figure}[H]
+\centering
 \begin{boxedverbatim}
 mkdir kernel-bionic
 debootstrap --include=linux-generic --arch=s390x --variant=minbase bionic \
 kernel-bionic http://ports.ubuntu.com 
 \end{boxedverbatim}
+ \caption{Debootstrap}
+    \label{Debootstrap}
+\end{figure}
 
 If the file system import was executed successfully, the emulation can be started in the next step with referenced \ref{Kubernetes_Requirements} "System Requirements".
 

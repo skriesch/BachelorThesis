@@ -19,7 +19,7 @@ The current architecture version has been introduced in late 2000 by IBM \cite[~
 IBM Z contains "IBM Z pervasive encryption" for comprehensive protection around the data on the system \cite[~p.4]{Lascu2020}. Such systems are offering an upright into vertical \gls{scaling} of processes, which allows the operation of many hundred virtual systems in parallel \cite[~p.13]{Tschoeke2009}. One traditional operating system for IBM Z systems has been z/OS. 
 IBM Z systems have been optimized for open-source software as Linux \cite[~p.8]{Lascu2020}. The goal by IBM has been to offer a combination of a robust and securable hardware platform with the power of different Linux distributions. 
 The IBM Z system allows running multiple operating systems at the same time with the support of logical partitions (LPARs).
-A \gls{LPAR}) partitions the mainframe into hardware resources for corresponding operating systems with associated applications. \\
+A \gls{LPAR} partitions the mainframe into hardware resources for corresponding operating systems with associated applications. \\
 Ubuntu Linux is used as a base operating system for this Bachelor Thesis.
 
 
@@ -67,7 +67,7 @@ The command \lstinline!docker-compose! is available to automate the setup with m
 \centering
 \begin{boxedverbatim}
 FROM scratch
-ADD ubuntu-bionic-core-cloudimg-s390x-root.tar.gz /
+ADD ubuntu-bionic-core-cloudimg-s390x-root.tar.gz 
 
 RUN set -xe \
 	&& echo '#!/bin/sh' > /usr/sbin/policy-rc.d \

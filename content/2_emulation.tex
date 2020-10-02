@@ -203,6 +203,7 @@ the command \\
 The exported file system has got the format of the \ref{UnionFS} "UnionFS" at this moment. \gls{QEMU} contains the beneficial tool \textbf{qemu-img} for creating loadable images of file systems. These require the minimal size of the docker image. The output of the size is given by \\
 \lstinline!docker images | grep ${id}!.\\ 
 Qemu-img understands only rounded numbers. Therefore, that has to be rounded up to a full number. That will be done automated with the tool \textbf{awk}. 
+
 In the case of Cassandra, there will be used \\
 \lstinline!docker images | grep 'Cassandra-s390x' | awk '{print int($7+0.5)"G"}'!. \\
 \lstinline!print $7! would give the output of the size raw of \lstinline!docker images!, which is a float number. The \textbf{int} is rounding down to an integer number. Accordingly, the \textbf{0.5} has to be summed up for rounding up. The GB has been removed in this process. \lstinline!qemu-img! requires a G behind the number, which can be added with "G" inside of the awk command. \\
