@@ -126,7 +126,7 @@ agent {
         filename 'Dockerfile'
         dir 's390x-kubernetes-test'
         label 'kubernetes'
-        additionalBuildArgs  '--platform=linux/s390x \
+        additionalBuildArgs  '--platform=linux/s390x --squash \
         --build-arg VERSION=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
@@ -139,7 +139,7 @@ agent {
         filename 'Dockerfile'
         dir 's390x-kubernetes-test/test/'
         label 'kubernetes-test'
-        additionalBuildArgs  '--platform=linux/s390x \
+        additionalBuildArgs  '--platform=linux/s390x --squash \
         --build-arg VERSION=${KUB_VERSION}'
         args '-v /tmp:/tmp'
     }
@@ -158,15 +158,24 @@ pipeline {
         stage('Integrate yaml into Kubernetes build') {
             agent { docker 'kubernetes' } 
             steps {
-                echo 'Integration Test Deployment'
-                sh 'mvn --version'
+                echo 'Integration Test Deployment with yaml'
+               
             }
         }
-        stage('Example Test') {
-            agent { docker 'openjdk:8-jre' } 
+        stage('Run test based on kubernetes') {
+            agent { docker 'kubernetes-test' } 
             steps {
-                echo 'Hello, JDK'
+                echo 'Run End-to-End test'
                 sh 'java -version'
+            }
+        }
+        stage('Integrate emulation') {
+            agent { 'emulation' } 
+            steps {
+              retry(3){
+                    echo 'Create Emulation with QEMU'
+                    sh './s390x-kubernetes-test/Jenkins/emulation.sh'        
+              }     
             }
         }
     }
