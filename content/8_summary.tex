@@ -7,11 +7,11 @@ The challenge was that open-source communities do not support the architecture o
 A "Docker in Docker" solution has been available before the Bachelor Thesis project. "Kubernetes in Docker" is applied by the Kubernetes community for tests. 
 Therefore, it is possible to upgrade Kubernetes setups inside of a container to a chosen version with a pre-installed Docker. A test environment has been created on this base with a Dockerfile for the installation and another Dockerfile. During the evaluation of \gls{CI/CD} systems, it has been located that Prow can not be utilized for emulations because of his containerized Kubernetes concept. 
 Some research has yielded the result that Prow has been developed based on Jenkins and Jenkins X. Before the invention of Prow, the concept with Kubernetes based deployments had been  tried based on Jenkins with a Kubernetes plugin. Jenkins can deploy emulations and container systems. 
-All facts considered the emulated system with the Docker image can be tested with Jenkins and ensuing transferred with the same configuration to Prow.
+All facts considered, the emulated system with the Docker image can be tested with Jenkins and then transferred to Prow with the same configuration to.
 Tests have been contained because of the extension of the study. A network interface and specific open ports have to be attached to the \gls{QEMU} emulation and analyzed. 
 
 CircleCI works with container technologies and virtualization/ emulation technologies. 
-Therefore, the emulated setup of Apache Cassandra may be integrated into the \gls{CI/CD} pipeline of the community. However, it fails at the moment because of a JVM issue in \gls{QEMU} for s390x during the build process. 
+Therefore, the emulated setup of Apache Cassandra could be integrated into the \gls{CI/CD} pipeline of the community. However, it fails at the moment because of a JVM issue in \gls{QEMU} for s390x during the build process. 
 There exists a development workaround with a Docker build process on IBM Z and the integration into the local registry after the synchronization to an x86 system. Afterwards, the emulation with the integrated Docker image has performed as described.
 
 The approach with a combination of \gls{QEMU} emulations and integrated Docker image can be applied for additional \gls{CI/CD} pipelines of open-source projects. Ultimately, this method provides an excellent environment for fast software deployments in general. 
